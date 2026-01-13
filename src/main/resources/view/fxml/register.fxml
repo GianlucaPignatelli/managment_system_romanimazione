@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.romanimazione.controller.graphic.JavaFXRegistrationController">
+    <center>
+        <VBox alignment="CENTER" spacing="15.0">
+            <children>
+                <Label text="Registration" style="-fx-font-size: 24px;" />
+                
+                <TextField fx:id="usernameField" promptText="Username" maxWidth="250"/>
+                <PasswordField fx:id="passwordField" promptText="Password" maxWidth="250"/>
+                <TextField fx:id="nameField" promptText="Nome" maxWidth="250"/>
+                <TextField fx:id="surnameField" promptText="Cognome" maxWidth="250"/>
+                <TextField fx:id="emailField" promptText="Email (@gmail.com)" maxWidth="250"/>
+                
+                <ComboBox fx:id="roleBox" maxWidth="250" promptText="Select Role">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="ANIMATORE" />
+                            <String fx:value="AMMINISTRATORE" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+
+                <Button text="Register" onAction="#handleRegister"/>
+                <Label fx:id="infoLabel" textFill="black"/>
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+             <children>
+                <Button text="Back" onAction="#handleBack"/>
+             </children>
+             <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+        </HBox>
+    </bottom>
+</BorderPane>

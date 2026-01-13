@@ -1,0 +1,7 @@
+package com.romanimazione.exception;
+
+public class UserNotFoundException extends Exception {
+    public UserNotFoundException(String message) {
+        super(message);
+    }
+}
