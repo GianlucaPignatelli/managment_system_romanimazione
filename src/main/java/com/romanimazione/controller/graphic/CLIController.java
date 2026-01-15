@@ -4,7 +4,7 @@ import com.romanimazione.bean.CredentialsBean;
 import com.romanimazione.bean.UserBean;
 import com.romanimazione.controller.application.LoginController;
 import com.romanimazione.controller.application.Observer;
-import com.romanimazione.controller.application.Subject;
+import com.romanimazione.controller.application.Observer;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

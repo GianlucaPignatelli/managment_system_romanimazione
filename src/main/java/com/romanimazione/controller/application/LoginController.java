@@ -5,16 +5,18 @@ import com.romanimazione.bean.UserBean;
 import com.romanimazione.dao.DAOFactory;
 import com.romanimazione.dao.UserDAO;
 import com.romanimazione.entity.User;
+import com.romanimazione.exception.DAOException;
+import com.romanimazione.exception.UserNotFoundException;
 
 public class LoginController extends Subject {
 
-    public UserBean login(CredentialsBean credentials) throws Exception {
+    public UserBean login(CredentialsBean credentials) throws DAOException, UserNotFoundException {
         DAOFactory daoFactory = DAOFactory.getDAOFactory();
         UserDAO userDAO = daoFactory.getUserDAO();
         User user = userDAO.findUserByIdentifier(credentials.getUsername());
 
         if (user == null || !user.getPassword().equals(credentials.getPassword())) {
-            throw new Exception("Invalid username/email or password");
+            throw new UserNotFoundException("Invalid username/email or password");
         }
 
         // Strict Case Sensitivity Check
@@ -23,7 +25,7 @@ public class LoginController extends Subject {
         boolean matchesEmail = user.getEmail() != null && user.getEmail().equals(inputId); // Exact case match
 
         if (!matchesUsername && !matchesEmail) {
-             throw new Exception("Invalid identifier (Case Sensitive mismatch)");
+             throw new UserNotFoundException("Invalid identifier (Case Sensitive mismatch)");
         }
 
         UserBean userBean = new UserBean();

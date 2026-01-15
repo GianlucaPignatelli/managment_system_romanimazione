@@ -39,7 +39,7 @@ public abstract class DAOFactory {
             if ("FILESYSTEM".equalsIgnoreCase(type)) return getDAOFactory(FILESYSTEM);
             return getDAOFactory(DEMO);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            System.out.println("Config Error: " + ex.getMessage());
             return new DemoDAOFactory();
         }
     }
