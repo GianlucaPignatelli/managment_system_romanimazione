@@ -4,7 +4,6 @@ import com.romanimazione.bean.CredentialsBean;
 import com.romanimazione.bean.UserBean;
 import com.romanimazione.controller.application.LoginController;
 import com.romanimazione.dao.UserDAODemo;
-import com.romanimazione.exception.DAOException;
 import com.romanimazione.exception.UserNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

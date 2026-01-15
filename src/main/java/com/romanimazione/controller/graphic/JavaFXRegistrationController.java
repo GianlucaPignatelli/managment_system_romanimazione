@@ -60,7 +60,7 @@ public class JavaFXRegistrationController implements Observer {
         infoLabel.setText(message);
         infoLabel.setStyle("-fx-text-fill: red;");
     }
-    }
+
 
     @FXML
     private void handleBack() throws IOException {
