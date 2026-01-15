@@ -43,7 +43,7 @@ public class CLIController implements Observer {
         }
     }
 
-    private void handleLogin(BufferedReader reader) throws Exception {
+    private void handleLogin(BufferedReader reader) throws java.io.IOException {
         System.out.print("Username: ");
         String username = reader.readLine();
         System.out.print("Password: ");
@@ -60,7 +60,7 @@ public class CLIController implements Observer {
         }
     }
 
-    private void handleRegister(BufferedReader reader) throws Exception {
+    private void handleRegister(BufferedReader reader) throws java.io.IOException {
         System.out.println("\n--- REGISTER ---");
         // Registration Logic here - Need RegistrationController instance
         // For simplicity, let's assume we create it here or inject it.

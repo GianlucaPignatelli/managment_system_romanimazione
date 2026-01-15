@@ -40,8 +40,7 @@ public class JavaFXRegistrationController implements Observer {
         user.setRole(roleBox.getValue());
 
         if (user.getRole() == null) {
-            infoLabel.setText("Please select a role.");
-            infoLabel.setStyle("-fx-text-fill: red;");
+            showError("Please select a role.");
             return;
         }
 
@@ -51,12 +50,16 @@ public class JavaFXRegistrationController implements Observer {
             infoLabel.setStyle("-fx-text-fill: green;");
             // Optional: delay then switch
         } catch (com.romanimazione.exception.DuplicateUserException | IllegalArgumentException | com.romanimazione.exception.DAOException e) {
-            infoLabel.setText(e.getMessage());
-            infoLabel.setStyle("-fx-text-fill: red;");
+            showError(e.getMessage());
         } catch (Exception e) {
-            infoLabel.setText("Unexpected Error: " + e.getMessage());
-            infoLabel.setStyle("-fx-text-fill: red;");
+            showError("Unexpected Error: " + e.getMessage());
         }
+    }
+
+    private void showError(String message) {
+        infoLabel.setText(message);
+        infoLabel.setStyle("-fx-text-fill: red;");
+    }
     }
 
     @FXML

@@ -14,9 +14,13 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("home"), 640, 480);
+        setMainScene(new Scene(loadFXML("home"), 640, 480));
         stage.setScene(scene);
         stage.show();
+    }
+
+    private static void setMainScene(Scene s) {
+        scene = s;
     }
 
     public static void setRoot(String fxml) throws IOException {
