@@ -1,15 +1,9 @@
 package com.romanimazione;
 
 import com.romanimazione.bean.CredentialsBean;
-import com.romanimazione.bean.UserBean;
 import com.romanimazione.controller.application.LoginController;
-import com.romanimazione.dao.DAOFactory;
-import com.romanimazione.dao.UserDAO;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeAll;
 
-import java.lang.reflect.Field;
 
 public class LoginControllerTest {
 
