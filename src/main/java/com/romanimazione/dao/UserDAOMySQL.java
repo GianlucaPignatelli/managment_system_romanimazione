@@ -22,10 +22,12 @@ public class UserDAOMySQL implements UserDAO {
 
         User user = null;
         if (rs.next()) {
-            String role = rs.getString("role");
-            if ("ANIMATORE".equalsIgnoreCase(role)) {
+            String roleStr = rs.getString("role");
+            com.romanimazione.entity.Role roleEnum = com.romanimazione.entity.Role.fromString(roleStr);
+
+            if (roleEnum == com.romanimazione.entity.Role.ANIMATORE) {
                 user = new Animatore();
-            } else if ("AMMINISTRATORE".equalsIgnoreCase(role)) {
+            } else if (roleEnum == com.romanimazione.entity.Role.AMMINISTRATORE) {
                 user = new Amministratore();
             } else {
                 user = new User(); // Generic fallback

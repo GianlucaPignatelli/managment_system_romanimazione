@@ -77,15 +77,16 @@ public class CLIController implements Observer {
         String cognome = reader.readLine();
         System.out.print("Email (must end with @gmail.com): ");
         String email = reader.readLine();
-        String role = "";
+        String roleInput = "";
         while (true) {
             System.out.print("Role (ANIMATORE/AMMINISTRATORE): ");
-            role = reader.readLine().trim().toUpperCase();
-            if ("ANIMATORE".equals(role) || "AMMINISTRATORE".equals(role)) {
+            roleInput = reader.readLine();
+            if (com.romanimazione.entity.Role.fromString(roleInput) != null) {
                 break;
             }
             System.out.println("Invalid Role. Please type 'ANIMATORE' or 'AMMINISTRATORE'.");
         }
+        String role = com.romanimazione.entity.Role.fromString(roleInput).name();
 
         UserBean user = new UserBean();
         user.setUsername(username);
