@@ -17,7 +17,7 @@ public class UserDAOMySQL implements UserDAO {
     public User findUserByIdentifier(String identifier) throws DAOException {
         try {
             Connection conn = MySQLDAOFactory.createConnection();
-            String query = "SELECT * FROM users WHERE username = ? OR email = ?";
+            String query = "SELECT id, username, password, role, nome, cognome, email FROM users WHERE username = ? OR email = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, identifier);
             stmt.setString(2, identifier);

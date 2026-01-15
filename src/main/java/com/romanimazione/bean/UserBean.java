@@ -9,6 +9,14 @@ public class UserBean {
     private String password; // Optional depending on flow
 
     public UserBean() {}
+    public UserBean(String username, String password, String role, String nome, String cognome, String email) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.nome = nome;
+        this.cognome = cognome;
+        this.email = email;
+    }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
