@@ -50,8 +50,11 @@ public class JavaFXRegistrationController implements Observer {
             infoLabel.setText("Registration Successful! Returning to login...");
             infoLabel.setStyle("-fx-text-fill: green;");
             // Optional: delay then switch
-        } catch (Exception e) {
+        } catch (com.romanimazione.exception.DuplicateUserException | IllegalArgumentException | com.romanimazione.exception.DAOException e) {
             infoLabel.setText(e.getMessage());
+            infoLabel.setStyle("-fx-text-fill: red;");
+        } catch (Exception e) {
+            infoLabel.setText("Unexpected Error: " + e.getMessage());
             infoLabel.setStyle("-fx-text-fill: red;");
         }
     }

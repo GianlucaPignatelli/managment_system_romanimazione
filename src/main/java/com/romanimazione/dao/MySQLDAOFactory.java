@@ -22,7 +22,7 @@ public class MySQLDAOFactory extends DAOFactory {
                 loginPass = prop.getProperty("LOGIN_PASS");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Database Configuration Error: " + e.getMessage());
         }
     }
 

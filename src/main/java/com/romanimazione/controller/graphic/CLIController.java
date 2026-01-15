@@ -39,7 +39,7 @@ public class CLIController implements Observer {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("System Error: " + e.getMessage());
         }
     }
 
@@ -53,8 +53,10 @@ public class CLIController implements Observer {
         try {
             UserBean user = loginController.login(creds);
             System.out.println("Welcome " + user.getNome());
+        } catch (com.romanimazione.exception.UserNotFoundException | com.romanimazione.exception.DAOException e) {
+             System.out.println("Login Failed: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Login Failed: " + e.getMessage());
+             System.out.println("Unexpected Error: " + e.getMessage());
         }
     }
 
@@ -98,8 +100,10 @@ public class CLIController implements Observer {
         try {
             regController.register(user);
             System.out.println("Registration successful! Please login.");
+        } catch (com.romanimazione.exception.DuplicateUserException | IllegalArgumentException | com.romanimazione.exception.DAOException e) {
+             System.out.println("Registration Failed: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Registration Failed: " + e.getMessage());
+             System.out.println("Unexpected Error: " + e.getMessage());
         }
     }
 

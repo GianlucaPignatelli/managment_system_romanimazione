@@ -36,8 +36,11 @@ public class JavaFXLoginController implements Observer {
             // Navigate to next screen or show success
             errorLabel.setText("Login Successful!");
             errorLabel.setStyle("-fx-text-fill: green;");
-        } catch (Exception e) {
+        } catch (com.romanimazione.exception.UserNotFoundException | com.romanimazione.exception.DAOException e) {
             errorLabel.setText(e.getMessage());
+            errorLabel.setStyle("-fx-text-fill: red;");
+        } catch (Exception e) {
+            errorLabel.setText("Unexpected: " + e.getMessage());
             errorLabel.setStyle("-fx-text-fill: red;");
         }
     }

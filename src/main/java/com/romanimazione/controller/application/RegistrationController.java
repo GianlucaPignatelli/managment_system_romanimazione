@@ -6,21 +6,23 @@ import com.romanimazione.dao.UserDAO;
 import com.romanimazione.entity.Amministratore;
 import com.romanimazione.entity.Animatore;
 import com.romanimazione.entity.User;
+import com.romanimazione.exception.DAOException;
+import com.romanimazione.exception.DuplicateUserException;
 
 public class RegistrationController extends Subject {
 
-    public void register(UserBean userBean) throws Exception {
+    public void register(UserBean userBean) throws DAOException, DuplicateUserException, IllegalArgumentException {
         DAOFactory daoFactory = DAOFactory.getDAOFactory();
         UserDAO userDAO = daoFactory.getUserDAO();
 
         // Check availability
         if (userDAO.findUserByIdentifier(userBean.getUsername()) != null) {
-            throw new Exception("Username already exists");
+            throw new DuplicateUserException("Username already exists");
         }
 
         // Validate Email
         if (userBean.getEmail() == null || !userBean.getEmail().endsWith("@gmail.com")) {
-            throw new Exception("Email must be a valid @gmail.com address");
+            throw new IllegalArgumentException("Email must be a valid @gmail.com address");
         }
 
         User user;
