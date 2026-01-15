@@ -10,10 +10,19 @@ import com.romanimazione.exception.UserNotFoundException;
 
 public class LoginController extends Subject {
 
+    private UserDAO userDAO;
+
+    public LoginController() {
+        this.userDAO = DAOFactory.getDAOFactory().getUserDAO();
+    }
+
+    public void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
     public UserBean login(CredentialsBean credentials) throws DAOException, UserNotFoundException {
-        DAOFactory daoFactory = DAOFactory.getDAOFactory();
-        UserDAO userDAO = daoFactory.getUserDAO();
-        User user = userDAO.findUserByIdentifier(credentials.getUsername());
+        // use injected or default DAO
+        User user = this.userDAO.findUserByIdentifier(credentials.getUsername());
 
         if (user == null || !user.getPassword().equals(credentials.getPassword())) {
             throw new UserNotFoundException("Invalid username/email or password");
