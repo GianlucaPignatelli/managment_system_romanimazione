@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.romanimazione.controller.graphic.JavaFXAvailabilityController"
+            prefHeight="480.0" prefWidth="640.0">
+
+    <top>
+        <Label text="Manage Your Availability" BorderPane.alignment="CENTER">
+            <font>
+                <Font size="24.0"/>
+            </font>
+            <padding>
+                <Insets top="20.0" bottom="20.0"/>
+            </padding>
+        </Label>
+    </top>
+
+    <center>
+        <VBox spacing="20.0" alignment="TOP_CENTER">
+            <padding>
+                <Insets left="40.0" right="40.0"/>
+            </padding>
+
+            <!-- Input Section -->
+            <GridPane hgap="10" vgap="10" alignment="CENTER">
+                <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <DatePicker fx:id="datePicker" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                <Label text="Full Day:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <CheckBox fx:id="fullDayParams" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#handleFullDayToggle"/>
+
+                <Label text="Start Time:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <TextField fx:id="startTimeField" promptText="HH:mm" prefWidth="80"/>
+                    <Label text="(e.g. 14:30)"/>
+                </HBox>
+
+                <Label text="End Time:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <TextField fx:id="endTimeField" promptText="HH:mm" prefWidth="80"/>
+                    <Label text="(e.g. 18:00)"/>
+                </HBox>
+
+                <Button text="Add" onAction="#handleAdd" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                <Button text="Update" onAction="#handleUpdate" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                <Button text="Delete" onAction="#handleDelete" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+            </GridPane>
+
+            <Label fx:id="errorLabel" text="" style="-fx-text-fill: red;"/>
+
+            <Separator/>
+
+            <!-- List Section -->
+            <Label text="Your Availabilities:"/>
+            <TableView fx:id="availabilityTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="dateColumn" text="Date" prefWidth="150"/>
+                    <TableColumn fx:id="startColumn" text="Start" prefWidth="100"/>
+                    <TableColumn fx:id="endColumn" text="End" prefWidth="100"/>
+                    <TableColumn fx:id="fullDayColumn" text="Full Day" prefWidth="80"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Button text="Back" onAction="#handleBack"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
