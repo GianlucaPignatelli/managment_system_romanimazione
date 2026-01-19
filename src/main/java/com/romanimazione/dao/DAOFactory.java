@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import com.romanimazione.dao.mysql.MySQLDAOFactory;
+import com.romanimazione.dao.file.FileDAOFactory;
+import com.romanimazione.dao.demo.DemoDAOFactory;
+
 public abstract class DAOFactory {
 
     public static final int MYSQL = 1;
