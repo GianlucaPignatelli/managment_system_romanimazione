@@ -99,10 +99,10 @@ public class JavaFXAvailabilityController {
             appController.updateAvailability(bean);
             loadData();
             errorLabel.setText("Updated successfully.");
-            errorLabel.setStyle("-fx-text-fill: green;");
+            errorLabel.setStyle(STYLE_SUCCESS);
         } catch (Exception e) {
              errorLabel.setText(e.getMessage());
-             errorLabel.setStyle("-fx-text-fill: red;");
+             errorLabel.setStyle(STYLE_ERROR);
         }
     }
 
@@ -117,10 +117,10 @@ public class JavaFXAvailabilityController {
             appController.deleteAvailability(selected);
             loadData();
             errorLabel.setText("Deleted successfully.");
-            errorLabel.setStyle("-fx-text-fill: green;");
+            errorLabel.setStyle(STYLE_SUCCESS);
         } catch (Exception e) {
              errorLabel.setText(e.getMessage());
-             errorLabel.setStyle("-fx-text-fill: red;");
+             errorLabel.setStyle(STYLE_ERROR);
         }
     }
 
@@ -144,6 +144,9 @@ public class JavaFXAvailabilityController {
         }
     }
 
+    private static final String STYLE_ERROR = "-fx-text-fill: red;";
+    private static final String STYLE_SUCCESS = "-fx-text-fill: green;";
+
     @FXML
     private void handleAdd() {
         errorLabel.setText("");
@@ -154,15 +157,7 @@ public class JavaFXAvailabilityController {
             bean.setFullDay(fullDayParams.isSelected());
 
             if (!bean.isFullDay()) {
-                if (startTimeField.getText().isEmpty() || endTimeField.getText().isEmpty()) {
-                    throw new IllegalArgumentException("Time fields cannot be empty for partial day.");
-                }
-                try {
-                    bean.setStartTime(LocalTime.parse(startTimeField.getText())); // expects HH:mm
-                    bean.setEndTime(LocalTime.parse(endTimeField.getText()));
-                } catch (DateTimeParseException e) {
-                    throw new IllegalArgumentException("Invalid Time format. Use HH:mm (e.g. 14:30)");
-                }
+                parseTimeFields(bean);
             }
 
             appController.addAvailability(bean);
@@ -179,6 +174,19 @@ public class JavaFXAvailabilityController {
 
         } catch (Exception e) {
              errorLabel.setText(e.getMessage());
+             errorLabel.setStyle(STYLE_ERROR);
+        }
+    }
+    
+    private void parseTimeFields(AvailabilityBean bean) {
+        if (startTimeField.getText().isEmpty() || endTimeField.getText().isEmpty()) {
+            throw new IllegalArgumentException("Time fields cannot be empty for partial day.");
+        }
+        try {
+            bean.setStartTime(LocalTime.parse(startTimeField.getText())); // expects HH:mm
+            bean.setEndTime(LocalTime.parse(endTimeField.getText()));
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid Time format. Use HH:mm (e.g. 14:30)");
         }
     }
 

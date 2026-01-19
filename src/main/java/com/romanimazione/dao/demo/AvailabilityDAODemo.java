@@ -25,7 +25,7 @@ public class AvailabilityDAODemo implements AvailabilityDAO {
     public List<Availability> findByUsername(String username) throws DAOException {
         return MOCK_DB.stream()
                 .filter(a -> a.getUsername().equals(username))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

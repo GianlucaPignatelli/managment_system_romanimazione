@@ -25,6 +25,8 @@ public class JavaFXLoginController implements Observer {
         this.loginController.attach(this);
     }
 
+    private static final String ERROR_STYLE = "-fx-text-fill: red;";
+
     @FXML
     private void handleLogin() {
         String username = usernameField.getText();
@@ -46,14 +48,14 @@ public class JavaFXLoginController implements Observer {
                 com.romanimazione.view.MainApp.setRoot("admin_dashboard");
             } else {
                 errorLabel.setText("Unknown Role: " + role);
-                errorLabel.setStyle("-fx-text-fill: red;");
+                errorLabel.setStyle(ERROR_STYLE);
             }
         } catch (com.romanimazione.exception.UserNotFoundException | com.romanimazione.exception.DAOException e) {
             errorLabel.setText(e.getMessage());
-            errorLabel.setStyle("-fx-text-fill: red;");
+            errorLabel.setStyle(ERROR_STYLE);
         } catch (Exception e) {
             errorLabel.setText("Unexpected: " + e.getMessage());
-            errorLabel.setStyle("-fx-text-fill: red;");
+            errorLabel.setStyle(ERROR_STYLE);
         }
     }
 
