@@ -2,7 +2,6 @@ package com.romanimazione.dao;
 
 import com.romanimazione.entity.Availability;
 import com.romanimazione.exception.DAOException;
-import java.util.Collections;
 import java.util.List;
 
 public class AvailabilityDAOFile implements AvailabilityDAO {

@@ -2,16 +2,16 @@ package com.romanimazione.bean;
 
 public class SessionBean {
 
-    private static SessionBean instance;
     private UserBean currentUser;
 
     private SessionBean() {}
 
+    private static class SingletonHelper {
+        private static final SessionBean INSTANCE = new SessionBean();
+    }
+
     public static SessionBean getInstance() {
-        if (instance == null) {
-            instance = new SessionBean();
-        }
-        return instance;
+        return SingletonHelper.INSTANCE;
     }
 
     public UserBean getCurrentUser() {
