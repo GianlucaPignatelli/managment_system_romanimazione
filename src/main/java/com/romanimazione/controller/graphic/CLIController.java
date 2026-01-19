@@ -1,41 +1,52 @@
 package com.romanimazione.controller.graphic;
 
+import com.romanimazione.bean.AvailabilityBean;
 import com.romanimazione.bean.CredentialsBean;
+import com.romanimazione.bean.SessionBean;
 import com.romanimazione.bean.UserBean;
+import com.romanimazione.controller.application.AvailabilityController;
 import com.romanimazione.controller.application.LoginController;
-import com.romanimazione.controller.application.Observer;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 
-public class CLIController implements Observer {
+public class CLIController {
 
+    private static final String P_CHOICE = "Choice: ";
+    private static final String MSG_INVALID = "Invalid choice.";
+    private static final String MSG_ERROR = "Error: ";
+    
+    private BufferedReader reader;
     private LoginController loginController;
+    private AvailabilityController availabilityController;
 
     public CLIController() {
+        this.reader = new BufferedReader(new InputStreamReader(System.in));
         this.loginController = new LoginController();
-        this.loginController.attach(this);
+        this.availabilityController = new AvailabilityController();
     }
 
     public void start() {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            while (true) {
+        System.out.println("Welcome to Romanimazione CLI");
+        boolean running = true;
+        try {
+            while (running) {
                 System.out.println("\n--- MAIN MENU ---");
                 System.out.println("1. Login");
-                System.out.println("2. Register");
-                System.out.println("3. Exit");
-                System.out.print("Choice: ");
-                String choice = reader.readLine();
+                System.out.println("2. Exit");
+                System.out.print(P_CHOICE);
+                String input = reader.readLine();
 
-                if ("1".equals(choice)) {
-                    handleLogin(reader);
-                } else if ("2".equals(choice)) {
-                    handleRegister(reader);
-                } else if ("3".equals(choice)) {
+                if ("1".equals(input)) {
+                    handleLogin();
+                } else if ("2".equals(input)) {
+                    running = false;
                     System.out.println("Goodbye!");
-                    break;
                 } else {
-                    System.out.println("Invalid choice.");
+                    System.out.println(MSG_INVALID);
                 }
             }
         } catch (Exception e) {
@@ -43,211 +54,150 @@ public class CLIController implements Observer {
         }
     }
 
-    private void handleLogin(BufferedReader reader) throws java.io.IOException {
+    private void handleLogin() throws Exception {
         System.out.print("Username: ");
         String username = reader.readLine();
         System.out.print("Password: ");
         String password = reader.readLine();
 
-        CredentialsBean creds = new CredentialsBean(username, password);
         try {
+            CredentialsBean creds = new CredentialsBean(username, password);
             UserBean user = loginController.login(creds);
-            com.romanimazione.bean.SessionBean.getInstance().setCurrentUser(user);
-            System.out.println("Login Successful! Welcome " + user.getNome());
+            SessionBean.getInstance().setCurrentUser(user);
             
-            // Route based on role
+            System.out.println("Login successful. Role: " + user.getRole());
+            
             if ("ANIMATORE".equalsIgnoreCase(user.getRole())) {
-                runAnimatorSession(reader);
+                animatorLoop();
             } else if ("AMMINISTRATORE".equalsIgnoreCase(user.getRole())) {
-                runAdminSession(reader);
+                 adminLoop();
             } else {
-                System.out.println("Unknown role: " + user.getRole());
+                 System.out.println("Unknown role menu.");
             }
 
-        } catch (com.romanimazione.exception.UserNotFoundException | com.romanimazione.exception.DAOException e) {
-             System.out.println("Login Failed: " + e.getMessage());
         } catch (Exception e) {
-             System.out.println("Unexpected Error: " + e.getMessage());
+            System.out.println(MSG_ERROR + e.getMessage());
         }
     }
-
-    private void runAnimatorSession(BufferedReader reader) throws java.io.IOException {
-        while (true) {
-            System.out.println("\n--- ANIMATOR DASHBOARD ---");
+    
+    private void animatorLoop() throws Exception {
+        boolean loggedIn = true;
+        while (loggedIn) {
+            System.out.println("\n[ANIMATORE DASHBOARD]");
             System.out.println("1. Manage Availability");
             System.out.println("2. Logout");
-            System.out.print("Choice: ");
-            String choice = reader.readLine();
-
-            if ("1".equals(choice)) {
-                handleAvailability(reader);
-            } else if ("2".equals(choice)) {
-                com.romanimazione.bean.SessionBean.getInstance().setCurrentUser(null);
+            System.out.print(P_CHOICE);
+            String subInput = reader.readLine();
+            
+            if ("1".equals(subInput)) {
+                manageAvailability();
+            } else if ("2".equals(subInput)) {
+                loggedIn = false;
+                SessionBean.getInstance().setCurrentUser(null);
                 System.out.println("Logged out.");
-                break;
             } else {
-                System.out.println("Invalid choice.");
+                System.out.println(MSG_INVALID);
             }
         }
     }
 
-    private void runAdminSession(BufferedReader reader) throws java.io.IOException {
-        while (true) {
-            System.out.println("\n--- ADMIN DASHBOARD ---");
-            System.out.println("1. (Coming Soon)");
-            System.out.println("2. Logout");
-            System.out.print("Choice: ");
-            String choice = reader.readLine();
+    private void adminLoop() throws Exception {
+         System.out.println("\n[ADMIN DASHBOARD]");
+         System.out.println("Admin features not implemented in CLI yet.");
+         System.out.println("Press Enter to logout...");
+         reader.readLine();
+         SessionBean.getInstance().setCurrentUser(null);
+    }
 
-            if ("2".equals(choice)) {
-                com.romanimazione.bean.SessionBean.getInstance().setCurrentUser(null);
-                System.out.println("Logged out.");
-                break;
-            } else {
-                System.out.println("Invalid choice.");
+    private void manageAvailability() throws Exception {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n[MANAGE AVAILABILITY]");
+            System.out.println("1. Add Availability");
+            System.out.println("2. List My Availabilities");
+            System.out.println("3. Update Availability");
+            System.out.println("4. Delete Availability");
+            System.out.println("5. Back");
+            System.out.print(P_CHOICE);
+            String input = reader.readLine();
+
+            try {
+                switch (input) {
+                    case "1": addAvailabilityCLI(); break;
+                    case "2": listAvailabilityCLI(); break;
+                    case "3": updateAvailabilityCLI(); break;
+                    case "4": deleteAvailabilityCLI(); break;
+                    case "5": back = true; break;
+                    default: System.out.println(MSG_INVALID);
+                }
+            } catch (Exception e) {
+                System.out.println(MSG_ERROR + e.getMessage());
             }
         }
     }
 
-    private void handleAvailability(BufferedReader reader) throws java.io.IOException {
-         UserBean currentUser = com.romanimazione.bean.SessionBean.getInstance().getCurrentUser();
+    private void addAvailabilityCLI() throws Exception {
+        AvailabilityBean bean = promptForAvailabilityDetails();
+        bean.setUsername(SessionBean.getInstance().getCurrentUser().getUsername());
+        availabilityController.addAvailability(bean);
+        System.out.println("Availability added successfully.");
+    }
+    
+    private void updateAvailabilityCLI() throws Exception {
+        System.out.print("Enter ID to update: ");
+        int id = Integer.parseInt(reader.readLine());
+        
+        AvailabilityBean bean = promptForAvailabilityDetails();
+        bean.setId(id);
+        bean.setUsername(SessionBean.getInstance().getCurrentUser().getUsername());
+        
+        availabilityController.updateAvailability(bean);
+        System.out.println("Availability updated successfully.");
+    }
+    
+    private void deleteAvailabilityCLI() throws Exception {
+         System.out.print("Enter ID to delete: ");
+         int id = Integer.parseInt(reader.readLine());
+         AvailabilityBean bean = new AvailabilityBean();
+         bean.setId(id);
+         bean.setUsername(SessionBean.getInstance().getCurrentUser().getUsername());
          
-         while(true) {
-             System.out.println("\n--- MANAGE AVAILABILITY ---");
-             System.out.println("1. List My Availabilities");
-             System.out.println("2. Add Availability");
-             System.out.println("3. Update Availability");
-             System.out.println("4. Delete Availability");
-             System.out.println("5. Back");
-             System.out.print("Choice: ");
-             String choice = reader.readLine();
-             
-             com.romanimazione.controller.application.AvailabilityController controller = new com.romanimazione.controller.application.AvailabilityController();
-             
-             if ("1".equals(choice)) {
-                 try {
-                     var list = controller.getAvailabilities(currentUser.getUsername());
-                     if (list.isEmpty()) System.out.println("No availabilities found.");
-                     System.out.printf("%-5s | %-12s | %-20s%n", "ID", "Date", "Time");
-                     System.out.println("------------------------------------------");
-                     for (var a : list) {
-                         System.out.printf("%-5d | %s | %s%n", a.getId(), a.getDate(), (a.isFullDay() ? "Full Day" : a.getStartTime() + " - " + a.getEndTime()));
-                     }
-                 } catch (Exception e) {
-                     System.out.println("Error: " + e.getMessage());
-                 }
-             } else if ("2".equals(choice)) {
-                 try {
-                     com.romanimazione.bean.AvailabilityBean bean = new com.romanimazione.bean.AvailabilityBean();
-                     bean.setUsername(currentUser.getUsername());
-                     System.out.print("Date (YYYY-MM-DD): ");
-                     bean.setDate(java.time.LocalDate.parse(reader.readLine()));
-                     System.out.print("Full Day? (y/n): ");
-                     boolean full = "y".equalsIgnoreCase(reader.readLine());
-                     bean.setFullDay(full);
-                     if (!full) {
-                         System.out.print("Start Time (HH:mm): ");
-                         bean.setStartTime(java.time.LocalTime.parse(reader.readLine()));
-                         System.out.print("End Time (HH:mm): ");
-                         bean.setEndTime(java.time.LocalTime.parse(reader.readLine()));
-                     }
-                     controller.addAvailability(bean);
-                     System.out.println("Added successfully!");
-                 } catch (Exception e) {
-                     System.out.println("Error: " + e.getMessage());
-                 }
-             } else if ("3".equals(choice)) {
-                 System.out.println("--- Update Availability ---");
-                 System.out.print("Enter ID to update: ");
-                 try {
-                     int id = Integer.parseInt(reader.readLine());
-                     com.romanimazione.bean.AvailabilityBean bean = new com.romanimazione.bean.AvailabilityBean();
-                     bean.setId(id);
-                     bean.setUsername(currentUser.getUsername());
-                     
-                     System.out.print("New Date (YYYY-MM-DD): ");
-                     bean.setDate(java.time.LocalDate.parse(reader.readLine()));
-                     System.out.print("Full Day? (y/n): ");
-                     boolean full = "y".equalsIgnoreCase(reader.readLine());
-                     bean.setFullDay(full);
-                     if (!full) {
-                         System.out.print("Start Time (HH:mm): ");
-                         bean.setStartTime(java.time.LocalTime.parse(reader.readLine()));
-                         System.out.print("End Time (HH:mm): ");
-                         bean.setEndTime(java.time.LocalTime.parse(reader.readLine()));
-                     }
-                     controller.updateAvailability(bean);
-                     System.out.println("Updated successfully!");
-                 } catch (Exception e) {
-                     System.out.println("Error: " + e.getMessage());
-                 }
-             } else if ("4".equals(choice)) {
-                 System.out.print("Enter ID to delete: ");
-                 try {
-                     int id = Integer.parseInt(reader.readLine());
-                     com.romanimazione.bean.AvailabilityBean bean = new com.romanimazione.bean.AvailabilityBean();
-                     bean.setId(id);
-                     bean.setUsername(currentUser.getUsername());
-                     controller.deleteAvailability(bean);
-                     System.out.println("Deleted successfully!");
-                 } catch (Exception e) {
-                     System.out.println("Error: " + e.getMessage());
-                 }
-             } else if ("5".equals(choice)) {
-                 break;
-             }
-         }
+         availabilityController.deleteAvailability(bean);
+         System.out.println("Availability deleted successfully.");
     }
 
-    private void handleRegister(BufferedReader reader) throws java.io.IOException {
-        System.out.println("\n--- REGISTER ---");
-        // Registration Logic here - Need RegistrationController instance
-        // For simplicity, let's assume we create it here or inject it.
-        // In a real app, I'd move this to field.
-        com.romanimazione.controller.application.RegistrationController regController = new com.romanimazione.controller.application.RegistrationController();
-        regController.attach(this);
-
-        System.out.print("Username: ");
-        String username = reader.readLine();
-        System.out.print("Password: ");
-        String password = reader.readLine();
-        System.out.print("Name: ");
-        String nome = reader.readLine();
-        System.out.print("Surname: ");
-        String cognome = reader.readLine();
-        System.out.print("Email (must end with @gmail.com): ");
-        String email = reader.readLine();
-        String roleInput = "";
-        while (true) {
-            System.out.print("Role (ANIMATORE/AMMINISTRATORE): ");
-            roleInput = reader.readLine();
-            if (com.romanimazione.entity.Role.fromString(roleInput) != null) {
-                break;
+    private void listAvailabilityCLI() throws Exception {
+        String user = SessionBean.getInstance().getCurrentUser().getUsername();
+        List<AvailabilityBean> list = availabilityController.getAvailabilities(user);
+        if (list.isEmpty()) {
+            System.out.println("No availabilities found.");
+        } else {
+            System.out.printf("%-5s | %-12s | %-20s%n", "ID", "Date", "Time");
+            System.out.println("------------------------------------------");
+            for (AvailabilityBean b : list) {
+                String timeInfo = b.isFullDay() ? "Full Day" : b.getStartTime() + " - " + b.getEndTime();
+                System.out.printf("%-5d | %s | %s%n", b.getId(), b.getDate(), timeInfo);
             }
-            System.out.println("Invalid Role. Please type 'ANIMATORE' or 'AMMINISTRATORE'.");
-        }
-        String role = com.romanimazione.entity.Role.fromString(roleInput).name();
-
-        UserBean user = new UserBean();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setNome(nome);
-        user.setCognome(cognome);
-        user.setEmail(email);
-        user.setRole(role);
-
-        try {
-            regController.register(user);
-            System.out.println("Registration successful! Please login.");
-        } catch (com.romanimazione.exception.DuplicateUserException | IllegalArgumentException | com.romanimazione.exception.DAOException e) {
-             System.out.println("Registration Failed: " + e.getMessage());
-        } catch (Exception e) {
-             System.out.println("Unexpected Error: " + e.getMessage());
         }
     }
 
-    @Override
-    public void update(String message) {
-        System.out.println("[NOTIFICATION]: " + message);
+    private AvailabilityBean promptForAvailabilityDetails() throws java.io.IOException {
+        System.out.print("Date (YYYY-MM-DD): ");
+        LocalDate date = LocalDate.parse(reader.readLine());
+        
+        System.out.print("Full Day? (y/n): ");
+        boolean isFull = "y".equalsIgnoreCase(reader.readLine());
+        
+        AvailabilityBean bean = new AvailabilityBean();
+        bean.setDate(date);
+        bean.setFullDay(isFull);
+        
+        if (!isFull) {
+             System.out.print("Start Time (HH:mm): ");
+             bean.setStartTime(LocalTime.parse(reader.readLine()));
+             System.out.print("End Time (HH:mm): ");
+             bean.setEndTime(LocalTime.parse(reader.readLine()));
+        }
+        return bean;
     }
 }
