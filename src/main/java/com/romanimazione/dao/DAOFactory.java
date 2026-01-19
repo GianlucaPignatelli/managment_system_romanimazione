@@ -11,6 +11,7 @@ public abstract class DAOFactory {
     public static final int DEMO = 3;
 
     public abstract UserDAO getUserDAO();
+    public abstract AvailabilityDAO getAvailabilityDAO();
 
     public static DAOFactory getDAOFactory(int whichFactory) {
         switch (whichFactory) {
@@ -25,8 +26,18 @@ public abstract class DAOFactory {
         }
     }
     
+    private static Integer forcedType = null;
+
+    public static void setFactoryType(int type) {
+        forcedType = type;
+    }
+
     // Helper to get from config
     public static DAOFactory getDAOFactory() {
+        if (forcedType != null) {
+            return getDAOFactory(forcedType);
+        }
+
         Properties prop = new Properties();
         try (InputStream input = DAOFactory.class.getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {

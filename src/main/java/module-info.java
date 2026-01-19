@@ -3,6 +3,8 @@ module com.romanimazione {
     requires javafx.fxml;
     requires java.sql;
     requires mysql.connector.j;
+    requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.jackson.datatype.jsr310;
 
     opens com.romanimazione.controller.graphic to javafx.fxml;
 

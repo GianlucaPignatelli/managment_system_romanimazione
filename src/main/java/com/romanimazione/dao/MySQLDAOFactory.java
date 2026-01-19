@@ -34,4 +34,9 @@ public class MySQLDAOFactory extends DAOFactory {
     public UserDAO getUserDAO() {
         return new UserDAOMySQL();
     }
+
+    @Override
+    public AvailabilityDAO getAvailabilityDAO() {
+        return new AvailabilityDAOMySQL();
+    }
 }

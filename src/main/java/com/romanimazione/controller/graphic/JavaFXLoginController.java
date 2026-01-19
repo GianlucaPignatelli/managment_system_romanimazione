@@ -32,10 +32,22 @@ public class JavaFXLoginController implements Observer {
         
         CredentialsBean creds = new CredentialsBean(username, password);
         try {
-            loginController.login(creds);
-            // Navigate to next screen or show success
-            errorLabel.setText("Login Successful!");
+            com.romanimazione.bean.UserBean user = loginController.login(creds);
+            com.romanimazione.bean.SessionBean.getInstance().setCurrentUser(user);
+            
+            errorLabel.setText("Login Successful! Welcome " + user.getNome());
             errorLabel.setStyle("-fx-text-fill: green;");
+            
+            // Navigate based on role
+            String role = user.getRole(); // Assuming "ANIMATORE" or "AMMINISTRATORE"
+            if ("ANIMATORE".equalsIgnoreCase(role)) {
+                com.romanimazione.view.MainApp.setRoot("animator_dashboard");
+            } else if ("AMMINISTRATORE".equalsIgnoreCase(role)) {
+                com.romanimazione.view.MainApp.setRoot("admin_dashboard");
+            } else {
+                errorLabel.setText("Unknown Role: " + role);
+                errorLabel.setStyle("-fx-text-fill: red;");
+            }
         } catch (com.romanimazione.exception.UserNotFoundException | com.romanimazione.exception.DAOException e) {
             errorLabel.setText(e.getMessage());
             errorLabel.setStyle("-fx-text-fill: red;");

@@ -16,4 +16,6 @@ public class JavaFXHomeController {
     private void goToRegister() throws IOException {
         MainApp.setRoot("register");
     }
+
+
 }
