@@ -3,11 +3,6 @@ package com.romanimazione.dao.mysql;
 import com.romanimazione.dao.DAOFactory;
 import com.romanimazione.dao.UserDAO;
 import com.romanimazione.dao.AvailabilityDAO;
-import com.romanimazione.exception.DAOException; // If needed, or check imports
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
