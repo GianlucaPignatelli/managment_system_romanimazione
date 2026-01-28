@@ -1,65 +1,41 @@
 package com.romanimazione.bean;
 
-
+import com.romanimazione.entity.Availability;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class AvailabilityBean {
-    private int id;
-    private String username;
-    private LocalDate date;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private boolean isFullDay;
+public class AvailabilityBean extends Availability {
 
-    public AvailabilityBean() {}
+    public AvailabilityBean() {
+        super();
+    }
 
     public AvailabilityBean(String username, LocalDate date, LocalTime startTime, LocalTime endTime, boolean isFullDay) {
-        this.username = username;
-        this.date = date;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.isFullDay = isFullDay;
+        super(username, date, startTime, endTime, isFullDay);
     }
-    
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
-
-    public LocalTime getStartTime() { return startTime; }
-    public void setStartTime(LocalTime startTime) { this.startTime = startTime; }
-
-    public LocalTime getEndTime() { return endTime; }
-    public void setEndTime(LocalTime endTime) { this.endTime = endTime; }
-
-    public boolean isFullDay() { return isFullDay; }
-    public void setFullDay(boolean fullDay) { isFullDay = fullDay; }
 
     // --- MAPPING METHODS ---
-    public static AvailabilityBean fromEntity(com.romanimazione.entity.Availability entity) {
+    public static AvailabilityBean fromEntity(Availability entity) {
         if (entity == null) return null;
-        return new AvailabilityBean(
+        AvailabilityBean bean = new AvailabilityBean(
             entity.getUsername(),
             entity.getDate(),
             entity.getStartTime(),
             entity.getEndTime(),
             entity.isFullDay()
         );
+        bean.setId(entity.getId());
+        return bean;
     }
 
-    public com.romanimazione.entity.Availability toEntity() {
-        com.romanimazione.entity.Availability entity = new com.romanimazione.entity.Availability();
-        entity.setId(this.id);
-        entity.setUsername(this.username);
-        entity.setDate(this.date);
-        entity.setStartTime(this.startTime);
-        entity.setEndTime(this.endTime);
-        entity.setFullDay(this.isFullDay);
+    public Availability toEntity() {
+        Availability entity = new Availability();
+        entity.setId(this.getId());
+        entity.setUsername(this.getUsername());
+        entity.setDate(this.getDate());
+        entity.setStartTime(this.getStartTime());
+        entity.setEndTime(this.getEndTime());
+        entity.setFullDay(this.isFullDay());
         return entity;
     }
 }
