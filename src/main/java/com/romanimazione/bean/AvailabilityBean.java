@@ -39,4 +39,27 @@ public class AvailabilityBean {
 
     public boolean isFullDay() { return isFullDay; }
     public void setFullDay(boolean fullDay) { isFullDay = fullDay; }
+
+    // --- MAPPING METHODS ---
+    public static AvailabilityBean fromEntity(com.romanimazione.entity.Availability entity) {
+        if (entity == null) return null;
+        return new AvailabilityBean(
+            entity.getUsername(),
+            entity.getDate(),
+            entity.getStartTime(),
+            entity.getEndTime(),
+            entity.isFullDay()
+        );
+    }
+
+    public com.romanimazione.entity.Availability toEntity() {
+        com.romanimazione.entity.Availability entity = new com.romanimazione.entity.Availability();
+        entity.setId(this.id);
+        entity.setUsername(this.username);
+        entity.setDate(this.date);
+        entity.setStartTime(this.startTime);
+        entity.setEndTime(this.endTime);
+        entity.setFullDay(this.isFullDay);
+        return entity;
+    }
 }
