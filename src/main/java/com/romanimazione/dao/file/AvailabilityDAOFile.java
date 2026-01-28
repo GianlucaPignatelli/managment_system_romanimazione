@@ -80,11 +80,8 @@ public class AvailabilityDAOFile implements AvailabilityDAO {
     public void deleteAvailability(Availability availability) throws DAOException {
         List<Availability> list = load();
         boolean removed = list.removeIf(a -> a.getId() == availability.getId());
-        if (!removed) {
-             // Fallback key match if ID is 0?
-             if (availability.getId() == 0) {
-                 removed = list.removeIf(a -> a.getUsername().equals(availability.getUsername()) && a.getDate().equals(availability.getDate()));
-             }
+        if (!removed && availability.getId() == 0) {
+             removed = list.removeIf(a -> a.getUsername().equals(availability.getUsername()) && a.getDate().equals(availability.getDate()));
         }
         if (removed) save(list);
         else throw new DAOException("Availability not found to delete");

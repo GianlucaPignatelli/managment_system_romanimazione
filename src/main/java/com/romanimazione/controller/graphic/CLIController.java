@@ -54,7 +54,7 @@ public class CLIController {
         }
     }
 
-    private void handleLogin() throws Exception {
+    private void handleLogin() throws java.io.IOException {
         System.out.print("Username: ");
         String username = reader.readLine();
         System.out.print("Password: ");
@@ -80,7 +80,7 @@ public class CLIController {
         }
     }
     
-    private void animatorLoop() throws Exception {
+    private void animatorLoop() throws java.io.IOException {
         boolean loggedIn = true;
         while (loggedIn) {
             System.out.println("\n[ANIMATORE DASHBOARD]");
@@ -101,7 +101,7 @@ public class CLIController {
         }
     }
 
-    private void adminLoop() throws Exception {
+    private void adminLoop() throws java.io.IOException {
          System.out.println("\n[ADMIN DASHBOARD]");
          System.out.println("Admin features not implemented in CLI yet.");
          System.out.println("Press Enter to logout...");
@@ -109,7 +109,7 @@ public class CLIController {
          SessionBean.getInstance().setCurrentUser(null);
     }
 
-    private void manageAvailability() throws Exception {
+    private void manageAvailability() throws java.io.IOException {
         boolean back = false;
         while (!back) {
             System.out.println("\n[MANAGE AVAILABILITY]");
@@ -136,14 +136,14 @@ public class CLIController {
         }
     }
 
-    private void addAvailabilityCLI() throws Exception {
+    private void addAvailabilityCLI() throws java.io.IOException, com.romanimazione.exception.DAOException, com.romanimazione.exception.InvalidAvailabilityException {
         AvailabilityBean bean = promptForAvailabilityDetails();
         bean.setUsername(SessionBean.getInstance().getCurrentUser().getUsername());
         availabilityController.addAvailability(bean);
         System.out.println("Availability added successfully.");
     }
     
-    private void updateAvailabilityCLI() throws Exception {
+    private void updateAvailabilityCLI() throws java.io.IOException, com.romanimazione.exception.DAOException, com.romanimazione.exception.InvalidAvailabilityException {
         System.out.print("Enter ID to update: ");
         int id = Integer.parseInt(reader.readLine());
         
@@ -155,7 +155,7 @@ public class CLIController {
         System.out.println("Availability updated successfully.");
     }
     
-    private void deleteAvailabilityCLI() throws Exception {
+    private void deleteAvailabilityCLI() throws java.io.IOException, com.romanimazione.exception.DAOException {
          System.out.print("Enter ID to delete: ");
          int id = Integer.parseInt(reader.readLine());
          AvailabilityBean bean = new AvailabilityBean();
@@ -166,7 +166,7 @@ public class CLIController {
          System.out.println("Availability deleted successfully.");
     }
 
-    private void listAvailabilityCLI() throws Exception {
+    private void listAvailabilityCLI() throws com.romanimazione.exception.DAOException {
         String user = SessionBean.getInstance().getCurrentUser().getUsername();
         List<AvailabilityBean> list = availabilityController.getAvailabilities(user);
         if (list.isEmpty()) {

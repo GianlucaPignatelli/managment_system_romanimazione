@@ -18,7 +18,11 @@ public class Main {
         else if ("2".equals(pChoice)) pType = com.romanimazione.dao.DAOFactory.FILESYSTEM;
         
         com.romanimazione.dao.DAOFactory.setFactoryType(pType);
-        System.out.println("Persistence set to: " + (pType == 1 ? "MySQL" : pType == 2 ? "File" : "Demo"));
+        String pTypeName = "Demo";
+        if (pType == com.romanimazione.dao.DAOFactory.MYSQL) pTypeName = "MySQL";
+        else if (pType == com.romanimazione.dao.DAOFactory.FILESYSTEM) pTypeName = "File";
+        
+        System.out.println("Persistence set to: " + pTypeName);
 
         System.out.println("\nSelect Interface:");
         System.out.println("1. Command Line Interface (CLI)");
