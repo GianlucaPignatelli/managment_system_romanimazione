@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.romanimazione.controller.graphic.JavaFXPartyController"
+      prefHeight="600.0" prefWidth="640.0">
+
+    <center>
+        <ScrollPane fitToWidth="true">
+            <VBox alignment="CENTER" spacing="20.0">
+                 <padding><Insets top="20" right="40" bottom="20" left="40"/></padding>
+
+                <Label text="Create New Party">
+                    <font><Font size="24.0"/></font>
+                </Label>
+
+                <GridPane vgap="10" hgap="10" alignment="CENTER">
+                    <!-- Column Constraints for alignment -->
+                    <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT" minWidth="120"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <Label text="Event Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="nameField" promptText="Ex: Mario's Birthday" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Type:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <ComboBox fx:id="typeBox" prefWidth="250.0" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    
+                    <Label text="Date:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <DatePicker fx:id="datePicker" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <Label text="Client Name:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <TextField fx:id="clientNameField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                    <Label text="Client Phone:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                    <TextField fx:id="clientPhoneField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                    <Label text="Start Time (HH:mm):" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                    <TextField fx:id="startTimeField" promptText="14:00" maxWidth="100" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                    
+                    <Label text="End Time (HH:mm):" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                    <TextField fx:id="endTimeField" promptText="18:00" maxWidth="100" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+                    <Label text="Address:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+                    <TextField fx:id="addressField" promptText="Via Roma 1, Rome" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+                    
+                    <Label text="Kids Count (Opt):" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+                    <TextField fx:id="childrenCountField" maxWidth="80" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+                    <Label text="Animators Req:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+                    <TextField fx:id="animatorsRequiredField" maxWidth="80" text="1" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+
+                    <Label text="Description:" GridPane.rowIndex="10" GridPane.columnIndex="0" GridPane.valignment="TOP"/>
+                    <TextArea fx:id="descriptionArea" prefRowCount="3" wrapText="true" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+
+                    <Label text="Total Cost (€):" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+                    <TextField fx:id="costField" promptText="0.00" maxWidth="100" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+                </GridPane>
+
+                <Label fx:id="errorLabel" textFill="RED" visible="false" wrapText="true"/>
+
+                <HBox spacing="20" alignment="CENTER">
+                    <Button text="Save Party" onAction="#handleSave" defaultButton="true" style="-fx-base: #4CAF50;"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #f0f0f0;">
+             <padding><Insets top="10" right="20" bottom="10" left="20"/></padding>
+             <Button text="&lt; Back" onAction="#handleCancel"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
