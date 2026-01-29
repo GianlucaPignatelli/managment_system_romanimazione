@@ -1,8 +1,6 @@
 package com.romanimazione.bean;
 
 import com.romanimazione.entity.Party;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 /**
  * PartyBean extends Party to avoid code duplication.
