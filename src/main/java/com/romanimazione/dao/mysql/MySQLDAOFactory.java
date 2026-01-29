@@ -42,4 +42,9 @@ public class MySQLDAOFactory extends DAOFactory {
     public AvailabilityDAO getAvailabilityDAO() {
         return new AvailabilityDAOMySQL();
     }
+    
+    @Override
+    public com.romanimazione.dao.PartyDAO getPartyDAO() {
+        return new PartyDAOMySQL();
+    }
 }

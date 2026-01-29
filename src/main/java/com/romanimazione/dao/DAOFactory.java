@@ -16,6 +16,7 @@ public abstract class DAOFactory {
 
     public abstract UserDAO getUserDAO();
     public abstract AvailabilityDAO getAvailabilityDAO();
+    public abstract PartyDAO getPartyDAO();
 
     public static DAOFactory getDAOFactory(int whichFactory) {
         switch (whichFactory) {

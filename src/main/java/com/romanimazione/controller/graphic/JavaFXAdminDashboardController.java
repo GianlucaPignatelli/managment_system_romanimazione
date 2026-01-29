@@ -23,4 +23,14 @@ public class JavaFXAdminDashboardController {
         SessionBean.getInstance().setCurrentUser(null);
         MainApp.setRoot("home");
     }
+
+    @FXML
+    private void handleCreateParty() throws IOException {
+        MainApp.setRoot("party_form");
+    }
+
+    @FXML
+    private void handleListParties() throws IOException {
+        MainApp.setRoot("party_list");
+    }
 }

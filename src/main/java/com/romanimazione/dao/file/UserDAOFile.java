@@ -1,33 +1,36 @@
 package com.romanimazione.dao.file;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.romanimazione.dao.UserDAO;
-
+import com.romanimazione.entity.Amministratore;
+import com.romanimazione.entity.Animatore;
 import com.romanimazione.entity.User;
 import com.romanimazione.exception.DAOException;
 import java.util.List;
 
-public class UserDAOFile implements UserDAO {
-    
-    private final java.io.File file;
-    private final com.fasterxml.jackson.databind.ObjectMapper mapper;
+public class UserDAOFile extends GenericFileDAO<User> implements UserDAO {
 
     public UserDAOFile() {
-        this.file = new java.io.File("users.json");
-        this.mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-        // Activate default typing to handle Polymorphism (User/Animatore/Amministratore)
-        // This adds type info to JSON.
-        mapper.activateDefaultTyping(
-            mapper.getPolymorphicTypeValidator(), 
-            com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping.NON_FINAL
-        );
-        mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
-        mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        super("users.json");
+        // Seed if empty
+        try {
+            List<User> users = load(new TypeReference<List<User>>(){});
+            if (users.isEmpty()) {
+                users.add(new Animatore("demo", "pass", "Demo", "User", "demo@romanimazione.com"));
+                users.add(new Amministratore("admin", "admin", "Super", "Admin", "admin@romanimazione.com"));
+                save(users);
+                System.out.println("File: Seeded default users (demo/pass, admin/admin).");
+            }
+        } catch (DAOException e) {
+            System.err.println("Error seeding users: " + e.getMessage());
+        }
     }
 
     @Override
     public User findUserByIdentifier(String identifier) throws DAOException {
-        List<User> users = loadUsers();
+        List<User> users = load(new TypeReference<List<User>>(){});
         for (User u : users) {
+             // Strict check or lax check? Doing strict match on username or email
             if (u.getUsername().equals(identifier) || u.getEmail().equals(identifier)) {
                 return u;
             }
@@ -37,30 +40,15 @@ public class UserDAOFile implements UserDAO {
 
     @Override
     public void saveUser(User user) throws DAOException {
-        List<User> users = loadUsers();
-        // Check duplicate
+        List<User> users = load(new TypeReference<List<User>>(){});
         for (User u : users) {
              if (u.getUsername().equals(user.getUsername())) throw new DAOException("User already exists");
         }
+        // Generate ID? For now relying on user-provided or auto-inc imitation not needed for username login
+        int maxId = users.stream().mapToInt(User::getId).max().orElse(0);
+        user.setId(maxId + 1);
+        
         users.add(user);
-        saveUsers(users);
-    }
-
-    private List<User> loadUsers() throws DAOException {
-        if (!file.exists()) return new java.util.ArrayList<>();
-        try {
-            // Deserialize list of Users
-            return mapper.readValue(file, new com.fasterxml.jackson.core.type.TypeReference<List<User>>(){});
-        } catch (java.io.IOException e) {
-            throw new DAOException("Error reading users file: " + e.getMessage(), e);
-        }
-    }
-
-    private void saveUsers(List<User> users) throws DAOException {
-        try {
-            mapper.writeValue(file, users);
-        } catch (java.io.IOException e) {
-            throw new DAOException("Error writing users file: " + e.getMessage(), e);
-        }
+        save(users);
     }
 }

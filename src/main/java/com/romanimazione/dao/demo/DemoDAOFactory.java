@@ -14,4 +14,9 @@ public class DemoDAOFactory extends DAOFactory {
     public AvailabilityDAO getAvailabilityDAO() {
         return new AvailabilityDAODemo();
     }
+
+    @Override
+    public com.romanimazione.dao.PartyDAO getPartyDAO() {
+        return new PartyDAODemo();
+    }
 }

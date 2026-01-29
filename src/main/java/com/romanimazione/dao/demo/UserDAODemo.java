@@ -2,6 +2,7 @@ package com.romanimazione.dao.demo;
 
 import com.romanimazione.dao.UserDAO;
 
+import com.romanimazione.entity.Amministratore;
 import com.romanimazione.entity.User;
 import com.romanimazione.entity.Animatore;
 import com.romanimazione.exception.DAOException;
@@ -13,6 +14,7 @@ public class UserDAODemo implements UserDAO {
     // Static init block to add default demo user
     static {
         MOCK_USERS.add(new Animatore("demo", "pass", "Demo", "User", "demo@mail.com"));
+        MOCK_USERS.add(new Amministratore("admin", "admin", "Super", "Admin", "admin@romanimazione.com"));
     }
 
     @Override

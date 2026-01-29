@@ -36,13 +36,16 @@ public class CLIController {
             while (running) {
                 System.out.println("\n--- MAIN MENU ---");
                 System.out.println("1. Login");
-                System.out.println("2. Exit");
+                System.out.println("2. Register");
+                System.out.println("3. Exit");
                 System.out.print(P_CHOICE);
                 String input = reader.readLine();
 
                 if ("1".equals(input)) {
                     handleLogin();
                 } else if ("2".equals(input)) {
+                    handleRegistration();
+                } else if ("3".equals(input)) {
                     running = false;
                     System.out.println("Goodbye!");
                 } else {
@@ -102,11 +105,107 @@ public class CLIController {
     }
 
     private void adminLoop() throws java.io.IOException {
-         System.out.println("\n[ADMIN DASHBOARD]");
-         System.out.println("Admin features not implemented in CLI yet.");
-         System.out.println("Press Enter to logout...");
-         reader.readLine();
-         SessionBean.getInstance().setCurrentUser(null);
+        boolean loggedIn = true;
+        com.romanimazione.controller.application.PartyController partyController = new com.romanimazione.controller.application.PartyController();
+
+        while (loggedIn) {
+            System.out.println("\n[ADMIN DASHBOARD]");
+            System.out.println("1. Create New Party");
+            System.out.println("2. List All Parties");
+            System.out.println("3. Logout");
+            System.out.print(P_CHOICE);
+            String input = reader.readLine();
+
+            try {
+                if ("1".equals(input)) {
+                    createPartyCLI(partyController);
+                } else if ("2".equals(input)) {
+                    listPartiesCLI(partyController);
+                } else if ("3".equals(input)) {
+                    loggedIn = false;
+                    SessionBean.getInstance().setCurrentUser(null);
+                    System.out.println("Logged out.");
+                } else {
+                    System.out.println(MSG_INVALID);
+                }
+            } catch (Exception e) {
+                System.out.println(MSG_ERROR + e.getMessage());
+            }
+        }
+    }
+
+    private void createPartyCLI(com.romanimazione.controller.application.PartyController controller) throws java.io.IOException, com.romanimazione.exception.InvalidPartyException, com.romanimazione.exception.DAOException {
+        System.out.println("\n--- CREATE NEW PARTY ---");
+        
+        System.out.print("Event Name: ");
+        String name = reader.readLine();
+
+        System.out.println("Allowed Types: " + controller.getPartyTypes());
+        System.out.print("Type: ");
+        String type = reader.readLine();
+
+        System.out.print("Address: ");
+        String address = reader.readLine();
+
+        System.out.print("Date (YYYY-MM-DD): ");
+        LocalDate date = LocalDate.parse(reader.readLine());
+
+        // New Fields
+        System.out.print("Client Name: ");
+        String clientName = reader.readLine();
+
+        System.out.print("Client Phone: ");
+        String clientPhone = reader.readLine();
+
+        System.out.print("Start Time (HH:mm): ");
+        LocalTime startTime = LocalTime.parse(reader.readLine());
+
+        System.out.print("End Time (HH:mm): ");
+        LocalTime endTime = LocalTime.parse(reader.readLine());
+
+        System.out.print("Children Count (Enter for none): ");
+        String childrenInput = reader.readLine();
+        Integer children = (childrenInput.isEmpty()) ? null : Integer.parseInt(childrenInput);
+
+        System.out.print("Animators Required: ");
+        int animators = Integer.parseInt(reader.readLine());
+
+        System.out.print("Description: ");
+        String description = reader.readLine();
+
+        System.out.print("Total Cost: ");
+        double cost = Double.parseDouble(reader.readLine());
+
+        com.romanimazione.bean.PartyBean bean = new com.romanimazione.bean.PartyBean();
+        bean.setName(name);
+        bean.setType(type);
+        bean.setAddress(address);
+        bean.setDate(date);
+        bean.setClientName(clientName);
+        bean.setClientPhone(clientPhone);
+        bean.setStartTime(startTime);
+        bean.setEndTime(endTime);
+        bean.setChildrenCount(children);
+        bean.setAnimatorsRequired(animators);
+        bean.setDescription(description);
+        bean.setCost(cost);
+
+        controller.createParty(bean);
+        System.out.println("Party created successfully!");
+    }
+
+    private void listPartiesCLI(com.romanimazione.controller.application.PartyController controller) throws com.romanimazione.exception.DAOException {
+        System.out.println("\n--- UPCOMING PARTIES ---");
+        List<com.romanimazione.bean.PartyBean> list = controller.getAllParties();
+        if (list.isEmpty()) {
+            System.out.println("No parties found.");
+        } else {
+            System.out.printf("%-5s | %-20s | %-15s | %-12s%n", "ID", "Name", "Type", "Date");
+            System.out.println("------------------------------------------------------------");
+            for (com.romanimazione.bean.PartyBean p : list) {
+                System.out.printf("%-5d | %-20s | %-15s | %s%n", p.getId(), p.getName(), p.getType(), p.getDate());
+            }
+        }
     }
 
     private void manageAvailability() throws java.io.IOException {
@@ -199,5 +298,40 @@ public class CLIController {
              bean.setEndTime(LocalTime.parse(reader.readLine()));
         }
         return bean;
+    }
+
+    private void handleRegistration() throws java.io.IOException {
+        System.out.println("\n--- REGISTER ---");
+        System.out.print("Username: ");
+        String username = reader.readLine();
+        System.out.print("Password: ");
+        String password = reader.readLine();
+        System.out.print("Name: ");
+        String name = reader.readLine();
+        System.out.print("Surname: ");
+        String surname = reader.readLine();
+        System.out.print("Email: ");
+        String email = reader.readLine();
+        
+        System.out.println("Role (1. ANIMATORE, 2. ADMIN): ");
+        String roleInput = reader.readLine();
+        String role = "ANIMATORE"; // Default
+        if ("2".equals(roleInput)) role = "AMMINISTRATORE";
+
+        com.romanimazione.bean.UserBean userBean = new com.romanimazione.bean.UserBean();
+        userBean.setUsername(username);
+        userBean.setPassword(password);
+        userBean.setNome(name);
+        userBean.setCognome(surname);
+        userBean.setEmail(email);
+        userBean.setRole(role);
+
+        try {
+            com.romanimazione.controller.application.RegisterController regController = new com.romanimazione.controller.application.RegisterController();
+            regController.register(userBean);
+            System.out.println("Registration successful! You can now login.");
+        } catch (Exception e) {
+            System.out.println(MSG_ERROR + e.getMessage());
+        }
     }
 }

@@ -25,7 +25,8 @@
                 <font><Font size="24.0"/></font>
             </Label>
             
-            <Label text="(Admin features coming soon...)"/>
+            <Button text="Create New Party" onAction="#handleCreateParty" prefWidth="200" prefHeight="40"/>
+            <Button text="List All Parties" onAction="#handleListParties" prefWidth="200" prefHeight="40"/>
         </VBox>
     </center>
 
