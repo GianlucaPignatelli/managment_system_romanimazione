@@ -14,27 +14,39 @@ public class PartyBean extends Party {
     }
 
     public PartyBean(String name, String type, String address, LocalDate date, String clientName, String clientPhone, LocalTime startTime, LocalTime endTime, Integer childrenCount, int animatorsRequired, String description, double cost) {
-        super(name, type, address, date, clientName, clientPhone, startTime, endTime, childrenCount, animatorsRequired, description, cost);
+        super();
+        this.setName(name);
+        this.setType(type);
+        this.setAddress(address);
+        this.setDate(date);
+        this.setClientName(clientName);
+        this.setClientPhone(clientPhone);
+        this.setStartTime(startTime);
+        this.setEndTime(endTime);
+        this.setChildrenCount(childrenCount);
+        this.setAnimatorsRequired(animatorsRequired);
+        this.setDescription(description);
+        this.setCost(cost);
     }
 
     // Mapping method from Entity to Bean
     public static PartyBean fromEntity(Party entity) {
         if (entity == null) return null;
-        PartyBean bean = new PartyBean(
-            entity.getName(),
-            entity.getType(),
-            entity.getAddress(),
-            entity.getDate(),
-            entity.getClientName(),
-            entity.getClientPhone(),
-            entity.getStartTime(),
-            entity.getEndTime(),
-            entity.getChildrenCount(),
-            entity.getAnimatorsRequired(),
-            entity.getDescription(),
-            entity.getCost()
-        );
+        PartyBean bean = new PartyBean();
         bean.setId(entity.getId());
+        bean.setName(entity.getName());
+        bean.setType(entity.getType());
+        bean.setAddress(entity.getAddress());
+        bean.setDate(entity.getDate());
+        bean.setClientName(entity.getClientName());
+        bean.setClientPhone(entity.getClientPhone());
+        bean.setStartTime(entity.getStartTime());
+        bean.setEndTime(entity.getEndTime());
+        bean.setChildrenCount(entity.getChildrenCount());
+        bean.setAnimatorsRequired(entity.getAnimatorsRequired());
+        bean.setDescription(entity.getDescription());
+        bean.setCost(entity.getCost());
+        
         return bean;
     }
 

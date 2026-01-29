@@ -5,7 +5,6 @@ import com.romanimazione.dao.DAOFactory;
 import com.romanimazione.dao.UserDAO;
 import com.romanimazione.entity.Amministratore;
 import com.romanimazione.entity.Animatore;
-import com.romanimazione.entity.Role;
 import com.romanimazione.entity.User;
 import com.romanimazione.exception.DAOException;
 

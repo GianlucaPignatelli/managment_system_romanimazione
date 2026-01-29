@@ -19,39 +19,50 @@ public class PartyController {
     );
 
     public void createParty(PartyBean bean) throws InvalidPartyException, DAOException {
-        // 1. Validate Mandatory Fields
+        validateMandatoryFields(bean);
+        validateType(bean);
+        validateDate(bean);
+        validateTime(bean);
+        validateNumbers(bean);
+
+        // Persistence
+        PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
+        dao.saveParty(bean.toEntity());
+    }
+
+    private void validateMandatoryFields(PartyBean bean) throws InvalidPartyException {
         if (bean.getName() == null || bean.getName().trim().isEmpty()) throw new InvalidPartyException("Party name is required.");
         if (bean.getAddress() == null || bean.getAddress().trim().isEmpty()) throw new InvalidPartyException("Address is required.");
         if (bean.getClientName() == null || bean.getClientName().trim().isEmpty()) throw new InvalidPartyException("Client Name is required.");
         if (bean.getClientPhone() == null || !bean.getClientPhone().matches("^\\d{10}$")) {
             throw new InvalidPartyException("Client Phone must be exactly 10 digits.");
         }
-        
-        // 2. Validate Type (Strict Enum check)
+    }
+
+    private void validateType(PartyBean bean) throws InvalidPartyException {
         if (bean.getType() == null || !ALLOWED_TYPES.contains(bean.getType())) {
             throw new InvalidPartyException("Invalid Party Type. Allowed: " + ALLOWED_TYPES);
         }
+    }
 
-        // 3. Validate Date (Future)
+    private void validateDate(PartyBean bean) throws InvalidPartyException {
         if (bean.getDate() == null || bean.getDate().isBefore(LocalDate.now())) {
             throw new InvalidPartyException("Date must be today or in the future.");
         }
+    }
 
-        // 4. Validate Time
+    private void validateTime(PartyBean bean) throws InvalidPartyException {
         if (bean.getStartTime() == null || bean.getEndTime() == null) {
             throw new InvalidPartyException("Start and End times are required.");
         }
         if (!bean.getEndTime().isAfter(bean.getStartTime())) {
             throw new InvalidPartyException("End Time must be after Start Time.");
         }
+    }
 
-        // 5. Validate Numbers
+    private void validateNumbers(PartyBean bean) throws InvalidPartyException {
         if (bean.getAnimatorsRequired() < 1) throw new InvalidPartyException("At least 1 animator is required.");
         if (bean.getCost() < 0) throw new InvalidPartyException("Cost cannot be negative.");
-
-        // Persistence
-        PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
-        dao.saveParty(bean.toEntity());
     }
 
     public List<PartyBean> getAllParties() throws DAOException {

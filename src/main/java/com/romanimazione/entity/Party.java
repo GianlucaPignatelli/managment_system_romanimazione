@@ -22,20 +22,7 @@ public class Party {
 
     public Party() {}
 
-    public Party(String name, String type, String address, LocalDate date, String clientName, String clientPhone, LocalTime startTime, LocalTime endTime, Integer childrenCount, int animatorsRequired, String description, double cost) {
-        this.name = name;
-        this.type = type;
-        this.address = address;
-        this.date = date;
-        this.clientName = clientName;
-        this.clientPhone = clientPhone;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.childrenCount = childrenCount;
-        this.animatorsRequired = animatorsRequired;
-        this.description = description;
-        this.cost = cost;
-    }
+    // Large constructor removed to avoid Code Smell (Too many parameters). Use Setters.
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

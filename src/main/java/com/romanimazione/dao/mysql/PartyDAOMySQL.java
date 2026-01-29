@@ -44,7 +44,7 @@ public class PartyDAOMySQL implements PartyDAO {
     @Override
     public List<Party> findAllParties() throws DAOException {
         List<Party> list = new ArrayList<>();
-        String query = "SELECT * FROM party";
+        String query = "SELECT id, name, type, address, party_date, client_name, client_phone, start_time, end_time, children_count, animators_required, description, cost FROM party";
         
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
