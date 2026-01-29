@@ -80,7 +80,7 @@ public class JavaFXPartyController {
             errorLabel.setText(e.getMessage());
             errorLabel.setVisible(true);
         } catch (Exception e) {
-             e.printStackTrace();
+             java.util.logging.Logger.getLogger(getClass().getName()).log(java.util.logging.Level.SEVERE, "System error", e);
              errorLabel.setText("System error: " + e.getMessage());
              errorLabel.setVisible(true);
         }

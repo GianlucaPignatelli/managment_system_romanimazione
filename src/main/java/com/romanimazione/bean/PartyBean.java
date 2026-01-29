@@ -11,8 +11,6 @@ public class PartyBean extends Party {
         super();
     }
 
-    // Large constructor removed. Use setters.
-
     // Mapping method from Entity to Bean
     public static PartyBean fromEntity(Party entity) {
         if (entity == null) return null;

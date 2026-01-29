@@ -16,8 +16,7 @@ public class DatabaseInitializer {
             initializePartyTable();
             System.out.println("Database initialization completed successfully.");
         } catch (Exception e) {
-            System.err.println("Error initializing database: " + e.getMessage());
-            e.printStackTrace();
+            java.util.logging.Logger.getLogger(DatabaseInitializer.class.getName()).log(java.util.logging.Level.SEVERE, "Error initializing database", e);
         }
     }
 
