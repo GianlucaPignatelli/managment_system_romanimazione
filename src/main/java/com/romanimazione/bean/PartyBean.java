@@ -13,21 +13,7 @@ public class PartyBean extends Party {
         super();
     }
 
-    public PartyBean(String name, String type, String address, LocalDate date, String clientName, String clientPhone, LocalTime startTime, LocalTime endTime, Integer childrenCount, int animatorsRequired, String description, double cost) {
-        super();
-        this.setName(name);
-        this.setType(type);
-        this.setAddress(address);
-        this.setDate(date);
-        this.setClientName(clientName);
-        this.setClientPhone(clientPhone);
-        this.setStartTime(startTime);
-        this.setEndTime(endTime);
-        this.setChildrenCount(childrenCount);
-        this.setAnimatorsRequired(animatorsRequired);
-        this.setDescription(description);
-        this.setCost(cost);
-    }
+    // Large constructor removed. Use setters.
 
     // Mapping method from Entity to Bean
     public static PartyBean fromEntity(Party entity) {

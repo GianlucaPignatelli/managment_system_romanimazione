@@ -20,7 +20,9 @@ public class Party {
     private String description;
     private double cost;
 
-    public Party() {}
+    public Party() {
+        // Default constructor required for framework serialization/deserialization
+    }
 
     // Large constructor removed to avoid Code Smell (Too many parameters). Use Setters.
 
