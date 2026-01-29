@@ -18,9 +18,13 @@ public class RegisterController {
             throw new IllegalArgumentException("Username is required");
         }
         
-        // Check duplicate
         if (dao.findUserByIdentifier(userBean.getUsername()) != null) {
             throw new IllegalArgumentException("Username already exists");
+        }
+
+        // Email Validation
+        if (userBean.getEmail() == null || !userBean.getEmail().endsWith("@gmail.com")) {
+            throw new IllegalArgumentException("Email must be a valid Google account (@gmail.com).");
         }
 
         User user;

@@ -1,6 +1,7 @@
 package com.romanimazione.controller.graphic;
 
 import com.romanimazione.bean.PartyBean;
+import com.romanimazione.controller.application.Observer;
 import com.romanimazione.controller.application.PartyController;
 import com.romanimazione.exception.DAOException;
 import com.romanimazione.exception.InvalidPartyException;
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
-public class JavaFXPartyController {
+public class JavaFXPartyController implements Observer {
 
     @FXML private TextField nameField;
     @FXML private ComboBox<String> typeBox;
@@ -32,6 +33,8 @@ public class JavaFXPartyController {
 
     public JavaFXPartyController() {
         this.partyController = new PartyController();
+        // Attach this view to the Logic Controller
+        this.partyController.attach(this);
     }
 
     @FXML
@@ -43,7 +46,7 @@ public class JavaFXPartyController {
     private void handleSave() {
         errorLabel.setVisible(false);
         try {
-            // Text to Object Conversion
+            // Text to Object Conversion (Form Validation)
             String name = nameField.getText();
             String type = typeBox.getValue();
             String address = addressField.getText();
@@ -73,16 +76,30 @@ public class JavaFXPartyController {
             bean.setDescription(desc);
             bean.setCost(cost);
             
+            // Delegate Business Logic to Application Controller
             partyController.createParty(bean);
-            MainApp.setRoot("admin_dashboard");
             
-        } catch (InvalidPartyException | DAOException | IOException e) {
+            // Navigation is now handled in update() via Observer Pattern
+            
+        } catch (InvalidPartyException | DAOException e) {
             errorLabel.setText(e.getMessage());
             errorLabel.setVisible(true);
         } catch (Exception e) {
              java.util.logging.Logger.getLogger(getClass().getName()).log(java.util.logging.Level.SEVERE, "System error", e);
              errorLabel.setText("System error: " + e.getMessage());
              errorLabel.setVisible(true);
+        }
+    }
+    
+    @Override
+    public void update(String message) {
+        // Observer Logic: React to changes in the Subject
+        if ("Party Created Successfully".equals(message)) {
+            try {
+                MainApp.setRoot("admin_dashboard");
+            } catch (IOException e) {
+                java.util.logging.Logger.getLogger(getClass().getName()).log(java.util.logging.Level.SEVERE, "Nav error", e);
+            }
         }
     }
     

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PartyController {
+public class PartyController extends Subject {
 
     private static final List<String> ALLOWED_TYPES = Arrays.asList(
         "Full Party", "Smart Party", "Consegna", "Ritiro in sede", "Servizio carretti", "Evento in piazza"
@@ -28,6 +28,9 @@ public class PartyController {
         // Persistence
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
         dao.saveParty(bean.toEntity());
+        
+        // Notify View
+        notifyObservers("Party Created Successfully");
     }
 
     private void validateMandatoryFields(PartyBean bean) throws InvalidPartyException {
@@ -57,6 +60,13 @@ public class PartyController {
         }
         if (!bean.getEndTime().isAfter(bean.getStartTime())) {
             throw new InvalidPartyException("End Time must be after Start Time.");
+        }
+        
+        // Strict Rule: If date is today, start time must be in the future
+        if (bean.getDate() != null && bean.getDate().isEqual(LocalDate.now())) {
+            if (bean.getStartTime().isBefore(java.time.LocalTime.now())) {
+                throw new InvalidPartyException("Cannot schedule a party in the past on the current day.");
+            }
         }
     }
 
