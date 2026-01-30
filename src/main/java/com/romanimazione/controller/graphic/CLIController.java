@@ -192,7 +192,7 @@ public class CLIController {
          mainView.showMessage("Availability deleted successfully.");
     }
 
-    private void listAvailabilityCLI() throws com.romanimazione.exception.DAOException, IOException {
+    private void listAvailabilityCLI() throws com.romanimazione.exception.DAOException {
         String user = SessionBean.getInstance().getCurrentUser().getUsername();
         List<AvailabilityBean> list = availabilityController.getAvailabilities(user);
         availabilityView.showAvailabilityList(list);
