@@ -19,38 +19,15 @@ public class PartyFXView {
 
 
     public void render() throws IOException {
-        // Option 1: Use MainApp to switch root (Single Page Application style)
-        // This keeps the primary stage
-        MainApp.setRoot("party_form");
+        com.romanimazione.config.Configuration config = new com.romanimazione.config.Configuration();
+        String fxmlPath = config.getProperty("view.party_form.name", "party_form");
         
-        // Note: Strict Boundary classes might return the Parent node
-        // so the Controller can decide where to put it, but in this 
-        // ISPW context, "Boundary" often implies "Screen Manager" for that use case.
+        // Option 1: Use MainApp to switch root (Single Page Application style)
+        MainApp.setRoot(fxmlPath);
     }
 
     public void showList() throws IOException {
+        // Could also externalize this string if desired
         MainApp.setRoot("party_list");
-    }
-    
-    /**
-     * Alternative method if we wanted to open in a new window (Stage)
-     */
-    public void renderInNewWindow(String fxmlPath) throws IOException {
-        if (fxmlPath == null || fxmlPath.isEmpty()) {
-            com.romanimazione.config.Configuration config = new com.romanimazione.config.Configuration();
-             // Default if config fails
-            fxmlPath = config.getProperty("view.party_form.path", "/view/fxml/party_form.fxml");
-        }
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        Parent root = loader.load();
-        Stage stage = new Stage();
-        stage.setTitle("Create New Party");
-        stage.setScene(new Scene(root));
-        stage.show();
-    }
-    
-    // Overload for default
-    public void renderInNewWindow() throws IOException {
-        renderInNewWindow(null);
     }
 }
