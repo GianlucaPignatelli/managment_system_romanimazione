@@ -128,7 +128,7 @@ public class CLIController {
             } catch (com.romanimazione.exception.InvalidPartyException | com.romanimazione.exception.DAOException | IOException e) {
                  mainView.showError(e.getMessage());
             } catch (Exception e) {
-                 mainView.showError("Unexpected error: " + e.getMessage());
+                mainView.showMessage(MSG_INVALID);
             }
         }
     }
@@ -182,7 +182,7 @@ public class CLIController {
         mainView.showMessage("Availability updated successfully.");
     }
     
-    private void deleteAvailabilityCLI() throws com.romanimazione.exception.DAOException, com.romanimazione.exception.InvalidAvailabilityException, IOException {
+    private void deleteAvailabilityCLI() throws com.romanimazione.exception.DAOException, IOException {
          int id = availabilityView.getIdInput("delete");
          AvailabilityBean bean = new AvailabilityBean();
          bean.setId(id);
