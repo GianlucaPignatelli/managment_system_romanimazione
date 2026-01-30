@@ -41,11 +41,12 @@ public class JavaFXLoginController implements Observer {
             errorLabel.setStyle("-fx-text-fill: green;");
             
             // Navigate based on role
+            com.romanimazione.view.fx.MainFXView mainFXView = new com.romanimazione.view.fx.MainFXView();
             String role = user.getRole(); // Assuming "ANIMATORE" or "AMMINISTRATORE"
             if ("ANIMATORE".equalsIgnoreCase(role)) {
-                com.romanimazione.view.MainApp.setRoot("animator_dashboard");
+                mainFXView.showAnimatorDashboard();
             } else if ("AMMINISTRATORE".equalsIgnoreCase(role)) {
-                com.romanimazione.view.MainApp.setRoot("admin_dashboard");
+                mainFXView.showAdminDashboard();
             } else {
                 errorLabel.setText("Unknown Role: " + role);
                 errorLabel.setStyle(ERROR_STYLE);
@@ -61,7 +62,7 @@ public class JavaFXLoginController implements Observer {
 
     @FXML
     private void goHome() throws java.io.IOException {
-        com.romanimazione.view.MainApp.setRoot("home");
+        new com.romanimazione.view.fx.MainFXView().showHome();
     }
 
     @Override

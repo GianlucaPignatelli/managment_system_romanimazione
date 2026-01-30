@@ -1,7 +1,6 @@
 package com.romanimazione.controller.graphic;
 
 import com.romanimazione.bean.SessionBean;
-import com.romanimazione.view.MainApp;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -20,17 +19,17 @@ public class JavaFXAdminDashboardController {
 
     @FXML
     private void handleLogout() throws IOException {
-        SessionBean.getInstance().setCurrentUser(null);
-        MainApp.setRoot("home");
+        com.romanimazione.bean.SessionBean.getInstance().setCurrentUser(null);
+        new com.romanimazione.view.fx.MainFXView().showHome();
     }
 
     @FXML
     private void handleCreateParty() throws IOException {
-        MainApp.setRoot("party_form");
+        new com.romanimazione.view.fx.PartyFXView().render();
     }
-
+    
     @FXML
     private void handleListParties() throws IOException {
-        MainApp.setRoot("party_list");
+        new com.romanimazione.view.fx.PartyFXView().showList();
     }
 }

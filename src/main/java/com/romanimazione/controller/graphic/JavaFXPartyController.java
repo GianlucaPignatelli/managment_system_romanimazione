@@ -5,7 +5,6 @@ import com.romanimazione.controller.application.Observer;
 import com.romanimazione.controller.application.PartyController;
 import com.romanimazione.exception.DAOException;
 import com.romanimazione.exception.InvalidPartyException;
-import com.romanimazione.view.MainApp;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import java.io.IOException;
@@ -96,7 +95,7 @@ public class JavaFXPartyController implements Observer {
         // Observer Logic: React to changes in the Subject
         if ("Party Created Successfully".equals(message)) {
             try {
-                MainApp.setRoot("admin_dashboard");
+                new com.romanimazione.view.fx.MainFXView().showAdminDashboard();
             } catch (IOException e) {
                 java.util.logging.Logger.getLogger(getClass().getName()).log(java.util.logging.Level.SEVERE, "Nav error", e);
             }
@@ -135,6 +134,6 @@ public class JavaFXPartyController implements Observer {
 
     @FXML
     private void handleCancel() throws IOException {
-        MainApp.setRoot("admin_dashboard");
+        new com.romanimazione.view.fx.MainFXView().showAdminDashboard();
     }
 }

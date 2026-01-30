@@ -1,7 +1,6 @@
 package com.romanimazione.controller.graphic;
 
 import com.romanimazione.bean.SessionBean;
-import com.romanimazione.view.MainApp;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -20,12 +19,12 @@ public class JavaFXAnimatorDashboardController {
 
     @FXML
     private void goToAvailability() throws IOException {
-        MainApp.setRoot("availability");
+        new com.romanimazione.view.fx.AvailabilityFXView().showAvailabilityManagement();
     }
 
     @FXML
     private void handleLogout() throws IOException {
-        SessionBean.getInstance().setCurrentUser(null);
-        MainApp.setRoot("home");
+        com.romanimazione.bean.SessionBean.getInstance().setCurrentUser(null);
+        new com.romanimazione.view.fx.MainFXView().showHome();
     }
 }

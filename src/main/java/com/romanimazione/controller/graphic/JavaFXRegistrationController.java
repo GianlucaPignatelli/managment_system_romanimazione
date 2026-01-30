@@ -3,7 +3,6 @@ package com.romanimazione.controller.graphic;
 import com.romanimazione.bean.UserBean;
 import com.romanimazione.controller.application.Observer;
 import com.romanimazione.controller.application.RegistrationController;
-import com.romanimazione.view.MainApp;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -64,7 +63,7 @@ public class JavaFXRegistrationController implements Observer {
 
     @FXML
     private void handleBack() throws IOException {
-        MainApp.setRoot("home");
+        new com.romanimazione.view.fx.MainFXView().showHome();
     }
 
     @Override

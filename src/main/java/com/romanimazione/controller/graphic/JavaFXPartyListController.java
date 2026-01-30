@@ -3,7 +3,6 @@ package com.romanimazione.controller.graphic;
 import com.romanimazione.bean.PartyBean;
 import com.romanimazione.controller.application.PartyController;
 import com.romanimazione.exception.DAOException;
-import com.romanimazione.view.MainApp;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
@@ -38,7 +37,7 @@ public class JavaFXPartyListController {
 
     @FXML
     private void handleBack() throws IOException {
-        MainApp.setRoot("admin_dashboard");
+        new com.romanimazione.view.fx.MainFXView().showAdminDashboard();
     }
 
     private void showAlert(String title, String content) {

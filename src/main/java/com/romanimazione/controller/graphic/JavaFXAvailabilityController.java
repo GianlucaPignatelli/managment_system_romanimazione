@@ -2,7 +2,6 @@ package com.romanimazione.controller.graphic;
 
 import com.romanimazione.bean.AvailabilityBean;
 import com.romanimazione.controller.application.AvailabilityController;
-import com.romanimazione.view.MainApp;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -193,6 +192,6 @@ public class JavaFXAvailabilityController {
     @FXML
     private void handleBack() throws IOException {
         // Return to Dashboard
-        MainApp.setRoot("animator_dashboard");
+        new com.romanimazione.view.fx.MainFXView().showAnimatorDashboard();
     }
 }
