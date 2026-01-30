@@ -160,7 +160,7 @@ public class CLIController {
             } catch (com.romanimazione.exception.InvalidAvailabilityException | com.romanimazione.exception.DAOException | IOException e) {
                 mainView.showError(e.getMessage());
             } catch (Exception e) {
-                mainView.showError("Unexpected error: " + e.getMessage());
+                mainView.showError(MSG_ERR_UNEXPECTED + e.getMessage());
             }
         }
     }
