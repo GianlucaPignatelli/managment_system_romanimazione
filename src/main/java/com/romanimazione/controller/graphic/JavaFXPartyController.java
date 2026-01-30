@@ -10,9 +10,12 @@ import javafx.scene.control.*;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import javafx.fxml.Initializable;
+import java.net.URL;
 import java.time.format.DateTimeParseException;
+import java.util.ResourceBundle;
 
-public class JavaFXPartyController implements Observer {
+public class JavaFXPartyController implements Observer, Initializable {
 
     @FXML private TextField nameField;
     @FXML private ComboBox<String> typeBox;
@@ -36,8 +39,8 @@ public class JavaFXPartyController implements Observer {
         this.partyController.attach(this);
     }
 
-    @FXML
-    public void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         typeBox.getItems().addAll(partyController.getPartyTypes());
     }
 

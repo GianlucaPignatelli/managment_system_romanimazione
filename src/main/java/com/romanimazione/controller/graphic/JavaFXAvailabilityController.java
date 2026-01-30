@@ -12,9 +12,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import javafx.fxml.Initializable;
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class JavaFXAvailabilityController {
+public class JavaFXAvailabilityController implements Initializable {
 
     @FXML private DatePicker datePicker;
     @FXML private CheckBox fullDayParams;
@@ -43,8 +46,8 @@ public class JavaFXAvailabilityController {
         loadData();
     }
 
-    @FXML
-    public void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         // Load User from Session
         if (com.romanimazione.bean.SessionBean.getInstance().getCurrentUser() != null) {
             this.currentUsername = com.romanimazione.bean.SessionBean.getInstance().getCurrentUser().getUsername();
