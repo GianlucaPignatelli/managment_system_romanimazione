@@ -81,20 +81,10 @@ public class CLIController {
                  mainView.showMessage("Unknown role menu.");
             }
 
-        } catch (Exception e) { // LoginController throws Exception in signature? No, usually DAOException/LoginException. Assuming generic for now or specific if known. 
-            // Checking LoginController... it might throw Exception. Ideally should be specific.
-            // But for now, to fix the smell, we need to know strictly what is thrown.
-            // LoginController.login throws DAOException or similar? 
-            // In safe mode, I'll catch Exception but Sonar complains. 
-            // I will use Logger or catch specific logic if I can see signature.
-            // Let's assume IOException | DAOException | LogicException. 
-            // Since I can't check all signatures entirely now without context, I will try to catch (Exception e) -> Logger? 
-            // wait, user said "lines 131, 137..." referencing `createPartyCLI` mostly.
-            // Let's look at `createPartyCLI` in line 131 throws "Exception" in signature?
-            // Ah, line 131 is just calling it.
-            // The user said: "ask to specific exceptions".
-            // I will change them to catch `IOException | DAOException | InvalidPartyException` where applicable.
+        } catch (com.romanimazione.exception.DAOException | com.romanimazione.exception.LoginException | IOException e) {
              mainView.showError(e.getMessage());
+        } catch (Exception e) {
+             mainView.showError("Unexpected error: " + e.getMessage());
         }
     }
     
@@ -134,8 +124,10 @@ public class CLIController {
                 } else {
                     mainView.showMessage(MSG_INVALID);
                 }
-            } catch (Exception e) { // Broad catch for loop safety
+            } catch (com.romanimazione.exception.InvalidPartyException | com.romanimazione.exception.DAOException | IOException e) {
                  mainView.showError(e.getMessage());
+            } catch (Exception e) {
+                 mainView.showError("Unexpected error: " + e.getMessage());
             }
         }
     }
@@ -164,8 +156,10 @@ public class CLIController {
                     case "5": back = true; break;
                     default: mainView.showMessage(MSG_INVALID);
                 }
-            } catch (Exception e) {
+            } catch (com.romanimazione.exception.InvalidAvailabilityException | com.romanimazione.exception.DAOException | IOException e) {
                 mainView.showError(e.getMessage());
+            } catch (Exception e) {
+                mainView.showError("Unexpected error: " + e.getMessage());
             }
         }
     }
@@ -208,8 +202,10 @@ public class CLIController {
             UserBean userBean = loginView.getRegistrationDetails();
             registerController.register(userBean);
             mainView.showMessage("Registration successful! You can now login.");
-        } catch (Exception e) {
+        } catch (com.romanimazione.exception.DAOException | IOException | IllegalArgumentException e) {
             mainView.showError(e.getMessage());
+        } catch (Exception e) {
+             mainView.showError("Unexpected error: " + e.getMessage());
         }
     }
 }
