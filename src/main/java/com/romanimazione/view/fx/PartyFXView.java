@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 public class PartyFXView {
 
-    private static final String FXML_PATH = "/view/fxml/party_form.fxml";
+
 
     public void render() throws IOException {
         // Option 1: Use MainApp to switch root (Single Page Application style)
@@ -37,7 +37,9 @@ public class PartyFXView {
      */
     public void renderInNewWindow(String fxmlPath) throws IOException {
         if (fxmlPath == null || fxmlPath.isEmpty()) {
-            fxmlPath = FXML_PATH;
+            com.romanimazione.config.Configuration config = new com.romanimazione.config.Configuration();
+             // Default if config fails
+            fxmlPath = config.getProperty("view.party_form.path", "/view/fxml/party_form.fxml");
         }
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
         Parent root = loader.load();
@@ -49,6 +51,6 @@ public class PartyFXView {
     
     // Overload for default
     public void renderInNewWindow() throws IOException {
-        renderInNewWindow(FXML_PATH);
+        renderInNewWindow(null);
     }
 }

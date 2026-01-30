@@ -30,6 +30,7 @@ public class CLIController {
     private final RegisterController registerController;
 
     private static final String MSG_INVALID = "Invalid choice.";
+    private static final String MSG_ERR_UNEXPECTED = "Unexpected error: ";
 
     public CLIController() {
         this.mainView = new MainCLIView();
@@ -84,7 +85,7 @@ public class CLIController {
         } catch (com.romanimazione.exception.DAOException | com.romanimazione.exception.UserNotFoundException | IOException e) {
              mainView.showError(e.getMessage());
         } catch (Exception e) {
-             mainView.showError("Unexpected error: " + e.getMessage());
+             mainView.showError(MSG_ERR_UNEXPECTED + e.getMessage());
         }
     }
     
@@ -171,7 +172,7 @@ public class CLIController {
         mainView.showMessage("Availability added successfully.");
     }
     
-    private void updateAvailabilityCLI() throws Exception {
+    private void updateAvailabilityCLI() throws com.romanimazione.exception.DAOException, com.romanimazione.exception.InvalidAvailabilityException, IOException {
         int id = availabilityView.getIdInput("update");
         AvailabilityBean bean = availabilityView.getAvailabilityDetails();
         bean.setId(id);
@@ -181,7 +182,7 @@ public class CLIController {
         mainView.showMessage("Availability updated successfully.");
     }
     
-    private void deleteAvailabilityCLI() throws Exception {
+    private void deleteAvailabilityCLI() throws com.romanimazione.exception.DAOException, com.romanimazione.exception.InvalidAvailabilityException, IOException {
          int id = availabilityView.getIdInput("delete");
          AvailabilityBean bean = new AvailabilityBean();
          bean.setId(id);
@@ -191,7 +192,7 @@ public class CLIController {
          mainView.showMessage("Availability deleted successfully.");
     }
 
-    private void listAvailabilityCLI() throws Exception {
+    private void listAvailabilityCLI() throws com.romanimazione.exception.DAOException, IOException {
         String user = SessionBean.getInstance().getCurrentUser().getUsername();
         List<AvailabilityBean> list = availabilityController.getAvailabilities(user);
         availabilityView.showAvailabilityList(list);
@@ -205,7 +206,7 @@ public class CLIController {
         } catch (com.romanimazione.exception.DAOException | IOException | IllegalArgumentException e) {
             mainView.showError(e.getMessage());
         } catch (Exception e) {
-             mainView.showError("Unexpected error: " + e.getMessage());
+             mainView.showError(MSG_ERR_UNEXPECTED + e.getMessage());
         }
     }
 }
