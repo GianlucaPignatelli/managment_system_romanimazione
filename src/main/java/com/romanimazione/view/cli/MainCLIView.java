@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 public class MainCLIView {
 
     private final BufferedReader reader;
+    private static final String P_CHOICE = "Choice: ";
 
     public MainCLIView() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
@@ -33,7 +34,7 @@ public class MainCLIView {
         System.out.println("1. Login");
         System.out.println("2. Register");
         System.out.println("3. Exit");
-        System.out.print("Choice: ");
+        System.out.print(P_CHOICE);
         return reader.readLine();
     }
 
@@ -42,7 +43,7 @@ public class MainCLIView {
         System.out.println("1. Create New Party");
         System.out.println("2. List All Parties");
         System.out.println("3. Logout");
-        System.out.print("Choice: ");
+        System.out.print(P_CHOICE);
         return reader.readLine();
     }
 
@@ -50,7 +51,7 @@ public class MainCLIView {
         System.out.println("\n[ANIMATORE DASHBOARD]");
         System.out.println("1. Manage Availability");
         System.out.println("2. Logout");
-        System.out.print("Choice: ");
+        System.out.print(P_CHOICE);
         return reader.readLine();
     }
 }

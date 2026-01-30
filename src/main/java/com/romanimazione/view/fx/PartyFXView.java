@@ -35,12 +35,20 @@ public class PartyFXView {
     /**
      * Alternative method if we wanted to open in a new window (Stage)
      */
-    public void renderInNewWindow() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_PATH));
+    public void renderInNewWindow(String fxmlPath) throws IOException {
+        if (fxmlPath == null || fxmlPath.isEmpty()) {
+            fxmlPath = FXML_PATH;
+        }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
         Parent root = loader.load();
         Stage stage = new Stage();
         stage.setTitle("Create New Party");
         stage.setScene(new Scene(root));
         stage.show();
+    }
+    
+    // Overload for default
+    public void renderInNewWindow() throws IOException {
+        renderInNewWindow(FXML_PATH);
     }
 }

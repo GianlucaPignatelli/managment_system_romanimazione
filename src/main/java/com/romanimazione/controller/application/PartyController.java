@@ -63,10 +63,10 @@ public class PartyController extends Subject {
         }
         
         // Strict Rule: If date is today, start time must be in the future
-        if (bean.getDate() != null && bean.getDate().isEqual(LocalDate.now())) {
-            if (bean.getStartTime().isBefore(java.time.LocalTime.now())) {
-                throw new InvalidPartyException("Cannot schedule a party in the past on the current day.");
-            }
+        // Strict Rule: If date is today, start time must be in the future
+        if (bean.getDate() != null && bean.getDate().isEqual(LocalDate.now()) && 
+            bean.getStartTime().isBefore(java.time.LocalTime.now())) {
+            throw new InvalidPartyException("Cannot schedule a party in the past on the current day.");
         }
     }
 
