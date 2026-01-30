@@ -81,7 +81,7 @@ public class CLIController {
                  mainView.showMessage("Unknown role menu.");
             }
 
-        } catch (com.romanimazione.exception.DAOException | com.romanimazione.exception.LoginException | IOException e) {
+        } catch (com.romanimazione.exception.DAOException | com.romanimazione.exception.UserNotFoundException | IOException e) {
              mainView.showError(e.getMessage());
         } catch (Exception e) {
              mainView.showError("Unexpected error: " + e.getMessage());
