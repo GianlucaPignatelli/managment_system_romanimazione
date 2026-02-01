@@ -12,7 +12,7 @@ public class DatabaseInitializer {
             initializePartyTable();
             initializeAssignmentsTable();
             System.out.println("Database initialization completed successfully.");
-        } catch (ReflectiveOperationException | java.sql.SQLException e) {
+        } catch (java.sql.SQLException e) {
             java.util.logging.Logger.getLogger(DatabaseInitializer.class.getName()).log(java.util.logging.Level.SEVERE, "Error initializing database", e);
         } catch (Exception e) {
              // Fallback for unexpected errors
