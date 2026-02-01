@@ -88,24 +88,24 @@ public class PartyController extends Subject {
             beans.add(PartyBean.fromEntity(p));
         }
         
-        // Sort by Date (Ascending) -> Time (Ascending)
-        // Sort by Date (Ascending) -> Time (Ascending)
-        beans.sort((p1, p2) -> {
-            if (p1.getDate() == null && p2.getDate() == null) return 0;
-            if (p1.getDate() == null) return 1;
-            if (p2.getDate() == null) return -1;
-            
-            int dateComp = p1.getDate().compareTo(p2.getDate());
-            if (dateComp != 0) return dateComp;
-            
-            if (p1.getStartTime() == null && p2.getStartTime() == null) return 0;
-            if (p1.getStartTime() == null) return 1;
-            if (p2.getStartTime() == null) return -1;
-            
-            return p1.getStartTime().compareTo(p2.getStartTime());
-        });
+        beans.sort(this::compareParties);
         
         return beans;
+    }
+
+    private int compareParties(PartyBean p1, PartyBean p2) {
+        if (p1.getDate() == null && p2.getDate() == null) return 0;
+        if (p1.getDate() == null) return 1;
+        if (p2.getDate() == null) return -1;
+        
+        int dateComp = p1.getDate().compareTo(p2.getDate());
+        if (dateComp != 0) return dateComp;
+        
+        if (p1.getStartTime() == null && p2.getStartTime() == null) return 0;
+        if (p1.getStartTime() == null) return 1;
+        if (p2.getStartTime() == null) return -1;
+        
+        return p1.getStartTime().compareTo(p2.getStartTime());
     }
     
     public List<String> getPartyTypes() {

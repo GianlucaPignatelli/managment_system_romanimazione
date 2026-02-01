@@ -19,6 +19,7 @@ import java.util.List;
 
 public class JavaFXPartyListController {
 
+    private static final String ERROR_TITLE = "Error";
     @FXML private TableView<PartyBean> partyTable;
     @FXML private TableColumn<PartyBean, Void> assignColumn; // Void because button doesn't map to a field
     
@@ -38,57 +39,59 @@ public class JavaFXPartyListController {
         Callback<TableColumn<PartyBean, Void>, TableCell<PartyBean, Void>> cellFactory = new Callback<>() {
             @Override
             public TableCell<PartyBean, Void> call(final TableColumn<PartyBean, Void> param) {
-                final TableCell<PartyBean, Void> cell = new TableCell<>() {
-                    private final Button btnAssign = new Button("Assign");
-                    private final Button btnCancel = new Button("Cancel");
-                    private final HBox pane = new HBox(5, btnAssign, btnCancel);
-
-                    {
-                        btnAssign.setOnAction((event) -> {
-                            PartyBean data = getTableView().getItems().get(getIndex());
-                            openAssignmentDialog(data);
-                        });
-                        
-                        btnCancel.setStyle("-fx-background-color: #ff6666; -fx-text-fill: white;");
-                        btnCancel.setOnAction((event) -> {
-                            PartyBean data = getTableView().getItems().get(getIndex());
-                            handleCancelParty(data);
-                        });
-                    }
-
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            PartyBean party = getTableView().getItems().get(getIndex());
-                            
-                            // Visual Logic
-                            if (party.getStatus() == com.romanimazione.entity.PartyStatus.CANCELLED) {
-                                btnAssign.setDisable(true);
-                                btnCancel.setDisable(true);
-                                btnCancel.setText("Cancelled");
-                                btnCancel.setStyle("-fx-background-color: #555; -fx-text-fill: white;"); // Greyed out
-                            } else if (party.getStatus() == com.romanimazione.entity.PartyStatus.COMPLETED) {
-                                btnAssign.setDisable(true);
-                                btnCancel.setDisable(true);
-                            } else {
-                                btnAssign.setDisable(false);
-                                btnCancel.setDisable(false);
-                                btnCancel.setText("Cancel");
-                                btnCancel.setStyle("-fx-background-color: #ff6666; -fx-text-fill: white;");
-                            }
-                            
-                            setGraphic(pane);
-                        }
-                    }
-                };
-                return cell;
+                return new ActionCell();
             }
         };
 
         assignColumn.setCellFactory(cellFactory);
+    }
+    
+    // Named Inner Class to resolve SonarCloud "Anonymous inner class containing only this method" and initializer issues
+    private class ActionCell extends TableCell<PartyBean, Void> {
+        private final Button btnAssign = new Button("Assign");
+        private final Button btnCancel = new Button("Cancel");
+        private final HBox pane = new HBox(5, btnAssign, btnCancel);
+
+        public ActionCell() {
+            btnAssign.setOnAction(event -> {
+                PartyBean data = getTableView().getItems().get(getIndex());
+                openAssignmentDialog(data);
+            });
+            
+            btnCancel.setStyle("-fx-background-color: #ff6666; -fx-text-fill: white;");
+            btnCancel.setOnAction(event -> {
+                PartyBean data = getTableView().getItems().get(getIndex());
+                handleCancelParty(data);
+            });
+        }
+
+        @Override
+        public void updateItem(Void item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+                setGraphic(null);
+            } else {
+                PartyBean party = getTableView().getItems().get(getIndex());
+                
+                // Visual Logic
+                if (party.getStatus() == com.romanimazione.entity.PartyStatus.CANCELLED) {
+                    btnAssign.setDisable(true);
+                    btnCancel.setDisable(true);
+                    btnCancel.setText("Cancelled");
+                    btnCancel.setStyle("-fx-background-color: #555; -fx-text-fill: white;"); // Greyed out
+                } else if (party.getStatus() == com.romanimazione.entity.PartyStatus.COMPLETED) {
+                    btnAssign.setDisable(true);
+                    btnCancel.setDisable(true);
+                } else {
+                    btnAssign.setDisable(false);
+                    btnCancel.setDisable(false);
+                    btnCancel.setText("Cancel");
+                    btnCancel.setStyle("-fx-background-color: #ff6666; -fx-text-fill: white;");
+                }
+                
+                setGraphic(pane);
+            }
+        }
     }
     
     private void handleCancelParty(PartyBean party) {
@@ -102,7 +105,7 @@ public class JavaFXPartyListController {
                 partyController.cancelParty(party);
                 loadParties(); // Refresh list to update status
             } catch (DAOException e) {
-                showAlert("Error", "Could not cancel party: " + e.getMessage());
+                showAlert(ERROR_TITLE, "Could not cancel party: " + e.getMessage());
             }
         }
     }
@@ -111,8 +114,8 @@ public class JavaFXPartyListController {
         try {
             new com.romanimazione.view.fx.PartyFXView().openAssignmentDialog(party);
         } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("Error", "Could not load assignment dialog: " + e.getMessage());
+            java.util.logging.Logger.getLogger(JavaFXPartyListController.class.getName()).log(java.util.logging.Level.SEVERE, "Error loading assignment dialog", e);
+            showAlert(ERROR_TITLE, "Could not load assignment dialog: " + e.getMessage());
         }
     }
 
@@ -132,7 +135,7 @@ public class JavaFXPartyListController {
 
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
+        alert.setTitle(ERROR_TITLE);
         alert.setHeaderText(title);
         alert.setContentText(content);
         alert.showAndWait();
