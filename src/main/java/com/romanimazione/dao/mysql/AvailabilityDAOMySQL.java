@@ -105,4 +105,36 @@ public class AvailabilityDAOMySQL implements AvailabilityDAO {
             throw new DAOException("Error deleting availability: " + e.getMessage(), e);
         }
     }
+    @Override
+    public List<String> findAvailableAnimators(java.time.LocalDate date, java.time.LocalTime startTime, java.time.LocalTime endTime) throws DAOException {
+        List<String> userList = new ArrayList<>();
+        // Query Logic:
+        // 1. Match the exact date
+        // 2. Either "Full Day" is true
+        // 3. OR (Start <= requestedStart AND End >= requestedEnd)
+        // We use DISTINCT because a user might have entered multiple slots (though overlap checks prevent that)
+        String query = "SELECT DISTINCT username FROM availability " +
+                       "WHERE availability_date = ? " +
+                       "AND (" +
+                       "  is_full_day = TRUE " +
+                       "  OR (start_time <= ? AND end_time >= ?)" +
+                       ")";
+
+        try (Connection conn = MySQLDAOFactory.createConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setDate(1, Date.valueOf(date));
+            stmt.setTime(2, Time.valueOf(startTime));
+            stmt.setTime(3, Time.valueOf(endTime));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    userList.add(rs.getString("username"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error finding available animators: " + e.getMessage(), e);
+        }
+        return userList;
+    }
 }

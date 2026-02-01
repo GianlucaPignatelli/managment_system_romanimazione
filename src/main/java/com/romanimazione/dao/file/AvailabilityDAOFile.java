@@ -86,4 +86,23 @@ public class AvailabilityDAOFile implements AvailabilityDAO {
         if (removed) save(list);
         else throw new DAOException("Availability not found to delete");
     }
+    @Override
+    public List<String> findAvailableAnimators(java.time.LocalDate date, java.time.LocalTime startTime, java.time.LocalTime endTime) throws DAOException {
+        List<Availability> list = load();
+        java.util.List<String> result = new java.util.ArrayList<>();
+        
+        for (Availability a : list) {
+            if (a.getDate().equals(date)) {
+                boolean matches = a.isFullDay() || (
+                     (a.getStartTime().compareTo(startTime) <= 0) &&
+                     (a.getEndTime().compareTo(endTime) >= 0)
+                );
+                
+                if (matches && !result.contains(a.getUsername())) {
+                    result.add(a.getUsername());
+                }
+            }
+        }
+        return result;
+    }
 }

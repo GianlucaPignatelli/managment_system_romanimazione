@@ -28,6 +28,8 @@ public class PartyBean extends Party {
         bean.setAnimatorsRequired(entity.getAnimatorsRequired());
         bean.setDescription(entity.getDescription());
         bean.setCost(entity.getCost());
+        bean.setAssignedAnimators(entity.getAssignedAnimators()); // Map list
+        bean.setStatus(entity.getStatus());
         
         return bean;
     }
@@ -49,6 +51,8 @@ public class PartyBean extends Party {
         entity.setAnimatorsRequired(this.getAnimatorsRequired());
         entity.setDescription(this.getDescription());
         entity.setCost(this.getCost());
+        entity.setAssignedAnimators(this.getAssignedAnimators()); // Map list
+        entity.setStatus(this.getStatus());
         
         return entity;
     }

@@ -13,5 +13,6 @@ CREATE TABLE party (
     children_count INT,
     animators_required INT NOT NULL,
     description TEXT,
-    cost DECIMAL(10,2) NOT NULL
+    cost DECIMAL(10,2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'SCHEDULED'
 );

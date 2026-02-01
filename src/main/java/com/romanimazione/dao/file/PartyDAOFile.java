@@ -26,4 +26,42 @@ public class PartyDAOFile extends GenericFileDAO<Party> implements PartyDAO {
     public List<Party> findAllParties() throws DAOException {
         return load(new TypeReference<List<Party>>(){});
     }
+
+    @Override
+    public void assignAnimator(int partyId, String animatorUsername) throws DAOException {
+        List<Party> list = load(new TypeReference<List<Party>>(){});
+        Party party = list.stream()
+                .filter(p -> p.getId() == partyId)
+                .findFirst()
+                .orElseThrow(() -> new DAOException("Party not found"));
+
+        if (!party.getAssignedAnimators().contains(animatorUsername)) {
+            party.getAssignedAnimators().add(animatorUsername);
+            save(list);
+        } else {
+             throw new DAOException("Animator already assigned");
+        }
+    }
+
+    @Override
+    public List<String> getAssignedAnimators(int partyId) throws DAOException {
+        List<Party> list = load(new TypeReference<List<Party>>(){});
+        return list.stream()
+                .filter(p -> p.getId() == partyId)
+                .findFirst()
+                .map(Party::getAssignedAnimators)
+                .orElse(new java.util.ArrayList<>());
+    }
+
+    @Override
+    public void updateStatus(int partyId, com.romanimazione.entity.PartyStatus status) throws DAOException {
+        List<Party> list = load(new TypeReference<List<Party>>(){});
+        Party party = list.stream()
+                .filter(p -> p.getId() == partyId)
+                .findFirst()
+                .orElseThrow(() -> new DAOException("Party not found"));
+        
+        party.setStatus(status);
+        save(list);
+    }
 }

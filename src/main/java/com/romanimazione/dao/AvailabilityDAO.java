@@ -9,4 +9,7 @@ public interface AvailabilityDAO {
     List<Availability> findByUsername(String username) throws DAOException;
     void updateAvailability(Availability availability) throws DAOException;
     void deleteAvailability(Availability availability) throws DAOException;
+    
+    // Matching Logic: Find animators available for a specific slot
+    List<String> findAvailableAnimators(java.time.LocalDate date, java.time.LocalTime startTime, java.time.LocalTime endTime) throws DAOException;
 }

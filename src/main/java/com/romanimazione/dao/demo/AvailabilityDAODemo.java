@@ -46,4 +46,17 @@ public class AvailabilityDAODemo implements AvailabilityDAO {
         MOCK_DB.removeIf(a -> a.getId() == availability.getId() ||
                 (a.getUsername().equals(availability.getUsername()) && a.getDate().equals(availability.getDate())));
     }
+
+    @Override
+    public List<String> findAvailableAnimators(java.time.LocalDate date, java.time.LocalTime startTime, java.time.LocalTime endTime) throws DAOException {
+        return MOCK_DB.stream()
+                .filter(a -> a.getDate().equals(date))
+                .filter(a -> a.isFullDay() || (
+                        (a.getStartTime().isBefore(startTime) || a.getStartTime().equals(startTime)) &&
+                        (a.getEndTime().isAfter(endTime) || a.getEndTime().equals(endTime))
+                ))
+                .map(Availability::getUsername)
+                .distinct()
+                .toList();
+    }
 }

@@ -62,6 +62,15 @@ public class Party {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
+    private java.util.List<String> assignedAnimators = new java.util.ArrayList<>();
+
     public double getCost() { return cost; }
     public void setCost(double cost) { this.cost = cost; }
+    
+    public java.util.List<String> getAssignedAnimators() { return assignedAnimators; }
+    public void setAssignedAnimators(java.util.List<String> assignedAnimators) { this.assignedAnimators = assignedAnimators; }
+    
+    private PartyStatus status = PartyStatus.SCHEDULED;
+    public PartyStatus getStatus() { return status; }
+    public void setStatus(PartyStatus status) { this.status = status; }
 }

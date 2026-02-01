@@ -125,7 +125,7 @@ public class CLIController {
                 } else {
                     mainView.showMessage(MSG_INVALID);
                 }
-            } catch (com.romanimazione.exception.InvalidPartyException | com.romanimazione.exception.DAOException | IOException e) {
+            } catch (com.romanimazione.exception.InvalidPartyException | com.romanimazione.exception.DAOException | IOException | IllegalArgumentException e) {
                  mainView.showError(e.getMessage());
             } catch (Exception e) {
                 mainView.showMessage(MSG_INVALID);
@@ -139,8 +139,39 @@ public class CLIController {
         mainView.showMessage("Party created successfully!");
     }
 
-    private void listPartiesCLI(PartyController controller) throws com.romanimazione.exception.DAOException {
-        partyView.showPartyList(controller.getAllParties());
+    private void listPartiesCLI(PartyController controller) throws com.romanimazione.exception.DAOException, IOException {
+        List<com.romanimazione.bean.PartyBean> parties = controller.getAllParties();
+        partyView.showPartyList(parties);
+        
+        if (parties.isEmpty()) return;
+
+        int partyId = partyView.askAssignmentPartyId();
+        if (partyId > 0) {
+            // Find the chosen party bean
+            com.romanimazione.bean.PartyBean targetParty = parties.stream()
+                    .filter(p -> p.getId() == partyId)
+                    .findFirst()
+                    .orElse(null);
+            
+            if (targetParty == null) {
+                mainView.showError("Party ID not found.");
+                return;
+            }
+
+            List<UserBean> eligible = controller.findEligibleAnimators(targetParty);
+            partyView.showEligibleAnimators(eligible);
+            
+            if (!eligible.isEmpty()) {
+                int choice = partyView.askAnimatorSelection(eligible.size());
+                if (choice > 0) {
+                    UserBean selected = eligible.get(choice - 1);
+                    controller.assignAnimator(targetParty, selected);
+                    mainView.showMessage("Animator assigned successfully!");
+                } else {
+                    mainView.showMessage("Assignment cancelled.");
+                }
+            }
+        }
     }
 
     private void manageAvailability() throws IOException {

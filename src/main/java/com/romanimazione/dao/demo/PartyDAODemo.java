@@ -20,4 +20,43 @@ public class PartyDAODemo implements PartyDAO {
     public List<Party> findAllParties() {
         return new ArrayList<>(parties);
     }
+
+    @Override
+    public void assignAnimator(int partyId, String animatorUsername) throws com.romanimazione.exception.DAOException {
+        Party party = parties.stream()
+                .filter(p -> p.getId() == partyId)
+                .findFirst()
+                .orElseThrow(() -> new com.romanimazione.exception.DAOException("Party not found"));
+        
+        if (!party.getAssignedAnimators().contains(animatorUsername)) {
+            party.getAssignedAnimators().add(animatorUsername);
+            System.out.println("Demo: Assigned " + animatorUsername + " to party " + partyId);
+        } else {
+            throw new com.romanimazione.exception.DAOException("Animator already assigned");
+        }
+    }
+
+    @Override
+    public List<String> getAssignedAnimators(int partyId) throws com.romanimazione.exception.DAOException {
+         Party party = parties.stream()
+                .filter(p -> p.getId() == partyId)
+                .findFirst()
+                .orElse(null);
+         
+         if (party != null) {
+             return new ArrayList<>(party.getAssignedAnimators());
+         }
+         return new ArrayList<>();
+    }
+
+    @Override
+    public void updateStatus(int partyId, com.romanimazione.entity.PartyStatus status) throws com.romanimazione.exception.DAOException {
+        Party party = parties.stream()
+                .filter(p -> p.getId() == partyId)
+                .findFirst()
+                .orElseThrow(() -> new com.romanimazione.exception.DAOException("Party not found"));
+        
+        party.setStatus(status);
+        System.out.println("Demo: Party " + partyId + " status updated to " + status);
+    }
 }

@@ -80,11 +80,48 @@ public class PartyCLIView {
         if (list.isEmpty()) {
             System.out.println("No parties found.");
         } else {
-            System.out.printf("%-5s | %-20s | %-15s | %-12s%n", "ID", "Name", "Type", "Date");
-            System.out.println("------------------------------------------------------------");
+            System.out.printf("%-5s | %-20s | %-12s | %-12s | %-15s | %s%n", "ID", "Name", "Date", "Status", "Staff (Req)", "Assigned");
+            System.out.println("-----------------------------------------------------------------------------------------------");
             for (PartyBean p : list) {
-                System.out.printf("%-5d | %-20s | %-15s | %s%n", p.getId(), p.getName(), p.getType(), p.getDate());
+                String assignedInfo = p.getAssignedAnimators() != null ? 
+                    p.getAssignedAnimators().toString() : "[]";
+                String staffInfo = p.getAnimatorsRequired() + " req";
+                
+                System.out.printf("%-5d | %-20s | %-12s | %-12s | %-15s | %s%n", 
+                    p.getId(), p.getName(), p.getDate(), p.getStatus(), staffInfo, assignedInfo);
             }
+        }
+    }
+
+    public int askAssignmentPartyId() throws IOException {
+        System.out.println("Do you want to assign an animator to a party? Enter Party ID (or 0 to skip): ");
+        try {
+            return Integer.parseInt(reader.readLine());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public void showEligibleAnimators(List<com.romanimazione.bean.UserBean> animators) {
+        System.out.println("\n--- ELIGIBLE ANIMATORS ---");
+        if (animators.isEmpty()) {
+            System.out.println("No eligible animators found.");
+            return;
+        }
+        for (int i = 0; i < animators.size(); i++) {
+             com.romanimazione.bean.UserBean u = animators.get(i);
+             System.out.printf("%d. %s (%s %s)%n", i+1, u.getUsername(), u.getNome(), u.getCognome());
+        }
+    }
+
+    public int askAnimatorSelection(int max) throws IOException {
+        System.out.print("Select User # to assign (0 to cancel): ");
+        try {
+            int choice = Integer.parseInt(reader.readLine());
+            if (choice < 0 || choice > max) return 0;
+            return choice;
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 }

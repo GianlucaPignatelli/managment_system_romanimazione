@@ -1,9 +1,13 @@
 package com.romanimazione.controller.application;
 
 import com.romanimazione.bean.PartyBean;
+import com.romanimazione.bean.UserBean;
+import com.romanimazione.dao.AvailabilityDAO;
 import com.romanimazione.dao.DAOFactory;
 import com.romanimazione.dao.PartyDAO;
+import com.romanimazione.dao.UserDAO;
 import com.romanimazione.entity.Party;
+import com.romanimazione.entity.User;
 import com.romanimazione.exception.DAOException;
 import com.romanimazione.exception.InvalidPartyException;
 
@@ -83,10 +87,84 @@ public class PartyController extends Subject {
         for (Party p : entities) {
             beans.add(PartyBean.fromEntity(p));
         }
+        
+        // Sort by Date (Ascending) -> Time (Ascending)
+        // Sort by Date (Ascending) -> Time (Ascending)
+        beans.sort((p1, p2) -> {
+            if (p1.getDate() == null && p2.getDate() == null) return 0;
+            if (p1.getDate() == null) return 1;
+            if (p2.getDate() == null) return -1;
+            
+            int dateComp = p1.getDate().compareTo(p2.getDate());
+            if (dateComp != 0) return dateComp;
+            
+            if (p1.getStartTime() == null && p2.getStartTime() == null) return 0;
+            if (p1.getStartTime() == null) return 1;
+            if (p2.getStartTime() == null) return -1;
+            
+            return p1.getStartTime().compareTo(p2.getStartTime());
+        });
+        
         return beans;
     }
     
     public List<String> getPartyTypes() {
         return ALLOWED_TYPES;
+    }
+
+    public List<UserBean> findEligibleAnimators(PartyBean party) throws DAOException {
+        AvailabilityDAO availabilityDAO = DAOFactory.getDAOFactory().getAvailabilityDAO();
+        UserDAO userDAO = DAOFactory.getDAOFactory().getUserDAO();
+        
+        List<String> usernames = availabilityDAO.findAvailableAnimators(party.getDate(), party.getStartTime(), party.getEndTime());
+        List<UserBean> fullAnimators = new ArrayList<>();
+        
+        for (String username : usernames) {
+            User user = userDAO.findUserByIdentifier(username);
+            
+            // Exclude already assigned animators (Optional check, good for UI filtering)
+            List<String> assigned = DAOFactory.getDAOFactory().getPartyDAO().getAssignedAnimators(party.getId());
+            if (user != null && !assigned.contains(username)) {
+                UserBean animatorBean = new UserBean();
+                animatorBean.setUsername(user.getUsername());
+                animatorBean.setNome(user.getNome());
+                animatorBean.setCognome(user.getCognome());
+                animatorBean.setEmail(user.getEmail());
+                animatorBean.setRole(user.getRole());
+                fullAnimators.add(animatorBean);
+            }
+        }
+        return fullAnimators;
+    }
+
+    public void assignAnimator(PartyBean party, UserBean animator) throws DAOException {
+        if (party == null || animator == null) {
+            throw new IllegalArgumentException("Party and Animator cannot be null");
+        }
+        
+        PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
+        List<String> assigned = dao.getAssignedAnimators(party.getId());
+        
+        if (assigned.size() >= party.getAnimatorsRequired()) {
+            throw new IllegalArgumentException("Cannot assign more animators. Limit reached (" + party.getAnimatorsRequired() + ").");
+        }
+        
+        dao.assignAnimator(party.getId(), animator.getUsername());
+        notifyObservers("Animator " + animator.getUsername() + " assigned to party " + party.getId());
+    }
+
+    public void cancelParty(PartyBean party) throws DAOException {
+        if (party == null) throw new IllegalArgumentException("Party cannot be null");
+        
+        PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
+        dao.updateStatus(party.getId(), com.romanimazione.entity.PartyStatus.CANCELLED);
+        
+        // Logic Requirement: Notify assigned animators (Mock notification for now)
+        List<String> assigned = dao.getAssignedAnimators(party.getId());
+        if (!assigned.isEmpty()) {
+            System.out.println("SYSTEM NOTIFICATION: Sending cancellation email to " + assigned);
+        }
+        
+        notifyObservers("Party " + party.getId() + " has been CANCELLED.");
     }
 }
