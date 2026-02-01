@@ -20,7 +20,7 @@ public class DatabaseInitializer {
         }
     }
 
-    private static void initializePartyTable() throws Exception {
+    private static void initializePartyTable() throws java.sql.SQLException {
         System.out.println("Creating 'party' table...");
         
         // HARDCODED SQL from party_schema.sql to avoid classpath issues
@@ -57,7 +57,7 @@ public class DatabaseInitializer {
         }
     }
 
-    private static void initializeAssignmentsTable() throws Exception {
+    private static void initializeAssignmentsTable() throws java.sql.SQLException {
         System.out.println("Creating 'party_assignments' table...");
         
         // HARDCODED SQL from create_assignments_table.sql
