@@ -1,10 +1,7 @@
 package com.romanimazione.dao.demo;
 
 import com.romanimazione.dao.UserDAO;
-
-import com.romanimazione.entity.Amministratore;
 import com.romanimazione.entity.User;
-import com.romanimazione.entity.Animatore;
 import com.romanimazione.exception.DAOException;
 
 public class UserDAODemo implements UserDAO {

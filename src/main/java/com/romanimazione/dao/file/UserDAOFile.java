@@ -2,8 +2,6 @@ package com.romanimazione.dao.file;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.romanimazione.dao.UserDAO;
-import com.romanimazione.entity.Amministratore;
-import com.romanimazione.entity.Animatore;
 import com.romanimazione.entity.User;
 import com.romanimazione.exception.DAOException;
 import java.util.List;
