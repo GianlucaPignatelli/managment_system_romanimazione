@@ -11,6 +11,12 @@ import java.util.List;
 
 public class AvailabilityDAOMySQL implements AvailabilityDAO {
 
+    private static final String USERNAME_COL = "username";
+    private static final String DATE_COL = "availability_date";
+    private static final String START_COL = "start_time";
+    private static final String END_COL = "end_time";
+    private static final String FULL_COL = "is_full_day";
+
     @Override
     public void saveAvailability(Availability availability) throws DAOException {
         String query = "INSERT INTO availability (username, availability_date, start_time, end_time, is_full_day) VALUES (?, ?, ?, ?, ?)";
@@ -40,13 +46,7 @@ public class AvailabilityDAOMySQL implements AvailabilityDAO {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Availability a = new Availability();
-                    a.setId(rs.getInt("id"));
-                    a.setUsername(rs.getString("username"));
-                    a.setDate(rs.getDate("availability_date").toLocalDate());
-                    a.setStartTime(rs.getTime("start_time").toLocalTime());
-                    a.setEndTime(rs.getTime("end_time").toLocalTime());
-                    a.setFullDay(rs.getBoolean("is_full_day"));
+                    Availability a = mapRow(rs);
                     list.add(a);
                 }
             }
@@ -139,7 +139,7 @@ public class AvailabilityDAOMySQL implements AvailabilityDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    userList.add(rs.getString("username"));
+                    userList.add(rs.getString(USERNAME_COL));
                 }
             }
         } catch (SQLException e) {
@@ -151,25 +151,29 @@ public class AvailabilityDAOMySQL implements AvailabilityDAO {
     @Override
     public List<Availability> findByDate(java.time.LocalDate date) throws DAOException {
         List<Availability> list = new ArrayList<>();
-        String sql = "SELECT * FROM availability WHERE availability_date = ?";
+        String sql = "SELECT id, username, availability_date, start_time, end_time, is_full_day FROM availability WHERE availability_date = ?";
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDate(1, java.sql.Date.valueOf(date));
             try (ResultSet rs = stmt.executeQuery()) {
                 while(rs.next()) {
-                    Availability a = new Availability();
-                    a.setId(rs.getInt("id"));
-                    a.setUsername(rs.getString("username"));
-                    a.setDate(rs.getDate("availability_date").toLocalDate());
-                    a.setStartTime(rs.getTime("start_time").toLocalTime());
-                    a.setEndTime(rs.getTime("end_time").toLocalTime());
-                    a.setFullDay(rs.getBoolean("is_full_day"));
-                    list.add(a);
+                    list.add(mapRow(rs));
                 }
             }
         } catch (SQLException e) {
             throw new DAOException("Error finding availability by date", e);
         }
         return list;
+    }
+
+    private Availability mapRow(ResultSet rs) throws SQLException {
+        Availability a = new Availability();
+        a.setId(rs.getInt("id"));
+        a.setUsername(rs.getString(USERNAME_COL));
+        a.setDate(rs.getDate(DATE_COL).toLocalDate());
+        a.setStartTime(rs.getTime(START_COL).toLocalTime());
+        a.setEndTime(rs.getTime(END_COL).toLocalTime());
+        a.setFullDay(rs.getBoolean(FULL_COL));
+        return a;
     }
 }
