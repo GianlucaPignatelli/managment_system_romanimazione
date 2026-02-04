@@ -46,8 +46,8 @@ public class UserDAOMySQL implements UserDAO {
     @Override
     public java.util.List<User> findAllUsers() throws DAOException {
         java.util.List<User> list = new java.util.ArrayList<>();
-        // Simple query
-        String query = "SELECT * FROM users";
+        // Explicit columns to avoid SELECT * smell
+        String query = "SELECT id, username, password, role, nome, cognome, email, is_super_admin FROM users";
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -98,7 +98,7 @@ public class UserDAOMySQL implements UserDAO {
     
     @Override
     public User findUserByIdentifier(String identifier) throws DAOException {
-        String query = "SELECT * FROM users WHERE username = ? OR email = ?";
+        String query = "SELECT id, username, password, role, nome, cognome, email, is_super_admin FROM users WHERE username = ? OR email = ?";
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, identifier);
@@ -130,28 +130,10 @@ public class UserDAOMySQL implements UserDAO {
             stmt.setString(6, user.getEmail());
             stmt.setBoolean(7, user.isSuperAdmin());
             
-            stmt.setBoolean(7, user.isSuperAdmin());
-            
             stmt.executeUpdate();
         } catch (SQLException e) {
              System.err.println("UserDAOMySQL: INSERT FAILED. " + e.getMessage());
              throw new DAOException("Error saving user (Strict Mode): " + e.getMessage(), e);
-        }
-    }
-    
-    private void saveUserLegacy(User user) throws DAOException {
-        String query = "INSERT INTO users (username, password, role, nome, cognome, email) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = MySQLDAOFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword());
-            stmt.setString(3, user.getRole());
-            stmt.setString(4, user.getNome());
-            stmt.setString(5, user.getCognome());
-            stmt.setString(6, user.getEmail());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new DAOException("Error saving user (legacy): " + e.getMessage(), e);
         }
     }
 }
