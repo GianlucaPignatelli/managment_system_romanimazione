@@ -4,10 +4,7 @@ import com.romanimazione.bean.AvailabilityBean;
 import com.romanimazione.bean.CredentialsBean;
 import com.romanimazione.bean.SessionBean;
 import com.romanimazione.bean.UserBean;
-import com.romanimazione.controller.application.AvailabilityController;
-import com.romanimazione.controller.application.LoginController;
-import com.romanimazione.controller.application.PartyController;
-import com.romanimazione.controller.application.RegistrationController;
+import com.romanimazione.controller.application.*;
 import com.romanimazione.view.cli.AvailabilityCLIView;
 import com.romanimazione.view.cli.LoginCLIView;
 import com.romanimazione.view.cli.MainCLIView;
@@ -15,8 +12,6 @@ import com.romanimazione.view.cli.PartyCLIView;
 
 import java.io.IOException;
 import java.util.List;
-
-import com.romanimazione.controller.application.JobOfferController;
 
 public class CLIController {
 
@@ -31,6 +26,7 @@ public class CLIController {
     private final AvailabilityController availabilityController;
     private final RegistrationController registerController;
     private final JobOfferController jobOfferController;
+    private final AdminUserController adminUserController;
 
     private static final String MSG_INVALID = "Invalid choice.";
     private static final String MSG_ERR_UNEXPECTED = "Unexpected error: ";
@@ -45,6 +41,7 @@ public class CLIController {
         this.availabilityController = new AvailabilityController();
         this.registerController = new RegistrationController();
         this.jobOfferController = new JobOfferController();
+        this.adminUserController = new AdminUserController();
     }
 
     public void start() {
@@ -95,7 +92,7 @@ public class CLIController {
 
     private void handleRegistration() {
         try {
-            long count = com.romanimazione.dao.DAOFactory.getDAOFactory().getUserDAO().countAdmins();
+            long count = registerController.countAdmins();
             boolean isCodeSet = com.romanimazione.bean.SecurityManager.getInstance().isMasterCodeSet();
             boolean isFirstAdmin = (count == 0 || !isCodeSet);
             
@@ -216,65 +213,29 @@ public class CLIController {
 
     private void manageUsersCLI() throws IOException, com.romanimazione.exception.DAOException {
         com.romanimazione.view.cli.UserManagementCLIView userView = new com.romanimazione.view.cli.UserManagementCLIView();
-        com.romanimazione.dao.UserDAO userDAO = com.romanimazione.dao.DAOFactory.getDAOFactory().getUserDAO();
-        com.romanimazione.dao.PartyDAO partyDAO = com.romanimazione.dao.DAOFactory.getDAOFactory().getPartyDAO();
         
         while (true) {
-            List<com.romanimazione.entity.User> entities = userDAO.findAllUsers();
-             // Map to Beans
-            List<UserBean> beans = new java.util.ArrayList<>();
-            for (com.romanimazione.entity.User u : entities) {
-                UserBean b = new UserBean();
-                b.setId(u.getId());
-                b.setUsername(u.getUsername());
-                b.setNome(u.getNome());
-                b.setCognome(u.getCognome());
-                b.setRole(u.getRole());
-                b.setSuperAdmin(u.isSuperAdmin());
-                beans.add(b);
-            }
+            List<UserBean> beans = adminUserController.getAllUsers();
             
             userView.showUserList(beans);
             int idToDelete = userView.askUserIdToDelete();
             
             if (idToDelete == 0) break;
             
-            // Logic
+            // Find target
             UserBean target = beans.stream().filter(b -> b.getId() == idToDelete).findFirst().orElse(null);
+            
             if (target == null) {
                 mainView.showError("User not found.");
                 continue;
             }
             
-            if (target.isSuperAdmin()) {
-                mainView.showError("Cannot delete a Super Admin.");
-                continue;
+            try {
+                adminUserController.deleteUser(target);
+                mainView.showMessage("User deleted.");
+            } catch (IllegalArgumentException e) {
+                mainView.showError(e.getMessage());
             }
-            
-            if ("ANIMATORE".equalsIgnoreCase(target.getRole())) {
-                // Check assignments
-                List<com.romanimazione.entity.Party> allParties = partyDAO.findAllParties();
-                boolean hasAssignments = false;
-                for (com.romanimazione.entity.Party p : allParties) {
-                    if (p.getAssignmentStatuses().containsKey(target.getUsername())) {
-                        hasAssignments = true;
-                        break;
-                    }
-                }
-                
-                if (hasAssignments) {
-                    mainView.showError("Cannot delete Animator " + target.getUsername() + 
-                        " because they have party assignments.\nPlease remove them from parties first.");
-                    continue;
-                }
-            }
-            
-            // Execute Delete
-            com.romanimazione.entity.User entityToDelete = new com.romanimazione.entity.User();
-            entityToDelete.setId(target.getId());
-            entityToDelete.setUsername(target.getUsername()); 
-            userDAO.deleteUser(entityToDelete.getUsername());
-            mainView.showMessage("User deleted.");
         }
     }
 

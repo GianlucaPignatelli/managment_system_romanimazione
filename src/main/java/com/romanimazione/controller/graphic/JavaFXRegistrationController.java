@@ -52,7 +52,7 @@ public class JavaFXRegistrationController implements Observer {
     
     private void checkFirstAdminStatus() {
         try {
-            long count = com.romanimazione.dao.DAOFactory.getDAOFactory().getUserDAO().countAdmins();
+            long count = registrationController.countAdmins();
             boolean isCodeSet = com.romanimazione.bean.SecurityManager.getInstance().isMasterCodeSet();
             
             if (count == 0 || !isCodeSet) {

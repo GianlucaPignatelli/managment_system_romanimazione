@@ -11,6 +11,10 @@ import com.romanimazione.exception.DuplicateUserException;
 
 public class RegistrationController extends Subject {
 
+    public long countAdmins() throws DAOException {
+        return DAOFactory.getDAOFactory().getUserDAO().countAdmins();
+    }
+
     public void register(UserBean userBean) throws DAOException, DuplicateUserException, IllegalArgumentException {
         DAOFactory daoFactory = DAOFactory.getDAOFactory();
         UserDAO userDAO = daoFactory.getUserDAO();

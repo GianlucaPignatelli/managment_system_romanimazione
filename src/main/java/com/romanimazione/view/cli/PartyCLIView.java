@@ -83,8 +83,16 @@ public class PartyCLIView {
             System.out.printf("%-5s | %-20s | %-12s | %-12s | %-15s | %s%n", "ID", "Name", "Date", "Status", "Staff (Req)", "Assigned");
             System.out.println("-----------------------------------------------------------------------------------------------");
             for (PartyBean p : list) {
-                String assignedInfo = p.getAssignedAnimators() != null ? 
-                    p.getAssignedAnimators().toString() : "[]";
+                // Build text description of assignments with status
+                StringBuilder sb = new StringBuilder();
+                if (p.getAssignmentStatuses().isEmpty()) {
+                    sb.append("None");
+                } else {
+                    p.getAssignmentStatuses().forEach((user, status) -> {
+                        sb.append(user).append("(").append(status).append(") ");
+                    });
+                }
+                String assignedInfo = sb.toString();
                 String staffInfo = p.getAnimatorsRequired() + " req";
                 
                 System.out.printf("%-5d | %-20s | %-12s | %-12s | %-15s | %s%n", 
