@@ -30,6 +30,7 @@ public class CLIController {
 
     private static final String MSG_INVALID = "Invalid choice.";
     private static final String MSG_ERR_UNEXPECTED = "Unexpected error: ";
+    private static final String MSG_LOGGED_OUT = "Logged out.";
 
     public CLIController() {
         this.mainView = new MainCLIView();
@@ -96,8 +97,6 @@ public class CLIController {
             boolean isCodeSet = com.romanimazione.bean.SecurityManager.getInstance().isMasterCodeSet();
             boolean isFirstAdmin = (count == 0 || !isCodeSet);
             
-
-            
             UserBean userBean = loginView.getRegistrationDetails(isFirstAdmin);
             
             registerController.register(userBean);
@@ -122,7 +121,7 @@ public class CLIController {
             } else if ("3".equals(subInput)) {
                 loggedIn = false;
                 SessionBean.getInstance().setCurrentUser(null);
-                mainView.showMessage("Logged out.");
+                mainView.showMessage(MSG_LOGGED_OUT);
             } else {
                 mainView.showMessage(MSG_INVALID);
             }
@@ -163,42 +162,49 @@ public class CLIController {
 
         while (loggedIn) {
             String input = mainView.showAdminMenuAndGetChoice(isSuperAdmin);
-
             try {
-                if ("1".equals(input)) {
-                    createPartyCLI(partyController);
-                } else if ("2".equals(input)) {
-                    listPartiesCLI(partyController);
-                } else if (isSuperAdmin) {
-                     // Super Admin Menu
-                     if ("3".equals(input)) {
-                         manageUsersCLI();
-                     } else if ("4".equals(input)) {
-                         changeMasterCodeCLI();
-                     } else if ("5".equals(input)) {
-                         loggedIn = false;
-                         SessionBean.getInstance().setCurrentUser(null);
-                         mainView.showMessage("Logged out.");
-                     } else {
-                         mainView.showMessage(MSG_INVALID);
-                     }
-                } else {
-                    // Regular Admin Menu
-                    if ("3".equals(input)) {
-                        loggedIn = false;
-                        SessionBean.getInstance().setCurrentUser(null);
-                        mainView.showMessage("Logged out.");
-                    } else {
-                        mainView.showMessage(MSG_INVALID);
-                    }
-                }
-            } catch (com.romanimazione.exception.InvalidPartyException | com.romanimazione.exception.DAOException | IOException | IllegalArgumentException e) {
-                 mainView.showError(e.getMessage());
+                loggedIn = handleAdminChoice(input, isSuperAdmin, partyController);
             } catch (Exception e) {
-                mainView.showMessage(MSG_INVALID);
-                e.printStackTrace(); 
+                mainView.showError(e.getMessage());
             }
         }
+    }
+
+    private boolean handleAdminChoice(String input, boolean isSuperAdmin, PartyController partyController) throws Exception {
+        if ("1".equals(input)) {
+            createPartyCLI(partyController);
+        } else if ("2".equals(input)) {
+            listPartiesCLI(partyController);
+        } else {
+            return isSuperAdmin ? handleSuperAdminChoice(input) : handleRegularAdminChoice(input);
+        }
+        return true;
+    }
+
+    private boolean handleSuperAdminChoice(String input) throws IOException, com.romanimazione.exception.DAOException {
+         if ("3".equals(input)) {
+             manageUsersCLI();
+             return true;
+         } else if ("4".equals(input)) {
+             changeMasterCodeCLI();
+             return true;
+         } else if ("5".equals(input)) {
+             SessionBean.getInstance().setCurrentUser(null);
+             mainView.showMessage(MSG_LOGGED_OUT);
+             return false;
+         }
+         mainView.showMessage(MSG_INVALID);
+         return true;
+    }
+    
+    private boolean handleRegularAdminChoice(String input) {
+        if ("3".equals(input)) {
+            SessionBean.getInstance().setCurrentUser(null);
+            mainView.showMessage(MSG_LOGGED_OUT);
+            return false;
+        }
+        mainView.showMessage(MSG_INVALID);
+        return true;
     }
 
     private void changeMasterCodeCLI() throws IOException {
@@ -227,14 +233,13 @@ public class CLIController {
             
             if (target == null) {
                 mainView.showError("User not found.");
-                continue;
-            }
-            
-            try {
-                adminUserController.deleteUser(target);
-                mainView.showMessage("User deleted.");
-            } catch (IllegalArgumentException e) {
-                mainView.showError(e.getMessage());
+            } else {
+                try {
+                    adminUserController.deleteUser(target);
+                    mainView.showMessage("User deleted.");
+                } catch (IllegalArgumentException e) {
+                    mainView.showError(e.getMessage());
+                }
             }
         }
     }
