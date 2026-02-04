@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx/8.0.171"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.romanimazione.controller.graphic.JavaFXPartyDetailsController"
+      spacing="10" alignment="TOP_LEFT" prefWidth="400" prefHeight="500">
+
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <Label text="Party Details">
+        <font><Font name="System Bold" size="20.0"/></font>
+    </Label>
+    
+    <GridPane vgap="10" hgap="10">
+        <Label text="Name:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="nameLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        
+        <Label text="Type:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="typeLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        
+        <Label text="Date:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="dateLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        
+        <Label text="Time:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="timeLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        
+        <Label text="Address:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="addressLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        
+        <Label text="Client:" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="clientLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+        
+        <Label text="Cost:" GridPane.rowIndex="6" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="costLabel" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+        
+        <Label text="Services:" GridPane.rowIndex="7" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="servicesLabel" wrapText="true" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+        
+        <Label text="Notes:" GridPane.rowIndex="8" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <Label fx:id="notesLabel" wrapText="true" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+    </GridPane>
+    
+    <Separator/>
+    
+    <Button text="Close" onAction="#handleClose" alignment="CENTER_RIGHT"/>
+
+</VBox>

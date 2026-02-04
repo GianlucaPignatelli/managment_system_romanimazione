@@ -1,0 +1,12 @@
+2026-02-02T23:25:03.899549300 : SecurityManager: loadConfig() start. Transient=false
+2026-02-02T23:25:03.930132900 : SecurityManager: Reading file C:\Users\39334\OneDrive\Desktop\Gianluca università e altro\Laurea_Triennale\1° semestre\ISPW\managment_system_romanimazione\security.properties
+2026-02-02T23:25:03.932642900 : SecurityManager: FILE NOT FOUND at C:\Users\39334\OneDrive\Desktop\Gianluca università e altro\Laurea_Triennale\1° semestre\ISPW\managment_system_romanimazione\security.properties
+2026-02-02T23:25:03.933657200 : SecurityManager: loadConfig() start. Transient=false
+2026-02-02T23:25:03.935656100 : SecurityManager: Reading file C:\Users\39334\OneDrive\Desktop\Gianluca università e altro\Laurea_Triennale\1° semestre\ISPW\managment_system_romanimazione\security.properties
+2026-02-02T23:25:03.938182400 : SecurityManager: FILE NOT FOUND at C:\Users\39334\OneDrive\Desktop\Gianluca università e altro\Laurea_Triennale\1° semestre\ISPW\managment_system_romanimazione\security.properties
+2026-02-02T23:38:03.052753700 : SecurityManager: loadConfig() start. Transient=false
+2026-02-02T23:38:03.093062700 : SecurityManager: Reading file C:\Users\39334\OneDrive\Desktop\Gianluca università e altro\Laurea_Triennale\1° semestre\ISPW\managment_system_romanimazione\security.properties
+2026-02-02T23:38:03.096140700 : SecurityManager: FILE NOT FOUND at C:\Users\39334\OneDrive\Desktop\Gianluca università e altro\Laurea_Triennale\1° semestre\ISPW\managment_system_romanimazione\security.properties
+2026-02-02T23:38:03.097663800 : SecurityManager: loadConfig() start. Transient=false
+2026-02-02T23:38:03.100397300 : SecurityManager: Reading file C:\Users\39334\OneDrive\Desktop\Gianluca università e altro\Laurea_Triennale\1° semestre\ISPW\managment_system_romanimazione\security.properties
+2026-02-02T23:38:03.103044300 : SecurityManager: FILE NOT FOUND at C:\Users\39334\OneDrive\Desktop\Gianluca università e altro\Laurea_Triennale\1° semestre\ISPW\managment_system_romanimazione\security.properties

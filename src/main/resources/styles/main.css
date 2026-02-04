@@ -1,0 +1,69 @@
+/* Warm Theme */
+.root {
+    -fx-base: #fdf6e3; /* Off-white / Cream */
+    -fx-accent: #e67e22; /* Warm Orange */
+    -fx-focus-color: #d35400;
+    -fx-faint-focus-color: transparent;
+    -fx-control-inner-background: #ffffff;
+    -fx-background-color: #fdf6e3;
+}
+
+.label {
+    -fx-text-fill: #5d4037; /* Dark Brown Text */
+}
+
+.button {
+    -fx-background-color: #e67e22;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15 8 15;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #d35400;
+}
+
+.button:pressed {
+    -fx-background-color: #a04000;
+}
+
+.table-view {
+    -fx-background-color: white;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f5e6d3; /* Lighter Cream */
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-size: 35;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #d7ccc8;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #5d4037;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #ffe0b2; /* Light Orange Selection */
+    -fx-text-fill: black;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #fafafa;
+}
+
+.text-field, .password-field, .combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #d7ccc8;
+    -fx-border-radius: 3;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #e67e22;
+}

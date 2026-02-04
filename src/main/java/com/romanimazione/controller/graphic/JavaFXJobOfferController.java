@@ -1,0 +1,172 @@
+package com.romanimazione.controller.graphic;
+
+import com.romanimazione.bean.PartyBean;
+import com.romanimazione.bean.UserBean;
+import com.romanimazione.controller.application.JobOfferController;
+import com.romanimazione.bean.SessionBean;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.util.Callback;
+
+import java.io.IOException;
+import java.util.List;
+
+public class JavaFXJobOfferController {
+
+    @FXML private TableView<PartyBean> offersTable;
+    @FXML private TableColumn<PartyBean, String> dateColumn;
+    @FXML private TableColumn<PartyBean, String> timeColumn;
+    @FXML private TableColumn<PartyBean, String> typeColumn;
+    @FXML private TableColumn<PartyBean, String> cityColumn; // Mapped to Address for now
+    @FXML private TableColumn<PartyBean, String> feeColumn; 
+    @FXML private TableColumn<PartyBean, String> statusColumn;
+    @FXML private TableColumn<PartyBean, Void> actionColumn;
+
+    private final JobOfferController appController;
+
+    public JavaFXJobOfferController() {
+        this.appController = new JobOfferController();
+    }
+
+    @FXML
+    public void initialize() {
+        setupColumns();
+        setupInteraction();
+        loadOffers();
+    }
+    
+    private void setupInteraction() {
+        offersTable.setRowFactory(tv -> {
+            TableRow<PartyBean> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    PartyBean rowData = row.getItem();
+                    showPartyDetails(rowData);
+                }
+            });
+            return row ;
+        });
+    }
+
+    private void setupColumns() {
+        dateColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDate().toString()));
+        timeColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getStartTime() + " - " + cell.getValue().getEndTime()));
+        typeColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getType()));
+        cityColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getAddress()));
+        feeColumn.setCellValueFactory(cell -> new SimpleStringProperty(String.format("%.2f", cell.getValue().getCost()))); 
+        
+        statusColumn.setCellValueFactory(cell -> {
+             UserBean currentUser = SessionBean.getInstance().getCurrentUser();
+             var statuses = cell.getValue().getAssignmentStatuses();
+             if (statuses != null && statuses.containsKey(currentUser.getUsername())) {
+                 return new SimpleStringProperty(statuses.get(currentUser.getUsername()).toString());
+             }
+             return new SimpleStringProperty("UNKNOWN");
+        });
+
+        Callback<TableColumn<PartyBean, Void>, TableCell<PartyBean, Void>> cellFactory = new Callback<>() {
+            @Override
+            public TableCell<PartyBean, Void> call(final TableColumn<PartyBean, Void> param) {
+                return new ActionCell();
+            }
+        };
+        actionColumn.setCellFactory(cellFactory);
+    }
+    
+    private class ActionCell extends TableCell<PartyBean, Void> {
+        private final Button btnAccept = new Button("Accept");
+        private final Button btnReject = new Button("Reject");
+        private final HBox paneButtons = new HBox(10, btnAccept, btnReject);
+        private final Label lblAccepted = new Label("✅ Accepted");
+
+        public ActionCell() {
+            btnAccept.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+            btnAccept.setOnAction(event -> {
+                PartyBean party = getTableView().getItems().get(getIndex());
+                handleAccept(party);
+            });
+
+            btnReject.setStyle("-fx-background-color: #F44336; -fx-text-fill: white;");
+            btnReject.setOnAction(event -> {
+                PartyBean party = getTableView().getItems().get(getIndex());
+                handleReject(party);
+            });
+            
+            lblAccepted.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+        }
+
+        @Override
+        public void updateItem(Void item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+                setGraphic(null);
+            } else {
+                PartyBean party = getTableView().getItems().get(getIndex());
+                UserBean currentUser = SessionBean.getInstance().getCurrentUser();
+                var status = party.getAssignmentStatuses().get(currentUser.getUsername());
+                
+                if (status == com.romanimazione.entity.AssignmentStatus.ACCEPTED) {
+                    setGraphic(lblAccepted);
+                } else {
+                    setGraphic(paneButtons);
+                }
+            }
+        }
+    }
+    
+    private void showPartyDetails(PartyBean party) {
+        try {
+            new com.romanimazione.view.fx.PartyFXView().openDetailsDialog(party);
+        } catch (IOException e) {
+            showAlert("Error", "Could not show details: " + e.getMessage());
+        }
+    }
+// ... rest of class unchanged ...
+
+    private void loadOffers() {
+        UserBean currentUser = SessionBean.getInstance().getCurrentUser();
+        try {
+            List<PartyBean> offers = appController.getPendingOffers(currentUser);
+            offersTable.setItems(FXCollections.observableArrayList(offers));
+        } catch (Exception e) {
+            showAlert("Error", "Could not load offers: " + e.getMessage());
+        }
+    }
+
+    private void handleAccept(PartyBean party) {
+        UserBean currentUser = SessionBean.getInstance().getCurrentUser();
+        try {
+            appController.acceptOffer(party, currentUser);
+            loadOffers(); // Refresh
+            showAlert("Success", "You accepted the job: " + party.getName());
+        } catch (Exception e) {
+            showAlert("Error", "Could not accept offer: " + e.getMessage());
+        }
+    }
+
+    private void handleReject(PartyBean party) {
+        UserBean currentUser = SessionBean.getInstance().getCurrentUser();
+        try {
+            appController.rejectOffer(party, currentUser);
+            loadOffers(); // Refresh
+        } catch (Exception e) {
+            showAlert("Error", "Could not reject offer: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleBack() throws IOException {
+        new com.romanimazione.view.fx.MainFXView().showAnimatorDashboard();
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(title.equals("Success") ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+}
