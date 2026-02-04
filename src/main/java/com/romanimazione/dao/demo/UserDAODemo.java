@@ -16,7 +16,7 @@ public class UserDAODemo implements UserDAO {
     @Override
     public User findUserByIdentifier(String identifier) throws DAOException {
         for (User u : MOCK_USERS) {
-            if (u.getUsername().equals(identifier) || u.getEmail().equals(identifier)) {
+            if (u.getUsername().equals(identifier) || (u.getEmail() != null && u.getEmail().equals(identifier))) {
                 return u;
             }
         }
