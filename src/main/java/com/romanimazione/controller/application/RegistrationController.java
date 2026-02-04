@@ -19,47 +19,12 @@ public class RegistrationController extends Subject {
         DAOFactory daoFactory = DAOFactory.getDAOFactory();
         UserDAO userDAO = daoFactory.getUserDAO();
 
-        // Check availability
-        if (userDAO.findUserByIdentifier(userBean.getUsername()) != null) {
-            throw new DuplicateUserException("Username already exists");
-        }
-
-        // Validate Email
-        // Validate Email
-        if (userBean.getEmail() == null || !userBean.getEmail().endsWith("@gmail.com")) {
-            throw new IllegalArgumentException("Email must be a valid @gmail.com address");
-        }
+        checkAvailability(userDAO, userBean);
+        validateEmail(userBean);
 
         User user;
         if ("AMMINISTRATORE".equalsIgnoreCase(userBean.getRole())) {
-            user = new Amministratore();
-            
-            // Security Check
-            // Security Check
-            long adminCount = userDAO.countAdmins();
-            com.romanimazione.bean.SecurityManager secManager = com.romanimazione.bean.SecurityManager.getInstance();
-
-            
-            // Fix for Ghost File: If DB is empty, we act as if it's a fresh setup, even if ID file exists.
-            if (!secManager.isMasterCodeSet() || adminCount == 0) {
-                
-                if (userBean.getSecurityCode() == null || userBean.getSecurityCode().length() < 64) {
-                    throw new IllegalArgumentException("You must create a Master Code (min 64 chars) to initialize the system security.");
-                }
-                secManager.setMasterCode(userBean.getSecurityCode());
-                user.setSuperAdmin(true); 
-            } else {
-                if (!secManager.verifyMasterCode(userBean.getSecurityCode())) {
-                     throw new IllegalArgumentException("Invalid Master Code. Registration denied.");
-                }
-                
-                if (adminCount == 0) {
-                    // Should be unreachable due to if above, but defensive coding ok
-                    user.setSuperAdmin(true);
-                } else {
-                    user.setSuperAdmin(false);
-                }
-            }
+            user = createAdminUser(userBean, userDAO);
         } else {
             user = new Animatore();
         }
@@ -73,5 +38,38 @@ public class RegistrationController extends Subject {
         userDAO.saveUser(user);
         
         notifyObservers("Registration Successful for " + user.getUsername());
+    }
+
+    private void checkAvailability(UserDAO userDAO, UserBean userBean) throws DAOException, DuplicateUserException {
+        if (userDAO.findUserByIdentifier(userBean.getUsername()) != null) {
+            throw new DuplicateUserException("Username already exists");
+        }
+    }
+
+    private void validateEmail(UserBean userBean) {
+        if (userBean.getEmail() == null || !userBean.getEmail().endsWith("@gmail.com")) {
+            throw new IllegalArgumentException("Email must be a valid @gmail.com address");
+        }
+    }
+
+    private User createAdminUser(UserBean userBean, UserDAO userDAO) throws DAOException {
+        User user = new Amministratore();
+        long adminCount = userDAO.countAdmins();
+        com.romanimazione.bean.SecurityManager secManager = com.romanimazione.bean.SecurityManager.getInstance();
+
+        if (!secManager.isMasterCodeSet() || adminCount == 0) {
+            if (userBean.getSecurityCode() == null || userBean.getSecurityCode().length() < 64) {
+                throw new IllegalArgumentException("You must create a Master Code (min 64 chars) to initialize the system security.");
+            }
+            secManager.setMasterCode(userBean.getSecurityCode());
+            user.setSuperAdmin(true);
+        } else {
+            if (!secManager.verifyMasterCode(userBean.getSecurityCode())) {
+                throw new IllegalArgumentException("Invalid Master Code. Registration denied.");
+            }
+            // Simplified boolean assignment logic
+            user.setSuperAdmin(adminCount == 0);
+        }
+        return user;
     }
 }

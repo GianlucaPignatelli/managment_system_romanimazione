@@ -164,13 +164,17 @@ public class CLIController {
             String input = mainView.showAdminMenuAndGetChoice(isSuperAdmin);
             try {
                 loggedIn = handleAdminChoice(input, isSuperAdmin, partyController);
+            } catch (com.romanimazione.exception.InvalidPartyException | com.romanimazione.exception.DAOException | IllegalArgumentException e) {
+                 mainView.showError(e.getMessage());
             } catch (Exception e) {
-                mainView.showError(e.getMessage());
+                // Catch-all for unexpected runtime errors
+                mainView.showError(MSG_ERR_UNEXPECTED + e.getMessage());
+                e.printStackTrace();
             }
         }
     }
 
-    private boolean handleAdminChoice(String input, boolean isSuperAdmin, PartyController partyController) throws Exception {
+    private boolean handleAdminChoice(String input, boolean isSuperAdmin, PartyController partyController) throws IOException, com.romanimazione.exception.DAOException, com.romanimazione.exception.InvalidPartyException {
         if ("1".equals(input)) {
             createPartyCLI(partyController);
         } else if ("2".equals(input)) {
