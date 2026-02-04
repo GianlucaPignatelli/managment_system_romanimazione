@@ -49,7 +49,6 @@ public abstract class GenericFileDAO<T> {
         try {
             return mapper.readValue(file, typeRef);
         } catch (IOException e) {
-            Logger.getLogger(GenericFileDAO.class.getName()).log(Level.SEVERE, "GenericFileDAO Read Error: " + e.getMessage(), e);
             throw new DAOException("Error reading file: " + file.getName() + " (" + e.getMessage() + ")", e);
         }
     }

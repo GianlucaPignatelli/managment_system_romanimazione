@@ -168,7 +168,7 @@ public class CLIController {
                  mainView.showError(e.getMessage());
             } catch (Exception e) {
                 // Catch-all for unexpected runtime errors
-                java.util.logging.Logger.getLogger(CLIController.class.getName()).log(java.util.logging.Level.SEVERE, MSG_ERR_UNEXPECTED + e.getMessage(), e);
+                java.util.logging.Logger.getLogger(CLIController.class.getName()).log(java.util.logging.Level.SEVERE, e, () -> MSG_ERR_UNEXPECTED + e.getMessage());
                 mainView.showError(MSG_ERR_UNEXPECTED + e.getMessage());
             }
         }

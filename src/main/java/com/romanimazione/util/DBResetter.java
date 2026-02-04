@@ -88,7 +88,7 @@ public class DBResetter {
             System.out.println("Database Reset Completed Successfully!");
 
         } catch (SQLException e) {
-            java.util.logging.Logger.getLogger(DBResetter.class.getName()).log(java.util.logging.Level.SEVERE, "Error resetting database: " + e.getMessage(), e);
+            java.util.logging.Logger.getLogger(DBResetter.class.getName()).log(java.util.logging.Level.SEVERE, e, () -> "Error resetting database: " + e.getMessage());
         }
     }
 }
