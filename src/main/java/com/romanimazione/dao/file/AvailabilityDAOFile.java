@@ -98,10 +98,8 @@ public class AvailabilityDAOFile implements AvailabilityDAO {
                      (a.getEndTime().compareTo(endTime) >= 0)
                 );
                 
-                if (matches && !result.contains(a.getUsername())) {
-                    if (!hasConflict(a, date)) {
-                        result.add(a.getUsername());
-                    }
+                if (matches && !result.contains(a.getUsername()) && !hasConflict(a, date)) {
+                    result.add(a.getUsername());
                 }
             }
         }

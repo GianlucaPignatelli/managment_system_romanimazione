@@ -7,6 +7,8 @@ import java.util.List;
 
 public class PartyDAODemo implements PartyDAO {
 
+    private static final String PARTY_NOT_FOUND_MSG = "Party not found";
+
     private static final List<Party> parties = new ArrayList<>();
 
     @Override
@@ -26,7 +28,7 @@ public class PartyDAODemo implements PartyDAO {
         Party party = parties.stream()
                 .filter(p -> p.getId() == partyId)
                 .findFirst()
-                .orElseThrow(() -> new com.romanimazione.exception.DAOException("Party not found"));
+                .orElseThrow(() -> new com.romanimazione.exception.DAOException(PARTY_NOT_FOUND_MSG));
         
         if (!party.getAssignmentStatuses().containsKey(animatorUsername)) {
             party.getAssignmentStatuses().put(animatorUsername, com.romanimazione.entity.AssignmentStatus.PENDING);
@@ -55,11 +57,10 @@ public class PartyDAODemo implements PartyDAO {
         Party party = parties.stream()
                 .filter(p -> p.getId() == partyId)
                 .findFirst()
-                .orElseThrow(() -> new com.romanimazione.exception.DAOException("Party not found"));
+                .orElseThrow(() -> new com.romanimazione.exception.DAOException(PARTY_NOT_FOUND_MSG));
         
         party.setStatus(status);
         System.out.println("Demo: Party " + partyId + " status updated to " + status);
-            System.out.println("Demo: Party " + partyId + " status updated to " + status);
     }
     
     @Override
@@ -72,7 +73,7 @@ public class PartyDAODemo implements PartyDAO {
                            status == com.romanimazione.entity.AssignmentStatus.ACCEPTED) &&
                            p.getStatus() != com.romanimazione.entity.PartyStatus.CANCELLED;
                 })
-                .collect(java.util.stream.Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -80,7 +81,7 @@ public class PartyDAODemo implements PartyDAO {
         Party party = parties.stream()
                 .filter(p -> p.getId() == partyId)
                 .findFirst()
-                .orElseThrow(() -> new com.romanimazione.exception.DAOException("Party not found"));
+                .orElseThrow(() -> new com.romanimazione.exception.DAOException(PARTY_NOT_FOUND_MSG));
         
         if (party.getAssignmentStatuses().containsKey(animatorUsername)) {
             party.getAssignmentStatuses().put(animatorUsername, status);
@@ -117,7 +118,7 @@ public class PartyDAODemo implements PartyDAO {
         Party party = parties.stream()
                 .filter(p -> p.getId() == partyId)
                 .findFirst()
-                .orElseThrow(() -> new com.romanimazione.exception.DAOException("Party not found"));
+                .orElseThrow(() -> new com.romanimazione.exception.DAOException(PARTY_NOT_FOUND_MSG));
         party.getAssignmentStatuses().remove(animatorUsername);
     }
 }

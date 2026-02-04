@@ -73,6 +73,6 @@ public class AvailabilityDAODemo implements AvailabilityDAO {
     public List<Availability> findByDate(java.time.LocalDate date) {
         return MOCK_DB.stream()
                 .filter(a -> a.getDate().equals(date))
-                .collect(java.util.stream.Collectors.toList());
+                .toList();
     }
 }
