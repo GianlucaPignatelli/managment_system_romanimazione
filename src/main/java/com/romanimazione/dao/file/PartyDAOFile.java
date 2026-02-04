@@ -8,6 +8,8 @@ import java.util.List;
 
 public class PartyDAOFile extends GenericFileDAO<Party> implements PartyDAO {
 
+    private static final String PARTY_NOT_FOUND_MSG = "Party not found";
+
     public PartyDAOFile() {
         super("parties.json");
     }
@@ -33,7 +35,7 @@ public class PartyDAOFile extends GenericFileDAO<Party> implements PartyDAO {
         Party party = list.stream()
                 .filter(p -> p.getId() == partyId)
                 .findFirst()
-                .orElseThrow(() -> new DAOException("Party not found"));
+                .orElseThrow(() -> new DAOException(PARTY_NOT_FOUND_MSG));
 
         if (!party.getAssignmentStatuses().containsKey(animatorUsername)) {
             party.getAssignmentStatuses().put(animatorUsername, com.romanimazione.entity.AssignmentStatus.PENDING);
@@ -59,7 +61,7 @@ public class PartyDAOFile extends GenericFileDAO<Party> implements PartyDAO {
         Party party = list.stream()
                 .filter(p -> p.getId() == partyId)
                 .findFirst()
-                .orElseThrow(() -> new DAOException("Party not found"));
+                .orElseThrow(() -> new DAOException(PARTY_NOT_FOUND_MSG));
         
         party.setStatus(status);
         save(list);
@@ -75,7 +77,7 @@ public class PartyDAOFile extends GenericFileDAO<Party> implements PartyDAO {
                            status == com.romanimazione.entity.AssignmentStatus.ACCEPTED) &&
                            p.getStatus() != com.romanimazione.entity.PartyStatus.CANCELLED;
                 })
-                .collect(java.util.stream.Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -84,7 +86,7 @@ public class PartyDAOFile extends GenericFileDAO<Party> implements PartyDAO {
         Party party = list.stream()
                 .filter(p -> p.getId() == partyId)
                 .findFirst()
-                .orElseThrow(() -> new DAOException("Party not found"));
+                .orElseThrow(() -> new DAOException(PARTY_NOT_FOUND_MSG));
         
         if (party.getAssignmentStatuses().containsKey(animatorUsername)) {
             party.getAssignmentStatuses().put(animatorUsername, status);
@@ -128,7 +130,7 @@ public class PartyDAOFile extends GenericFileDAO<Party> implements PartyDAO {
         if (found) {
             save(parties);
         } else {
-             throw new DAOException("Party not found");
+             throw new DAOException(PARTY_NOT_FOUND_MSG);
         }
     }
 }
