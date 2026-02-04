@@ -7,7 +7,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -31,7 +30,7 @@ public class JavaFXAvailabilityController implements Initializable {
     @FXML private TableColumn<AvailabilityBean, LocalTime> endColumn;
     @FXML private TableColumn<AvailabilityBean, Boolean> fullDayColumn;
 
-    private AvailabilityController appController;
+    private final AvailabilityController appController;
 
     // In a real app, this should be taken from the Session/Context
     private String currentUsername = "testUser"; 
