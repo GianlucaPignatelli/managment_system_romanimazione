@@ -24,25 +24,44 @@
     </top>
 
     <center>
-        <TableView fx:id="animatorTable">
-            <columns>
-                <TableColumn text="Username" prefWidth="120">
-                    <cellValueFactory><PropertyValueFactory property="username"/></cellValueFactory>
-                </TableColumn>
-                <TableColumn text="Name" prefWidth="120">
-                    <cellValueFactory><PropertyValueFactory property="nome"/></cellValueFactory>
-                </TableColumn>
-                <TableColumn text="Surname" prefWidth="120">
-                    <cellValueFactory><PropertyValueFactory property="cognome"/></cellValueFactory>
-                </TableColumn>
-                <TableColumn text="Email" prefWidth="180">
-                    <cellValueFactory><PropertyValueFactory property="email"/></cellValueFactory>
-                </TableColumn>
-            </columns>
-             <columnResizePolicy>
+        <VBox spacing="10">
+            <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+            
+            <Label text="Current Assignments:" style="-fx-font-weight: bold"/>
+            <TableView fx:id="currentAssignmentsTable" prefHeight="150">
+                <columns>
+                     <TableColumn fx:id="currentUsernameColumn" text="Username" prefWidth="150"/>
+                     <TableColumn fx:id="currentStatusColumn" text="Status" prefWidth="150"/>
+                     <TableColumn fx:id="currentActionColumn" text="Action" prefWidth="100"/>
+                </columns>
+                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-             </columnResizePolicy>
-        </TableView>
+                </columnResizePolicy>
+            </TableView>
+            
+            <Separator />
+            
+            <Label text="Available Animators (Select to Invite):" style="-fx-font-weight: bold"/>
+            <TableView fx:id="animatorTable" prefHeight="200">
+                <columns>
+                    <TableColumn text="Username" prefWidth="120">
+                        <cellValueFactory><PropertyValueFactory property="username"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Name" prefWidth="120">
+                        <cellValueFactory><PropertyValueFactory property="nome"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Surname" prefWidth="120">
+                        <cellValueFactory><PropertyValueFactory property="cognome"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Email" prefWidth="180">
+                        <cellValueFactory><PropertyValueFactory property="email"/></cellValueFactory>
+                    </TableColumn>
+                </columns>
+                 <columnResizePolicy>
+                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                 </columnResizePolicy>
+            </TableView>
+        </VBox>
     </center>
 
     <bottom>

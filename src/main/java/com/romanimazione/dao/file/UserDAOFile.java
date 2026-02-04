@@ -12,17 +12,29 @@ public class UserDAOFile extends GenericFileDAO<User> implements UserDAO {
 
     public UserDAOFile() {
         super("users.json");
-        // Seed if empty
         try {
             List<User> users = load(new TypeReference<List<User>>(){});
+            boolean dirty = false;
+
+            // Seed if empty
+            // Seed if empty - REMOVED per user request
             if (users.isEmpty()) {
-                users.add(new Animatore("demo", "pass", "Demo", "User", "demo@romanimazione.com"));
-                users.add(new Amministratore("admin", "admin", "Super", "Admin", "admin@romanimazione.com"));
-                save(users);
-                System.out.println("File: Seeded default users (demo/pass, admin/admin).");
+                System.out.println("File: No users found. Starting fresh.");
+            } else {
+                // Sanitize existing users with ID 0
+                int maxId = users.stream().mapToInt(User::getId).max().orElse(0);
+                for (User u : users) {
+                    if (u.getId() == 0) {
+                        maxId++;
+                        u.setId(maxId);
+                        dirty = true;
+                    }
+                }
             }
+
+            if (dirty) save(users);
         } catch (DAOException e) {
-            System.err.println("Error seeding users: " + e.getMessage());
+            System.err.println("Error initializing UserDAOFile: " + e.getMessage());
         }
     }
 
@@ -44,11 +56,31 @@ public class UserDAOFile extends GenericFileDAO<User> implements UserDAO {
         for (User u : users) {
              if (u.getUsername().equals(user.getUsername())) throw new DAOException("User already exists");
         }
-        // Generate ID? For now relying on user-provided or auto-inc imitation not needed for username login
         int maxId = users.stream().mapToInt(User::getId).max().orElse(0);
         user.setId(maxId + 1);
         
         users.add(user);
         save(users);
+    }
+
+    @Override
+    public long countAdmins() throws DAOException {
+        List<User> users = load(new TypeReference<List<User>>(){});
+        return users.stream()
+            .filter(u -> "AMMINISTRATORE".equalsIgnoreCase(u.getRole()))
+            .count();
+    }
+
+    @Override
+    public void deleteUser(String username) throws DAOException {
+        List<User> users = load(new TypeReference<List<User>>(){});
+        boolean removed = users.removeIf(u -> u.getUsername().equals(username));
+        if (removed) save(users);
+        else throw new DAOException("User not found");
+    }
+
+    @Override
+    public List<User> findAllUsers() throws DAOException {
+        return load(new TypeReference<List<User>>(){});
     }
 }

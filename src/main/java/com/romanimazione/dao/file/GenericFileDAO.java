@@ -33,10 +33,25 @@ public abstract class GenericFileDAO<T> {
 
     protected List<T> load(TypeReference<List<T>> typeRef) throws DAOException {
         if (!file.exists()) return new ArrayList<>();
+        
+        // Handle manually created "[]" files which break Jackson DefaultTyping
+        if (file.length() < 10) {
+            try {
+                String content = new String(java.nio.file.Files.readAllBytes(file.toPath())).trim();
+                if ("[]".equals(content)) {
+                    return new ArrayList<>();
+                }
+            } catch (IOException e) {
+                // Ignore read error here, let Jackson fail normally if real issue
+            }
+        }
+
         try {
             return mapper.readValue(file, typeRef);
         } catch (IOException e) {
-            throw new DAOException("Error reading file: " + file.getName(), e);
+            System.err.println("GenericFileDAO Read Error: " + e.getMessage());
+            e.printStackTrace(); // Helpful for console debugging
+            throw new DAOException("Error reading file: " + file.getName() + " (" + e.getMessage() + ")", e);
         }
     }
 

@@ -28,8 +28,8 @@ public class PartyBean extends Party {
         bean.setAnimatorsRequired(entity.getAnimatorsRequired());
         bean.setDescription(entity.getDescription());
         bean.setCost(entity.getCost());
-        bean.setAssignedAnimators(entity.getAssignedAnimators()); // Map list
         bean.setStatus(entity.getStatus());
+        bean.setAssignmentStatuses(new java.util.HashMap<>(entity.getAssignmentStatuses())); // Deep copy map
         
         return bean;
     }
@@ -51,8 +51,8 @@ public class PartyBean extends Party {
         entity.setAnimatorsRequired(this.getAnimatorsRequired());
         entity.setDescription(this.getDescription());
         entity.setCost(this.getCost());
-        entity.setAssignedAnimators(this.getAssignedAnimators()); // Map list
         entity.setStatus(this.getStatus());
+        entity.setAssignmentStatuses(new java.util.HashMap<>(this.getAssignmentStatuses())); // Deep copy map
         
         return entity;
     }

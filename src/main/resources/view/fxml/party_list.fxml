@@ -48,7 +48,10 @@
                 <TableColumn text="Staff" prefWidth="50">
                     <cellValueFactory><PropertyValueFactory property="animatorsRequired"/></cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="assignColumn" text="Actions" prefWidth="140"/>
+                <TableColumn fx:id="descriptionColumn" text="Details" prefWidth="250"/>
+                <TableColumn fx:id="costColumn" text="Cost (€)" prefWidth="80"/>
+                <TableColumn fx:id="assignmentStatusColumn" text="Assignments" prefWidth="120"/>
+                <TableColumn fx:id="assignColumn" text="Action" prefWidth="150"/>
             </columns>
 
              <columnResizePolicy>

@@ -110,7 +110,18 @@ public class PartyCLIView {
         }
         for (int i = 0; i < animators.size(); i++) {
              com.romanimazione.bean.UserBean u = animators.get(i);
-             System.out.printf("%d. %s (%s %s)%n", i+1, u.getUsername(), u.getNome(), u.getCognome());
+             String note = u.isTimeCompatible() ? "[MATCH]" : "* (TIME MISMATCH)";
+             
+             String colorReset = "\u001B[0m";
+             String colorRed = "\u001B[31m";
+             String colorGreen = "\u001B[32m";
+             
+             // Simple color coding if terminal supports it (usually works in VSCode/IntelliJ)
+             if (!u.isTimeCompatible()) {
+                 System.out.printf("%d. %s (%s %s) %s%s%s%n", i+1, u.getUsername(), u.getNome(), u.getCognome(), colorRed, note, colorReset);
+             } else {
+                 System.out.printf("%d. %s (%s %s) %s%s%s%n", i+1, u.getUsername(), u.getNome(), u.getCognome(), colorGreen, note, colorReset);
+             }
         }
     }
 
@@ -123,5 +134,37 @@ public class PartyCLIView {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    public void showJobOffers(List<PartyBean> list) {
+        System.out.println("\n--- JOB OFFERS (PENDING) ---");
+        if (list.isEmpty()) {
+            System.out.println("No pending job offers.");
+        } else {
+            System.out.printf("%-5s | %-12s | %-8s | %-20s%n", "ID", "Date", "Time", "Details");
+            System.out.println("-------------------------------------------------------");
+            for (int i = 0; i < list.size(); i++) {
+                PartyBean p = list.get(i);
+                System.out.printf("%d. [ID:%d] | %s | %s | %s%n", 
+                    i+1, p.getId(), p.getDate(), p.getStartTime(), p.getName());
+            }
+        }
+    }
+    
+    public int askJobOfferSelection(int max) throws IOException {
+        System.out.print("Select Offer # to respond to (0 to back): ");
+        try {
+            String input = reader.readLine();
+            int choice = Integer.parseInt(input);
+            if (choice < 0 || choice > max) return 0;
+            return choice;
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+    
+    public String askAcceptOrReject() throws IOException {
+        System.out.print("Do you want to (A)ccept or (R)eject? ");
+        return reader.readLine().trim().toUpperCase();
     }
 }

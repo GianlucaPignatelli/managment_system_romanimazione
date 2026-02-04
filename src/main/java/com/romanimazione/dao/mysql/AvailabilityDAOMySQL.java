@@ -118,6 +118,14 @@ public class AvailabilityDAOMySQL implements AvailabilityDAO {
                        "AND (" +
                        "  is_full_day = TRUE " +
                        "  OR (start_time <= ? AND end_time >= ?)" +
+                       ") " +
+                       "AND username NOT IN (" +
+                       "  SELECT pa.animator_username " +
+                       "  FROM party_assignments pa " +
+                       "  JOIN party p ON pa.party_id = p.id " +
+                       "  WHERE p.party_date = ? " +
+                       "  AND pa.status = 'ACCEPTED'" +
+                       "  AND p.status != 'CANCELLED'" + 
                        ")";
 
         try (Connection conn = MySQLDAOFactory.createConnection();
@@ -126,6 +134,8 @@ public class AvailabilityDAOMySQL implements AvailabilityDAO {
             stmt.setDate(1, Date.valueOf(date));
             stmt.setTime(2, Time.valueOf(startTime));
             stmt.setTime(3, Time.valueOf(endTime));
+            // Fourth parameter for the subquery date check
+            stmt.setDate(4, Date.valueOf(date));
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -136,5 +146,30 @@ public class AvailabilityDAOMySQL implements AvailabilityDAO {
             throw new DAOException("Error finding available animators: " + e.getMessage(), e);
         }
         return userList;
+    }
+
+    @Override
+    public List<Availability> findByDate(java.time.LocalDate date) throws DAOException {
+        List<Availability> list = new ArrayList<>();
+        String sql = "SELECT * FROM availability WHERE availability_date = ?";
+        try (Connection conn = MySQLDAOFactory.createConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDate(1, java.sql.Date.valueOf(date));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while(rs.next()) {
+                    Availability a = new Availability();
+                    a.setId(rs.getInt("id"));
+                    a.setUsername(rs.getString("username"));
+                    a.setDate(rs.getDate("availability_date").toLocalDate());
+                    a.setStartTime(rs.getTime("start_time").toLocalTime());
+                    a.setEndTime(rs.getTime("end_time").toLocalTime());
+                    a.setFullDay(rs.getBoolean("is_full_day"));
+                    list.add(a);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error finding availability by date", e);
+        }
+        return list;
     }
 }

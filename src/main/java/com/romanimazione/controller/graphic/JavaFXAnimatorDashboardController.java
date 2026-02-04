@@ -21,6 +21,11 @@ public class JavaFXAnimatorDashboardController {
     private void goToAvailability() throws IOException {
         new com.romanimazione.view.fx.AvailabilityFXView().showAvailabilityManagement();
     }
+    
+    @FXML
+    private void goToJobOffers() throws IOException {
+        new com.romanimazione.view.fx.MainFXView().showJobOffers();
+    }
 
     @FXML
     private void handleLogout() throws IOException {

@@ -1,14 +1,17 @@
 package com.romanimazione.bean;
 
 public class UserBean {
+    private int id;
     private String username;
     private String role;
     private String nome;
     private String cognome;
     private String email;
-    private String password; // Optional depending on flow
+    private String password;
+    private String securityCode;
 
     public UserBean() {}
+
     public UserBean(String username, String password, String role, String nome, String cognome, String email) {
         this.username = username;
         this.password = password;
@@ -17,6 +20,9 @@ public class UserBean {
         this.cognome = cognome;
         this.email = email;
     }
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -32,7 +38,19 @@ public class UserBean {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
-    
+
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public String getSecurityCode() { return securityCode; }
+    public void setSecurityCode(String securityCode) { this.securityCode = securityCode; }
+
+    private boolean superAdmin;
+    public boolean isSuperAdmin() { return superAdmin; }
+    public void setSuperAdmin(boolean superAdmin) { this.superAdmin = superAdmin; }
+
+    // Transient/UI flag
+    private boolean timeCompatible = true;
+    public boolean isTimeCompatible() { return timeCompatible; }
+    public void setTimeCompatible(boolean timeCompatible) { this.timeCompatible = timeCompatible; }
 }

@@ -57,6 +57,22 @@ public class AvailabilityDAODemo implements AvailabilityDAO {
                 ))
                 .map(Availability::getUsername)
                 .distinct()
+                .filter(username -> {
+                    // Check if they have an ACCEPTED assignment on this date
+                    com.romanimazione.dao.demo.PartyDAODemo partyDao = new com.romanimazione.dao.demo.PartyDAODemo(); 
+                    // Since PartyDAODemo uses a static list, new instance accesses same data
+                    return partyDao.findAllParties().stream()
+                        .noneMatch(p -> p.getDate().equals(date) && 
+                            p.getAssignmentStatuses().containsKey(username) && 
+                            p.getAssignmentStatuses().get(username) == com.romanimazione.entity.AssignmentStatus.ACCEPTED &&
+                            p.getStatus() != com.romanimazione.entity.PartyStatus.CANCELLED);
+                })
                 .toList();
+    }
+    @Override
+    public List<Availability> findByDate(java.time.LocalDate date) {
+        return MOCK_DB.stream()
+                .filter(a -> a.getDate().equals(date))
+                .collect(java.util.stream.Collectors.toList());
     }
 }

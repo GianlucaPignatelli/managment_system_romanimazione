@@ -9,6 +9,7 @@ public class DatabaseInitializer {
     public static void main(String[] args) {
         System.out.println("Initializing Database...");
         try {
+            initializeUsersTable(); // Reset Users First
             initializePartyTable();
             initializeAssignmentsTable();
             System.out.println("Database initialization completed successfully.");
@@ -17,6 +18,35 @@ public class DatabaseInitializer {
         } catch (Exception e) {
              // Fallback for unexpected errors
              java.util.logging.Logger.getLogger(DatabaseInitializer.class.getName()).log(java.util.logging.Level.SEVERE, "Unexpected error", e);
+        }
+    }
+
+    private static void initializeUsersTable() throws java.sql.SQLException {
+        System.out.println("Creating 'users' table...");
+        String sql = "DROP TABLE IF EXISTS party_assignments;" + 
+                     "DROP TABLE IF EXISTS availability; " + // Dependent table
+                     "DROP TABLE IF EXISTS users; " +
+                     "CREATE TABLE users (" +
+                     "    id INT AUTO_INCREMENT PRIMARY KEY," +
+                     "    username VARCHAR(50) NOT NULL UNIQUE," +
+                     "    password VARCHAR(50) NOT NULL," +
+                     "    role VARCHAR(20) NOT NULL," +
+                     "    nome VARCHAR(50) NOT NULL," +
+                     "    cognome VARCHAR(50) NOT NULL," +
+                     "    email VARCHAR(100) NOT NULL," +
+                     "    is_super_admin BOOLEAN DEFAULT FALSE" +
+                     ");";
+        
+        try (Connection conn = MySQLDAOFactory.createConnection();
+             Statement stmt = conn.createStatement()) {
+            
+            String[] statements = sql.split(";");
+            for (String s : statements) {
+                if (!s.trim().isEmpty()) {
+                   stmt.executeUpdate(s);
+                }
+            }
+            System.out.println("Table 'users' reset successfully.");
         }
     }
 

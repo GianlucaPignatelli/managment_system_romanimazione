@@ -21,6 +21,7 @@ public class RegistrationController extends Subject {
         }
 
         // Validate Email
+        // Validate Email
         if (userBean.getEmail() == null || !userBean.getEmail().endsWith("@gmail.com")) {
             throw new IllegalArgumentException("Email must be a valid @gmail.com address");
         }
@@ -28,6 +29,33 @@ public class RegistrationController extends Subject {
         User user;
         if ("AMMINISTRATORE".equalsIgnoreCase(userBean.getRole())) {
             user = new Amministratore();
+            
+            // Security Check
+            // Security Check
+            long adminCount = userDAO.countAdmins();
+            com.romanimazione.bean.SecurityManager secManager = com.romanimazione.bean.SecurityManager.getInstance();
+
+            
+            // Fix for Ghost File: If DB is empty, we act as if it's a fresh setup, even if ID file exists.
+            if (!secManager.isMasterCodeSet() || adminCount == 0) {
+                
+                if (userBean.getSecurityCode() == null || userBean.getSecurityCode().length() < 64) {
+                    throw new IllegalArgumentException("You must create a Master Code (min 64 chars) to initialize the system security.");
+                }
+                secManager.setMasterCode(userBean.getSecurityCode());
+                user.setSuperAdmin(true); 
+            } else {
+                if (!secManager.verifyMasterCode(userBean.getSecurityCode())) {
+                     throw new IllegalArgumentException("Invalid Master Code. Registration denied.");
+                }
+                
+                if (adminCount == 0) {
+                    // Should be unreachable due to if above, but defensive coding ok
+                    user.setSuperAdmin(true);
+                } else {
+                    user.setSuperAdmin(false);
+                }
+            }
         } else {
             user = new Animatore();
         }

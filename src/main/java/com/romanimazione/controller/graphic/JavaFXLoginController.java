@@ -61,6 +61,11 @@ public class JavaFXLoginController implements Observer {
     }
 
     @FXML
+    private void handleRegister() throws java.io.IOException {
+        new com.romanimazione.view.fx.RegistrationFXView().show();
+    }
+
+    @FXML
     private void goHome() throws java.io.IOException {
         new com.romanimazione.view.fx.MainFXView().showHome();
     }

@@ -23,9 +23,48 @@ public class JavaFXRegistrationController implements Observer {
 
     private RegistrationController registrationController;
 
+    @FXML private javafx.scene.layout.VBox adminCodeBox;
+    @FXML private TextField adminCodeField;
+    @FXML private Label adminCodeLabel;
+
     public JavaFXRegistrationController() {
         this.registrationController = new RegistrationController();
         this.registrationController.attach(this);
+    }
+    
+    @FXML
+    public void initialize() {
+        roleBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if ("AMMINISTRATORE".equals(newVal)) {
+                adminCodeBox.setVisible(true);
+                adminCodeBox.setManaged(true);
+                // Hint logic: Count admins to change label text? 
+                // Too complex to wire Controller just for label hint? 
+                // Let's keep it generic "Master Code". Controller Exception will explain details.
+                // Or try checking lazily.
+                checkFirstAdminStatus();
+            } else {
+                adminCodeBox.setVisible(false);
+                adminCodeBox.setManaged(false);
+            }
+        });
+    }
+    
+    private void checkFirstAdminStatus() {
+        try {
+            long count = com.romanimazione.dao.DAOFactory.getDAOFactory().getUserDAO().countAdmins();
+            boolean isCodeSet = com.romanimazione.bean.SecurityManager.getInstance().isMasterCodeSet();
+            
+            if (count == 0 || !isCodeSet) {
+                 adminCodeField.setPromptText("Create Master Code (min 64 chars)");
+                 adminCodeLabel.setText("Create Master Code:");
+            } else {
+                 adminCodeField.setPromptText("Enter Master Code");
+                 adminCodeLabel.setText("Enter Master Code:");
+            }
+        } catch (Exception e) {
+            // Ignore UI hint error
+        }
     }
 
     @FXML
@@ -37,6 +76,10 @@ public class JavaFXRegistrationController implements Observer {
         user.setCognome(surnameField.getText());
         user.setEmail(emailField.getText());
         user.setRole(roleBox.getValue());
+        
+        if ("AMMINISTRATORE".equals(user.getRole())) {
+            user.setSecurityCode(adminCodeField.getText());
+        }
 
         if (user.getRole() == null) {
             showError("Please select a role.");

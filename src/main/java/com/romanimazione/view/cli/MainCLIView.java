@@ -38,11 +38,17 @@ public class MainCLIView {
         return reader.readLine();
     }
 
-    public String showAdminMenuAndGetChoice() throws IOException {
+    public String showAdminMenuAndGetChoice(boolean isSuperAdmin) throws IOException {
         System.out.println("\n[ADMIN DASHBOARD]");
         System.out.println("1. Create New Party");
         System.out.println("2. List All Parties");
-        System.out.println("3. Logout");
+        if (isSuperAdmin) {
+            System.out.println("3. Manage Users (Super Admin)");
+            System.out.println("4. Change Master Code (Super Admin)");
+            System.out.println("5. Logout");
+        } else {
+            System.out.println("3. Logout");
+        }
         System.out.print(P_CHOICE);
         return reader.readLine();
     }
@@ -50,8 +56,15 @@ public class MainCLIView {
     public String showAnimatorMenuAndGetChoice() throws IOException {
         System.out.println("\n[ANIMATORE DASHBOARD]");
         System.out.println("1. Manage Availability");
-        System.out.println("2. Logout");
+        System.out.println("2. View Job Offers");
+        System.out.println("3. Logout");
         System.out.print(P_CHOICE);
+        return reader.readLine();
+    }
+    public String getNewMasterCode() throws IOException {
+        System.out.println("\n--- CHANGE MASTER CODE ---");
+        System.out.println("Warning: This code is required for future admin registrations.");
+        System.out.print("Enter New Master Code (min 64 chars): ");
         return reader.readLine();
     }
 }

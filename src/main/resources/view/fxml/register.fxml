@@ -32,6 +32,11 @@
                         </FXCollections>
                     </items>
                 </ComboBox>
+                
+                <VBox fx:id="adminCodeBox" visible="false" managed="false" spacing="5">
+                    <Label fx:id="adminCodeLabel" text="Master Code:" />
+                    <TextField fx:id="adminCodeField" promptText="Enter Security Code (64 chars for 1st Admin)" maxWidth="300"/>
+                </VBox>
 
                 <Button text="Register" onAction="#handleRegister"/>
                 <Label fx:id="infoLabel" textFill="black"/>

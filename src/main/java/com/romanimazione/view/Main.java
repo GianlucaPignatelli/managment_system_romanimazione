@@ -4,6 +4,9 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.println("\n\n************************************************");
+        // Initialize Logic
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         Scanner scanner = new Scanner(System.in);
         
         System.out.println("Select Persistence Mode:");
@@ -22,6 +25,14 @@ public class Main {
         if (pType == com.romanimazione.dao.DAOFactory.MYSQL) pTypeName = "MySQL";
         else if (pType == com.romanimazione.dao.DAOFactory.FILESYSTEM) pTypeName = "File";
         
+        if (pType == com.romanimazione.dao.DAOFactory.DEMO) {
+            com.romanimazione.bean.SecurityManager.getInstance().setTransient(true);
+            com.romanimazione.bean.SecurityManager.getInstance().reset();
+        } else {
+            com.romanimazione.bean.SecurityManager.getInstance().setTransient(false);
+            // Constructor already loaded config. No need to reset/clear.
+        }
+
         System.out.println("Persistence set to: " + pTypeName);
 
         System.out.println("\nSelect Interface:");

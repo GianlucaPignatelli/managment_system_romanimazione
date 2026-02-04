@@ -17,6 +17,7 @@
                 <TextField fx:id="usernameField" promptText="Username" maxWidth="200"/>
                 <PasswordField fx:id="passwordField" promptText="Password" maxWidth="200"/>
                 <Button fx:id="loginButton" text="Login" onAction="#handleLogin"/>
+                <Button text="Register" onAction="#handleRegister" style="-fx-background-color: transparent; -fx-text-fill: blue; -fx-underline: true;"/>
                 <Label fx:id="errorLabel" textFill="red"/>
             </children>
              <padding>

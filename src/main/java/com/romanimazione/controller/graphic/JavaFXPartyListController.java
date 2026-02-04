@@ -3,6 +3,7 @@ package com.romanimazione.controller.graphic;
 import com.romanimazione.bean.PartyBean;
 import com.romanimazione.controller.application.PartyController;
 import com.romanimazione.exception.DAOException;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +23,7 @@ public class JavaFXPartyListController {
     private static final String ERROR_TITLE = "Error";
     @FXML private TableView<PartyBean> partyTable;
     @FXML private TableColumn<PartyBean, Void> assignColumn; // Void because button doesn't map to a field
+    @FXML private TableColumn<PartyBean, String> assignmentStatusColumn; // Added assignmentStatusColumn
     
     private final PartyController partyController;
 
@@ -33,6 +35,42 @@ public class JavaFXPartyListController {
     public void initialize() {
         addButtonToTable();
         loadParties();
+
+        partyTable.setRowFactory(tv -> {
+            TableRow<PartyBean> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    PartyBean rowData = row.getItem();
+                    try {
+                        new com.romanimazione.view.fx.PartyFXView().openDetailsDialog(rowData);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            return row ;
+        });
+
+        // Assignment Status Logic
+        assignmentStatusColumn.setCellValueFactory(cell -> {
+            PartyBean p = cell.getValue();
+            try {
+                int count = partyController.getProposalCount(p.getId());
+                int status = partyController.getAssignmentFeedback(p.getId());
+                
+                String icon = "";
+                switch(status) {
+                    case 1: icon = "✅"; break; // All Accepted
+                    case -1: icon = "❌"; break; // Rejected
+                    case 0: icon = "⏳"; break; // Pending
+                    default: icon = "⚪"; break; // None
+                }
+                
+                return new SimpleStringProperty("Props: " + count + " " + icon);
+            } catch (Exception e) {
+                return new SimpleStringProperty("?");
+            }
+        });
     }
 
     private void addButtonToTable() {

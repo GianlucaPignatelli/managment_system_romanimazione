@@ -11,10 +11,9 @@ public class UserDAODemo implements UserDAO {
     
     private static final java.util.List<User> MOCK_USERS = new java.util.ArrayList<>();
 
-    // Static init block to add default demo user
+    // Static init block - Default users removed as per user request for consistency
     static {
-        MOCK_USERS.add(new Animatore("demo", "pass", "Demo", "User", "demo@mail.com"));
-        MOCK_USERS.add(new Amministratore("admin", "admin", "Super", "Admin", "admin@romanimazione.com"));
+        // Empty to start clean
     }
 
     @Override
@@ -34,6 +33,23 @@ public class UserDAODemo implements UserDAO {
             throw new DAOException("User already exists in Demo DB");
         }
         MOCK_USERS.add(user);
-        System.out.println("Demo: Resistered user " + user.getUsername() + " to in-memory list.");
+        System.out.println("Demo: Registered user " + user.getUsername());
+    }
+
+    @Override
+    public long countAdmins() {
+        return MOCK_USERS.stream()
+            .filter(u -> "AMMINISTRATORE".equalsIgnoreCase(u.getRole()))
+            .count();
+    }
+
+    @Override
+    public void deleteUser(String username) throws DAOException {
+        MOCK_USERS.removeIf(u -> u.getUsername().equals(username));
+    }
+
+    @Override
+    public java.util.List<User> findAllUsers() {
+        return new java.util.ArrayList<>(MOCK_USERS);
     }
 }

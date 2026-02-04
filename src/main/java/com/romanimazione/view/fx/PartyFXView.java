@@ -52,4 +52,18 @@ public class PartyFXView {
 
         dialogStage.showAndWait();
     }
+
+    public void openDetailsDialog(com.romanimazione.bean.PartyBean party) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fxml/party_details.fxml"));
+        Parent root = loader.load();
+        
+        com.romanimazione.controller.graphic.JavaFXPartyDetailsController controller = loader.getController();
+        controller.setPartyData(party);
+        
+        Stage stage = new Stage();
+        stage.setTitle("Party Details");
+        stage.setScene(new Scene(root));
+        stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+    }
 }

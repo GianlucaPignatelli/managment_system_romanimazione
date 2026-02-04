@@ -115,26 +115,52 @@ public class PartyController extends Subject {
     public List<UserBean> findEligibleAnimators(PartyBean party) throws DAOException {
         AvailabilityDAO availabilityDAO = DAOFactory.getDAOFactory().getAvailabilityDAO();
         UserDAO userDAO = DAOFactory.getDAOFactory().getUserDAO();
+        PartyDAO partyDAO = DAOFactory.getDAOFactory().getPartyDAO();
+
+        // 1. Get ALL availabilities for the date
+        List<com.romanimazione.entity.Availability> allAvailabilities = availabilityDAO.findByDate(party.getDate());
         
-        List<String> usernames = availabilityDAO.findAvailableAnimators(party.getDate(), party.getStartTime(), party.getEndTime());
-        List<UserBean> fullAnimators = new ArrayList<>();
+        // 2. Group by username (Animator might have multiple slots)
+        java.util.Map<String, List<com.romanimazione.entity.Availability>> grouped = allAvailabilities.stream()
+                .collect(java.util.stream.Collectors.groupingBy(com.romanimazione.entity.Availability::getUsername));
         
-        for (String username : usernames) {
-            User user = userDAO.findUserByIdentifier(username);
+        // 3. Get Excluded (Already Assigned)
+        List<String> assigned = partyDAO.getAssignedAnimators(party.getId());
+        
+        List<UserBean> result = new ArrayList<>();
+        
+        for (String username : grouped.keySet()) {
+            if (assigned.contains(username)) continue;
             
-            // Exclude already assigned animators (Optional check, good for UI filtering)
-            List<String> assigned = DAOFactory.getDAOFactory().getPartyDAO().getAssignedAnimators(party.getId());
-            if (user != null && !assigned.contains(username)) {
-                UserBean animatorBean = new UserBean();
-                animatorBean.setUsername(user.getUsername());
-                animatorBean.setNome(user.getNome());
-                animatorBean.setCognome(user.getCognome());
-                animatorBean.setEmail(user.getEmail());
-                animatorBean.setRole(user.getRole());
-                fullAnimators.add(animatorBean);
+            User user = userDAO.findUserByIdentifier(username);
+            if (user == null) continue;
+            
+            UserBean animatorBean = new UserBean();
+            animatorBean.setUsername(user.getUsername());
+            animatorBean.setNome(user.getNome());
+            animatorBean.setCognome(user.getCognome());
+            animatorBean.setEmail(user.getEmail());
+            animatorBean.setRole(user.getRole());
+            
+            // Check Compatibility Logic
+            boolean isTimeCompatible = false;
+            List<com.romanimazione.entity.Availability> slots = grouped.get(username);
+            
+            for (com.romanimazione.entity.Availability slot : slots) {
+                // Check if Party fits INSIDE the slot
+                boolean startsAfterOrAt = !party.getStartTime().isBefore(slot.getStartTime());
+                boolean endsBeforeOrAt = !party.getEndTime().isAfter(slot.getEndTime());
+                
+                if (startsAfterOrAt && endsBeforeOrAt) {
+                    isTimeCompatible = true;
+                    break;
+                }
             }
+            
+            animatorBean.setTimeCompatible(isTimeCompatible);
+            result.add(animatorBean);
         }
-        return fullAnimators;
+        return result;
     }
 
     public void assignAnimator(PartyBean party, UserBean animator) throws DAOException {
@@ -166,5 +192,44 @@ public class PartyController extends Subject {
         }
         
         notifyObservers("Party " + party.getId() + " has been CANCELLED.");
+    }
+    
+    // Returns: 1 = All Accepted (Green), -1 = At least one Rejected (Red), 0 = Pending/Mixed (Yellow), 2 = No assignments (Gray)
+    public int getAssignmentFeedback(int partyId) throws DAOException {
+        PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
+        List<String> animators = dao.getAssignedAnimators(partyId); // This returns ALL assigned usernames
+        
+        if (animators.isEmpty()) return 2;
+        
+        boolean allAccepted = true;
+        for (String user : animators) {
+            com.romanimazione.entity.AssignmentStatus status = dao.getAssignmentStatus(partyId, user);
+            if (status == com.romanimazione.entity.AssignmentStatus.REJECTED) {
+                return -1; // Specific rejection found
+            }
+            if (status != com.romanimazione.entity.AssignmentStatus.ACCEPTED) {
+                allAccepted = false;
+            }
+        }
+        
+        return allAccepted ? 1 : 0;
+    }
+    
+    public int getProposalCount(int partyId) throws DAOException {
+        return DAOFactory.getDAOFactory().getPartyDAO().getProposalCount(partyId);
+    }
+
+    public void removeAssignment(PartyBean party, String username) throws DAOException {
+        PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
+        dao.removeAssignment(party.getId(), username);
+        notifyObservers("Removed assignment for " + username + " from party " + party.getId());
+    }
+
+    public java.util.Map<String, com.romanimazione.entity.AssignmentStatus> getAssignmentStatuses(int partyId) throws DAOException {
+        List<PartyBean> all = getAllParties();
+        for(PartyBean p : all) {
+            if(p.getId() == partyId) return p.getAssignmentStatuses();
+        }
+        return new java.util.HashMap<>();
     }
 }

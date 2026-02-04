@@ -19,4 +19,12 @@ public class MainFXView {
     public void showAnimatorDashboard() throws IOException {
         MainApp.setRoot("animator_dashboard");
     }
+    
+    public void showJobOffers() throws IOException {
+        MainApp.setRoot("job_offers");
+    }
+
+    public void showManageUsers() throws IOException {
+        new UserManagementFXView().show();
+    }
 }

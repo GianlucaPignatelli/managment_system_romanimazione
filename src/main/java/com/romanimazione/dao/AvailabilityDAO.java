@@ -12,4 +12,7 @@ public interface AvailabilityDAO {
     
     // Matching Logic: Find animators available for a specific slot
     List<String> findAvailableAnimators(java.time.LocalDate date, java.time.LocalTime startTime, java.time.LocalTime endTime) throws DAOException;
+    
+    // New Feature: Find all animators available on a date (regardless of time)
+    List<Availability> findByDate(java.time.LocalDate date) throws DAOException;
 }

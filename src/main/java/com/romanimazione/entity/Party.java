@@ -62,13 +62,20 @@ public class Party {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    private java.util.List<String> assignedAnimators = new java.util.ArrayList<>();
+    private java.util.Map<String, AssignmentStatus> assignmentStatuses = new java.util.HashMap<>();
 
     public double getCost() { return cost; }
     public void setCost(double cost) { this.cost = cost; }
     
-    public java.util.List<String> getAssignedAnimators() { return assignedAnimators; }
-    public void setAssignedAnimators(java.util.List<String> assignedAnimators) { this.assignedAnimators = assignedAnimators; }
+    // Backward compatibility: Returns all animators involved (Pending/Accepted/Rejected)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    public java.util.List<String> getAssignedAnimators() { 
+        return new java.util.ArrayList<>(assignmentStatuses.keySet()); 
+    }
+    
+    // For JSON serialization/deserialization if needed, but better to expose the map directly
+    public java.util.Map<String, AssignmentStatus> getAssignmentStatuses() { return assignmentStatuses; }
+    public void setAssignmentStatuses(java.util.Map<String, AssignmentStatus> assignmentStatuses) { this.assignmentStatuses = assignmentStatuses; }
     
     private PartyStatus status = PartyStatus.SCHEDULED;
     public PartyStatus getStatus() { return status; }

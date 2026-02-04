@@ -15,6 +15,15 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         setMainScene(new Scene(loadFXML("home"), 640, 480));
+        
+        // Load CSS
+        try {
+            String css = getClass().getResource("/styles/main.css").toExternalForm();
+            scene.getStylesheets().add(css);
+        } catch (Exception e) {
+            System.err.println("Could not load CSS: " + e.getMessage());
+        }
+
         stage.setScene(scene);
         stage.show();
     }

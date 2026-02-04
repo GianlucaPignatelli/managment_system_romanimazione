@@ -23,7 +23,7 @@ public class LoginCLIView {
         return new CredentialsBean(username, password);
     }
 
-    public UserBean getRegistrationDetails() throws IOException {
+    public UserBean getRegistrationDetails(boolean isFirstAdmin) throws IOException {
         System.out.println("\n--- REGISTER ---");
         System.out.print("Username: ");
         String username = reader.readLine();
@@ -48,6 +48,13 @@ public class LoginCLIView {
                 System.out.println("Invalid choice. Please enter 1 or 2.");
             }
         }
+        
+        String securityCode = null;
+        if ("AMMINISTRATORE".equals(role)) {
+            String prompt = isFirstAdmin ? "Create NEW Master Code (min 64 chars): " : "Enter Master Code: ";
+            System.out.print(prompt);
+            securityCode = reader.readLine();
+        }
 
         UserBean userBean = new UserBean();
         userBean.setUsername(username);
@@ -56,6 +63,7 @@ public class LoginCLIView {
         userBean.setCognome(surname);
         userBean.setEmail(email);
         userBean.setRole(role);
+        userBean.setSecurityCode(securityCode);
         return userBean;
     }
 }

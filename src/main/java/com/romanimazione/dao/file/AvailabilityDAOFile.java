@@ -99,10 +99,33 @@ public class AvailabilityDAOFile implements AvailabilityDAO {
                 );
                 
                 if (matches && !result.contains(a.getUsername())) {
-                    result.add(a.getUsername());
+                    // Check for conflict
+                    try {
+                        com.romanimazione.dao.file.PartyDAOFile partyDao = new com.romanimazione.dao.file.PartyDAOFile();
+                        boolean isBusy = partyDao.findAllParties().stream()
+                            .anyMatch(p -> p.getDate().equals(date) && 
+                                           p.getAssignmentStatuses().containsKey(a.getUsername()) &&
+                                           p.getAssignmentStatuses().get(a.getUsername()) == com.romanimazione.entity.AssignmentStatus.ACCEPTED &&
+                                           p.getStatus() != com.romanimazione.entity.PartyStatus.CANCELLED);
+                        
+                        if (!isBusy) {
+                            result.add(a.getUsername());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace(); // Should not happen in file generally, or handle gracefully
+                        // If error checking conflict, safe to exclude or include? Include for now to avoid blocking on error
+                        result.add(a.getUsername());
+                    }
                 }
             }
         }
         return result;
+    }
+    @Override
+    public List<Availability> findByDate(java.time.LocalDate date) throws DAOException {
+        List<Availability> all = load();
+        return all.stream()
+                .filter(a -> a.getDate().equals(date))
+                .collect(java.util.stream.Collectors.toList());
     }
 }
