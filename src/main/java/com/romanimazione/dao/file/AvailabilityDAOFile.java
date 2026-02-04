@@ -115,7 +115,7 @@ public class AvailabilityDAOFile implements AvailabilityDAO {
                                p.getAssignmentStatuses().get(a.getUsername()) == com.romanimazione.entity.AssignmentStatus.ACCEPTED &&
                                p.getStatus() != com.romanimazione.entity.PartyStatus.CANCELLED);
         } catch (Exception e) {
-            e.printStackTrace(); 
+            java.util.logging.Logger.getLogger(AvailabilityDAOFile.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
             return false; // Fail safe
         }
     }

@@ -42,9 +42,7 @@ public class JavaFXAnimatorSelectionController {
         setupTables();
         refreshData();
     }
-    
-        // ... previous code ...
-        
+
     private void setupTables() {
         currentUsernameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getUsername()));
         currentStatusColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getStatus()));
