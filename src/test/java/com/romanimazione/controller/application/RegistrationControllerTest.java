@@ -23,7 +23,7 @@ class RegistrationControllerTest {
     }
 
     @Test
-    void testRegistrationSuccess() throws Exception {
+    void testRegistrationSuccess() {
         UserBean newUser = new UserBean();
         newUser.setUsername("newuser");
         newUser.setPassword("password123");
