@@ -129,36 +129,39 @@ public class PartyController extends Subject {
         
         List<UserBean> result = new ArrayList<>();
         
-        for (String username : grouped.keySet()) {
-            if (assigned.contains(username)) continue;
+        for (java.util.Map.Entry<String, List<com.romanimazione.entity.Availability>> entry : grouped.entrySet()) {
+            String username = entry.getKey();
             
-            User user = userDAO.findUserByIdentifier(username);
-            if (user == null) continue;
-            
-            UserBean animatorBean = new UserBean();
-            animatorBean.setUsername(user.getUsername());
-            animatorBean.setNome(user.getNome());
-            animatorBean.setCognome(user.getCognome());
-            animatorBean.setEmail(user.getEmail());
-            animatorBean.setRole(user.getRole());
-            
-            // Check Compatibility Logic
-            boolean isTimeCompatible = false;
-            List<com.romanimazione.entity.Availability> slots = grouped.get(username);
-            
-            for (com.romanimazione.entity.Availability slot : slots) {
-                // Check if Party fits INSIDE the slot
-                boolean startsAfterOrAt = !party.getStartTime().isBefore(slot.getStartTime());
-                boolean endsBeforeOrAt = !party.getEndTime().isAfter(slot.getEndTime());
-                
-                if (startsAfterOrAt && endsBeforeOrAt) {
-                    isTimeCompatible = true;
-                    break;
-                }
+            // Skip if already assigned
+            if (assigned.contains(username)) {
+                continue;
             }
             
-            animatorBean.setTimeCompatible(isTimeCompatible);
-            result.add(animatorBean);
+            User user = userDAO.findUserByIdentifier(username);
+            
+            if (user != null) {
+                UserBean animatorBean = new UserBean();
+                animatorBean.setUsername(user.getUsername());
+                animatorBean.setNome(user.getNome());
+                animatorBean.setCognome(user.getCognome());
+                animatorBean.setEmail(user.getEmail());
+                animatorBean.setRole(user.getRole());
+                
+                // Check Compatibility Logic
+                boolean isTimeCompatible = false;
+                List<com.romanimazione.entity.Availability> slots = entry.getValue();
+                
+                for (com.romanimazione.entity.Availability slot : slots) {
+                    if (!party.getStartTime().isBefore(slot.getStartTime()) && 
+                        !party.getEndTime().isAfter(slot.getEndTime())) {
+                        isTimeCompatible = true;
+                        break;
+                    }
+                }
+                
+                animatorBean.setTimeCompatible(isTimeCompatible);
+                result.add(animatorBean);
+            }
         }
         return result;
     }
