@@ -46,39 +46,40 @@ public class JavaFXUserManagementController {
         Callback<TableColumn<UserBean, Void>, TableCell<UserBean, Void>> cellFactory = new Callback<>() {
             @Override
             public TableCell<UserBean, Void> call(final TableColumn<UserBean, Void> param) {
-                return new TableCell<>() {
-                    private final Button deleteButton = new Button("Delete");
-
-                    {
-                        deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
-                        deleteButton.setOnAction((event) -> {
-                            UserBean user = getTableView().getItems().get(getIndex());
-                            handleDeleteUser(user);
-                        });
-                    }
-
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            UserBean currentUser = getTableView().getItems().get(getIndex());
-                            // Disable delete for Self or other Super Admins (optional policy)
-                             if (currentUser.isSuperAdmin()) {
-                                 deleteButton.setDisable(true);
-                                 deleteButton.setText("Super Admin");
-                             } else {
-                                 deleteButton.setDisable(false);
-                                 deleteButton.setText("Delete");
-                             }
-                            setGraphic(deleteButton);
-                        }
-                    }
-                };
+                return new UserActionCell();
             }
         };
         actionColumn.setCellFactory(cellFactory);
+    }
+
+    private class UserActionCell extends TableCell<UserBean, Void> {
+        private final Button deleteButton = new Button("Delete");
+
+        public UserActionCell() {
+            deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
+            deleteButton.setOnAction((event) -> {
+                UserBean user = getTableView().getItems().get(getIndex());
+                handleDeleteUser(user);
+            });
+        }
+
+        @Override
+        public void updateItem(Void item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+                setGraphic(null);
+            } else {
+                UserBean currentUser = getTableView().getItems().get(getIndex());
+                if (currentUser.isSuperAdmin()) {
+                    deleteButton.setDisable(true);
+                    deleteButton.setText("Super Admin");
+                } else {
+                    deleteButton.setDisable(false);
+                    deleteButton.setText("Delete");
+                }
+                setGraphic(deleteButton);
+            }
+        }
     }
 
     private void handleDeleteUser(UserBean user) {

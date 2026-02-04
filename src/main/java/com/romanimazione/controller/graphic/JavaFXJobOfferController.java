@@ -117,11 +117,13 @@ public class JavaFXJobOfferController {
         }
     }
     
+    private static final String ERROR_TITLE = "Error";
+
     private void showPartyDetails(PartyBean party) {
         try {
             new com.romanimazione.view.fx.PartyFXView().openDetailsDialog(party);
         } catch (IOException e) {
-            showAlert("Error", "Could not show details: " + e.getMessage());
+            showAlert(ERROR_TITLE, "Could not show details: " + e.getMessage());
         }
     }
 // ... rest of class unchanged ...
@@ -132,7 +134,7 @@ public class JavaFXJobOfferController {
             List<PartyBean> offers = appController.getPendingOffers(currentUser);
             offersTable.setItems(FXCollections.observableArrayList(offers));
         } catch (Exception e) {
-            showAlert("Error", "Could not load offers: " + e.getMessage());
+            showAlert(ERROR_TITLE, "Could not load offers: " + e.getMessage());
         }
     }
 
@@ -143,7 +145,7 @@ public class JavaFXJobOfferController {
             loadOffers(); // Refresh
             showAlert("Success", "You accepted the job: " + party.getName());
         } catch (Exception e) {
-            showAlert("Error", "Could not accept offer: " + e.getMessage());
+            showAlert(ERROR_TITLE, "Could not accept offer: " + e.getMessage());
         }
     }
 
@@ -153,7 +155,7 @@ public class JavaFXJobOfferController {
             appController.rejectOffer(party, currentUser);
             loadOffers(); // Refresh
         } catch (Exception e) {
-            showAlert("Error", "Could not reject offer: " + e.getMessage());
+            showAlert(ERROR_TITLE, "Could not reject offer: " + e.getMessage());
         }
     }
 

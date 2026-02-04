@@ -14,7 +14,6 @@ import javafx.util.Callback;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class JavaFXAnimatorSelectionController {
 
@@ -90,6 +89,10 @@ public class JavaFXAnimatorSelectionController {
     }
 // ... rest of class ...
 
+    private static final String ERROR_TITLE = "Error"; // Moved here
+
+    // ...
+
     private void refreshData() {
         loadCurrentAssignments();
         loadAvailableAnimators();
@@ -97,17 +100,12 @@ public class JavaFXAnimatorSelectionController {
 
     private void loadCurrentAssignments() {
         try {
-            // Re-fetch party to get latest statuses
-            // For now, assume PartyBean is up to date or we might need to refresh it from DB
-            // Ideally PartyBean should be refreshed. Let's assume we can fetch statuses via DAO if needed,
-            // but for now let's work with the passed bean/map provided we update it.
-            // BETTER: Fetch fresh data.
             Map<String, com.romanimazione.entity.AssignmentStatus> map = partyController.getAssignmentStatuses(currentParty.getId());
             
             List<AssignmentWrapper> list = map.entrySet().stream()
                 .map(e -> new AssignmentWrapper(e.getKey(), e.getValue().toString()))
-                .collect(Collectors.toList());
-            
+                .toList();
+
             currentAssignmentsTable.setItems(FXCollections.observableArrayList(list));
             
         } catch (Exception e) {
@@ -119,13 +117,9 @@ public class JavaFXAnimatorSelectionController {
     private void loadAvailableAnimators() {
         try {
             List<UserBean> animators = partyController.findEligibleAnimators(currentParty);
-            // Client-side filter to exclude those already in table (if not done by backend)
-            // Backend findEligibleAnimators usually excludes ACCEPTED/PENDING?
-            // Need to verify if it excludes REJECTED. If not, we might see them in both tables.
-            // Let's rely on backend logic.
             animatorTable.setItems(FXCollections.observableArrayList(animators));
         } catch (DAOException e) {
-            showAlert("Error", "Could not load availabilities: " + e.getMessage());
+            showAlert(ERROR_TITLE, "Could not load availabilities: " + e.getMessage());
         }
     }
 
@@ -142,7 +136,7 @@ public class JavaFXAnimatorSelectionController {
             showAlert("Success", "Invitation sent to " + selectedAnimator.getUsername());
             refreshData(); // Refresh both tables
         } catch (DAOException | IllegalArgumentException e) {
-            showAlert("Error", "Assignment failed: " + e.getMessage());
+            showAlert(ERROR_TITLE, "Assignment failed: " + e.getMessage());
         }
     }
     
@@ -155,7 +149,7 @@ public class JavaFXAnimatorSelectionController {
                 partyController.removeAssignment(currentParty, item.getUsername());
                 refreshData();
             } catch (DAOException e) {
-                showAlert("Error", "Could not remove: " + e.getMessage());
+                showAlert(ERROR_TITLE, "Could not remove: " + e.getMessage());
             }
         }
     }
