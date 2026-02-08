@@ -59,7 +59,8 @@ public class JavaFXRegistrationController implements Observer {
                  adminCodeLabel.setText("Enter Master Code:");
             }
         } catch (Exception e) {
-
+            // Exception ignored: if the admin check fails (e.g. connectivity issue), 
+            // the UI will maintain its default state to prevent blocking the initialization.
         }
     }
 
