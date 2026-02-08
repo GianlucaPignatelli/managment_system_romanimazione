@@ -32,14 +32,12 @@ public class JavaFXAvailabilityController implements Initializable {
 
     private final AvailabilityController appController;
 
-    // In a real app, this should be taken from the Session/Context
     private String currentUsername = "testUser"; 
 
     public JavaFXAvailabilityController() {
         this.appController = new AvailabilityController();
     }
-    
-    // Setter meant to be called when navigating to this view
+
     public void setUsername(String username) {
         this.currentUsername = username;
         loadData();
@@ -86,7 +84,7 @@ public class JavaFXAvailabilityController implements Initializable {
         try {
             // Create a temp bean to validate and grab new values
             AvailabilityBean bean = new AvailabilityBean();
-            bean.setId(selected.getId()); // IMPORTANT: Keep the ID
+            bean.setId(selected.getId());
             bean.setUsername(currentUsername);
             bean.setDate(datePicker.getValue());
             bean.setFullDay(fullDayParams.isSelected());

@@ -3,7 +3,7 @@ package com.romanimazione.bean;
 public class CredentialsBean {
     private String username;
     private String password;
-    private String role; // Optional, might be used in registration or needed to be returned
+    private String role;
 
     public CredentialsBean() {}
      public CredentialsBean(String username, String password) {

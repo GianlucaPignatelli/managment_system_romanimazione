@@ -126,7 +126,6 @@ public class JavaFXJobOfferController {
             showAlert(ERROR_TITLE, "Could not show details: " + e.getMessage());
         }
     }
-// ... rest of class unchanged ...
 
     private void loadOffers() {
         UserBean currentUser = SessionBean.getInstance().getCurrentUser();

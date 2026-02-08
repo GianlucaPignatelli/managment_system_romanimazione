@@ -8,7 +8,6 @@ public class Main {
         // Initialize Logic
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         Scanner scanner = new Scanner(System.in);
-        
         System.out.println("Select Persistence Mode:");
         System.out.println("1. MySQL");
         System.out.println("2. File System (JSON)");
@@ -30,7 +29,6 @@ public class Main {
             com.romanimazione.bean.SecurityManager.getInstance().reset();
         } else {
             com.romanimazione.bean.SecurityManager.getInstance().setTransient(false);
-            // Constructor already loaded config. No need to reset/clear.
         }
 
         System.out.println("Persistence set to: " + pTypeName);

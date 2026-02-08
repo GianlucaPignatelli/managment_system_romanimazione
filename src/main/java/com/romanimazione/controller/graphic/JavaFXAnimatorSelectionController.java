@@ -65,31 +65,15 @@ public class JavaFXAnimatorSelectionController {
                 } else {
                     if (!item.isTimeCompatible()) {
                         setStyle("-fx-background-color: #ffeba1;"); // Light Orange/Yellow for incompatible time
-                        // Or maybe RED? User asked for asterisk or color.
                     } else {
-                        setStyle(""); // Default
+                        setStyle("");
                     }
                 }
             }
         });
-        
-        // Add asterisk to name column? Use cell factory for name/username
-        // Assuming columns are already set in FXML or need setting here?
-        // Wait, I only see fx:id animatorTable but no columns defined in controller code setup?
-        // Ah, likely they are defined in FXML. I need to verify FXML or inject them.
-        // Let's check FXML first or assume existing setup.
-        // Wait, the previous view_file of Controller showed `animatorTable` but NO column injections for it! 
-        // This suggests columns might be missing in Controller or I missed them. 
-        // Logic check: How was it displaying data before? 
-        // There was no column setup code in `setupTables` for `animatorTable`.
-        // This implies the columns are fully defined in FXML with PropertyValueFactories.
-        // I will assume that. 
     }
-// ... rest of class ...
 
-    private static final String ERROR_TITLE = "Error"; // Moved here
-
-    // ...
+    private static final String ERROR_TITLE = "Error";
 
     private void refreshData() {
         loadCurrentAssignments();

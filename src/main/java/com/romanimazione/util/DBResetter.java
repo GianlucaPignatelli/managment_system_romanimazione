@@ -16,7 +16,7 @@ public class DBResetter {
         try (Connection conn = MySQLDAOFactory.createConnection();
              Statement stmt = conn.createStatement()) {
 
-            // 1. DROP Tables (Order matters due to Foreign Keys)
+            // 1. DROP Tables
             System.out.println("Dropping existing tables...");
             stmt.executeUpdate("SET FOREIGN_KEY_CHECKS = 0"); // Disable checks to be safe
             stmt.executeUpdate("DROP TABLE IF EXISTS party_assignments");

@@ -52,9 +52,6 @@ public class DatabaseInitializer {
 
     private static void initializePartyTable() throws java.sql.SQLException {
         System.out.println("Creating 'party' table...");
-        
-        // HARDCODED SQL from party_schema.sql to avoid classpath issues
-        // FIX: Drop party_assignments FIRST because it references party
         String sql = "DROP TABLE IF EXISTS party_assignments; " +
                      "DROP TABLE IF EXISTS party; " +
                      "CREATE TABLE party (" +
@@ -103,8 +100,7 @@ public class DatabaseInitializer {
         
         try (Connection conn = MySQLDAOFactory.createConnection();
              Statement stmt = conn.createStatement()) {
-            
-            // Single Statement here usually, but keeping split logic valid
+
             stmt.executeUpdate(sql);
             System.out.println("Table 'party_assignments' check/create completed.");
         }

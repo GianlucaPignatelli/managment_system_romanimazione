@@ -72,7 +72,6 @@ public class JavaFXLoginController implements Observer {
 
     @Override
     public void update(String message) {
-        // Platform.runLater if not on FX thread, but here we likely are if called from controller logic synchronously
         System.out.println("JavaFX received update: " + message);
     }
 }

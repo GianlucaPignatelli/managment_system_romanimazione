@@ -38,10 +38,6 @@ public class JavaFXRegistrationController implements Observer {
             if ("AMMINISTRATORE".equals(newVal)) {
                 adminCodeBox.setVisible(true);
                 adminCodeBox.setManaged(true);
-                // Hint logic: Count admins to change label text? 
-                // Too complex to wire Controller just for label hint? 
-                // Let's keep it generic "Master Code". Controller Exception will explain details.
-                // Or try checking lazily.
                 checkFirstAdminStatus();
             } else {
                 adminCodeBox.setVisible(false);
@@ -63,7 +59,7 @@ public class JavaFXRegistrationController implements Observer {
                  adminCodeLabel.setText("Enter Master Code:");
             }
         } catch (Exception e) {
-            // Ignore UI hint error
+
         }
     }
 

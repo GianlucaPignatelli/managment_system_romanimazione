@@ -28,7 +28,7 @@ public class AvailabilityCLIView {
         return reader.readLine();
     }
 
-    public int getIdInput(String action) throws IOException { // action e.g. "update", "delete"
+    public int getIdInput(String action) throws IOException {
          System.out.print("Enter ID to " + action + ": ");
          return Integer.parseInt(reader.readLine());
     }

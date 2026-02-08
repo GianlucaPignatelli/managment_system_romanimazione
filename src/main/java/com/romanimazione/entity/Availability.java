@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Availability {
-    private int id; // Internal DB ID
+    private int id;
     private String username;
     private LocalDate date;
     private LocalTime startTime;

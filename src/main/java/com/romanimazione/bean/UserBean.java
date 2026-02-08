@@ -49,7 +49,6 @@ public class UserBean {
     public boolean isSuperAdmin() { return superAdmin; }
     public void setSuperAdmin(boolean superAdmin) { this.superAdmin = superAdmin; }
 
-    // Transient/UI flag
     private boolean timeCompatible = true;
     public boolean isTimeCompatible() { return timeCompatible; }
     public void setTimeCompatible(boolean timeCompatible) { this.timeCompatible = timeCompatible; }

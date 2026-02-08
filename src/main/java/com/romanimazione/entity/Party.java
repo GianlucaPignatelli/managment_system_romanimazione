@@ -9,8 +9,6 @@ public class Party {
     private String type;
     private String address;
     private LocalDate date;
-    
-    // New Fields
     private String clientName;
     private String clientPhone;
     private LocalTime startTime;
@@ -23,8 +21,6 @@ public class Party {
     public Party() {
         // Default constructor required for framework serialization/deserialization
     }
-
-    // Large constructor removed to avoid Code Smell (Too many parameters). Use Setters.
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

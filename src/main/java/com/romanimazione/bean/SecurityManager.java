@@ -32,7 +32,7 @@ public class SecurityManager {
     public void reset() {
         properties.clear();
         if (!isTransient) {
-            loadConfig(); // Reload from file for persistent modes
+            loadConfig();
         }
     }
 
