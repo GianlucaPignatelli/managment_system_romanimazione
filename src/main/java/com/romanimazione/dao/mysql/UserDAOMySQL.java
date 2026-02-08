@@ -46,7 +46,6 @@ public class UserDAOMySQL implements UserDAO {
     @Override
     public java.util.List<User> findAllUsers() throws DAOException {
         java.util.List<User> list = new java.util.ArrayList<>();
-        // Explicit columns to avoid SELECT * smell
         String query = "SELECT id, username, password, role, nome, cognome, email, is_super_admin FROM users";
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
@@ -116,9 +115,6 @@ public class UserDAOMySQL implements UserDAO {
 
     @Override
     public void saveUser(User user) throws DAOException {
-        // Check schema for is_super_admin. For now, try insert with it. 
-        // If it fails, fallback? Or assume schema is updated.
-        // Let's assume schema updated.
         String query = "INSERT INTO users (username, password, role, nome, cognome, email, is_super_admin) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {

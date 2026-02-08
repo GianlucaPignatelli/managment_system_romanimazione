@@ -65,8 +65,7 @@ public class PartyController extends Subject {
         if (!bean.getEndTime().isAfter(bean.getStartTime())) {
             throw new InvalidPartyException("End Time must be after Start Time.");
         }
-        
-        // Strict Rule: If date is today, start time must be in the future
+
         // Strict Rule: If date is today, start time must be in the future
         if (bean.getDate() != null && bean.getDate().isEqual(LocalDate.now()) && 
             bean.getStartTime().isBefore(java.time.LocalTime.now())) {
@@ -196,8 +195,7 @@ public class PartyController extends Subject {
         
         notifyObservers("Party " + party.getId() + " has been CANCELLED.");
     }
-    
-    // Returns: 1 = All Accepted (Green), -1 = At least one Rejected (Red), 0 = Pending/Mixed (Yellow), 2 = No assignments (Gray)
+
     public int getAssignmentFeedback(int partyId) throws DAOException {
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
         List<String> animators = dao.getAssignedAnimators(partyId); // This returns ALL assigned usernames

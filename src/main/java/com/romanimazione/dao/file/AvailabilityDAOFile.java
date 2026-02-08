@@ -18,8 +18,6 @@ public class AvailabilityDAOFile implements AvailabilityDAO {
             mapper.getPolymorphicTypeValidator(), 
             com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping.NON_FINAL
         );
-        // Handle JavaTime modules if needed, or simple string default might fail for LocalDate if module not registered.
-        // Jackson needs JavaTimeModule for LocalDate/LocalTime.
         mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
         mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
@@ -116,7 +114,7 @@ public class AvailabilityDAOFile implements AvailabilityDAO {
                                p.getStatus() != com.romanimazione.entity.PartyStatus.CANCELLED);
         } catch (Exception e) {
             java.util.logging.Logger.getLogger(AvailabilityDAOFile.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
-            return false; // Fail safe
+            return false;
         }
     }
 

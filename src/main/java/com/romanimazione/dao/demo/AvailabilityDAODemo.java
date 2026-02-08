@@ -60,7 +60,6 @@ public class AvailabilityDAODemo implements AvailabilityDAO {
                 .filter(username -> {
                     // Check if they have an ACCEPTED assignment on this date
                     com.romanimazione.dao.demo.PartyDAODemo partyDao = new com.romanimazione.dao.demo.PartyDAODemo(); 
-                    // Since PartyDAODemo uses a static list, new instance accesses same data
                     return partyDao.findAllParties().stream()
                         .noneMatch(p -> p.getDate().equals(date) && 
                             p.getAssignmentStatuses().containsKey(username) && 

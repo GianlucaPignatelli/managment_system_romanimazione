@@ -31,8 +31,7 @@ public abstract class GenericFileDAO<T> {
 
     protected List<T> load(TypeReference<List<T>> typeRef) throws DAOException {
         if (!file.exists()) return new ArrayList<>();
-        
-        // Handle manually created "[]" files which break Jackson DefaultTyping
+
         if (file.length() < 10) {
             try {
                 String content = new String(java.nio.file.Files.readAllBytes(file.toPath())).trim();

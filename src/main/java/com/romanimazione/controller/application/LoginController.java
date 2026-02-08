@@ -46,7 +46,6 @@ public class LoginController extends Subject {
         userBean.setEmail(user.getEmail());
         userBean.setSuperAdmin(user.isSuperAdmin());
 
-        // Notify observers? e.g. "User Logged In"
         notifyObservers("Login Successful for " + user.getUsername());
         
         return userBean;

@@ -53,8 +53,6 @@ public class AvailabilityController {
         AvailabilityDAO dao = DAOFactory.getDAOFactory().getAvailabilityDAO();
         dao.saveAvailability(availability);
     }
-    
-    // ... delete ...
 
     public void updateAvailability(AvailabilityBean bean) throws InvalidAvailabilityException, DAOException {
         validate(bean);

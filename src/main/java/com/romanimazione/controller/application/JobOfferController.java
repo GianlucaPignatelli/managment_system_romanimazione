@@ -36,7 +36,6 @@ public class JobOfferController extends Subject {
         dao.updateAssignmentStatus(party.getId(), animator.getUsername(), AssignmentStatus.ACCEPTED);
         
         // 2. Auto-reject other pending offers on the SAME DAY
-        // "sullo stesso giorno... devono cadere le altre proposte"
         List<Party> allOffers = dao.findJobOffers(animator.getUsername());
         
         for (Party other : allOffers) {

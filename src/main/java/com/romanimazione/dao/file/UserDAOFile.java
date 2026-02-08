@@ -14,8 +14,6 @@ public class UserDAOFile extends GenericFileDAO<User> implements UserDAO {
             List<User> users = load(new TypeReference<List<User>>(){});
             boolean dirty = false;
 
-            // Seed if empty
-            // Seed if empty - REMOVED per user request
             if (users.isEmpty()) {
                 System.out.println("File: No users found. Starting fresh.");
             } else {
@@ -40,7 +38,6 @@ public class UserDAOFile extends GenericFileDAO<User> implements UserDAO {
     public User findUserByIdentifier(String identifier) throws DAOException {
         List<User> users = load(new TypeReference<List<User>>(){});
         for (User u : users) {
-             // Strict check or lax check? Doing strict match on username or email
             if (u.getUsername().equals(identifier) || u.getEmail().equals(identifier)) {
                 return u;
             }

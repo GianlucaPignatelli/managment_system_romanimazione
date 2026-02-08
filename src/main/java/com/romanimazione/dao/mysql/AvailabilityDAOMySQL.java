@@ -66,7 +66,6 @@ public class AvailabilityDAOMySQL implements AvailabilityDAO {
             stmt.setTime(2, Time.valueOf(availability.getStartTime()));
             stmt.setTime(3, Time.valueOf(availability.getEndTime()));
             stmt.setBoolean(4, availability.isFullDay());
-            // Where clauses
             stmt.setInt(5, availability.getId());
             stmt.setString(6, availability.getUsername());
 
