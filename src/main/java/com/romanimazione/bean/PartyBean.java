@@ -30,6 +30,7 @@ public class PartyBean extends Party {
         bean.setCost(entity.getCost());
         bean.setStatus(entity.getStatus());
         bean.setAssignmentStatuses(new java.util.HashMap<>(entity.getAssignmentStatuses())); // Deep copy map
+        bean.setAssignmentTimestamps(new java.util.HashMap<>(entity.getAssignmentTimestamps()));
         
         return bean;
     }
@@ -53,6 +54,7 @@ public class PartyBean extends Party {
         entity.setCost(this.getCost());
         entity.setStatus(this.getStatus());
         entity.setAssignmentStatuses(new java.util.HashMap<>(this.getAssignmentStatuses())); // Deep copy map
+        entity.setAssignmentTimestamps(new java.util.HashMap<>(this.getAssignmentTimestamps()));
         
         return entity;
     }

@@ -59,6 +59,7 @@ public class Party {
     public void setDescription(String description) { this.description = description; }
 
     private java.util.Map<String, AssignmentStatus> assignmentStatuses = new java.util.HashMap<>();
+    private java.util.Map<String, java.time.LocalDateTime> assignmentTimestamps = new java.util.HashMap<>();
 
     public double getCost() { return cost; }
     public void setCost(double cost) { this.cost = cost; }
@@ -72,6 +73,9 @@ public class Party {
     // For JSON serialization/deserialization if needed, but better to expose the map directly
     public java.util.Map<String, AssignmentStatus> getAssignmentStatuses() { return assignmentStatuses; }
     public void setAssignmentStatuses(java.util.Map<String, AssignmentStatus> assignmentStatuses) { this.assignmentStatuses = assignmentStatuses; }
+    
+    public java.util.Map<String, java.time.LocalDateTime> getAssignmentTimestamps() { return assignmentTimestamps; }
+    public void setAssignmentTimestamps(java.util.Map<String, java.time.LocalDateTime> assignmentTimestamps) { this.assignmentTimestamps = assignmentTimestamps; }
     
     private PartyStatus status = PartyStatus.SCHEDULED;
     public PartyStatus getStatus() { return status; }

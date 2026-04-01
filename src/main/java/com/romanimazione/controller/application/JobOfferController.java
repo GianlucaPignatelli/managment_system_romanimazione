@@ -18,11 +18,25 @@ public class JobOfferController extends Subject {
         }
         
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
+        dao.checkTimeouts(); // Auto-update any expired before showing
+        
         List<Party> proposed = dao.findJobOffers(animator.getUsername());
         List<PartyBean> beans = new ArrayList<>();
         
         for (Party p : proposed) {
-            beans.add(PartyBean.fromEntity(p));
+            PartyBean pb = PartyBean.fromEntity(p);
+            
+            // Map statuses and timestamps dynamically for all DAOs (esp MySQL)
+            AssignmentStatus status = dao.getAssignmentStatus(p.getId(), animator.getUsername());
+            if (status != null) {
+                pb.getAssignmentStatuses().put(animator.getUsername(), status);
+            }
+            java.time.LocalDateTime ts = dao.getAssignmentTimestamp(p.getId(), animator.getUsername());
+            if (ts != null) {
+                pb.getAssignmentTimestamps().put(animator.getUsername(), ts);
+            }
+            
+            beans.add(pb);
         }
         return beans;
     }

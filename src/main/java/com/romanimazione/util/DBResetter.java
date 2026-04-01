@@ -79,6 +79,7 @@ public class DBResetter {
                     "party_id INT NOT NULL, " +
                     "animator_username VARCHAR(50) NOT NULL, " +
                     "status VARCHAR(20) DEFAULT 'PENDING', " +
+                    "assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                     "FOREIGN KEY (party_id) REFERENCES party(id) ON DELETE CASCADE, " +
                     "FOREIGN KEY (animator_username) REFERENCES users(username) ON DELETE CASCADE, " +
                     "UNIQUE(party_id, animator_username)" +

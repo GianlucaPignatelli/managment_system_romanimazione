@@ -16,9 +16,13 @@ public interface PartyDAO {
     List<Party> findJobOffers(String animatorUsername) throws DAOException;
     void updateAssignmentStatus(int partyId, String animatorUsername, com.romanimazione.entity.AssignmentStatus status) throws DAOException;
     com.romanimazione.entity.AssignmentStatus getAssignmentStatus(int partyId, String animatorUsername) throws DAOException;
+    java.time.LocalDateTime getAssignmentTimestamp(int partyId, String animatorUsername) throws DAOException;
     int getProposalCount(int partyId) throws DAOException;
     
     void removeAssignment(int partyId, String animatorUsername) throws DAOException; // For cleaning up/replacing
     
     void updateStatus(int partyId, com.romanimazione.entity.PartyStatus status) throws DAOException;
+    
+    // Evaluate and update any TIMEOUTs
+    void checkTimeouts() throws DAOException;
 }

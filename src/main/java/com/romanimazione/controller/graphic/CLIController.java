@@ -132,7 +132,7 @@ public class CLIController {
         try {
             UserBean current = SessionBean.getInstance().getCurrentUser();
             List<com.romanimazione.bean.PartyBean> offers = jobOfferController.getPendingOffers(current);
-            partyView.showJobOffers(offers);
+            partyView.showJobOffers(offers, current.getUsername());
             
             if (offers.isEmpty()) return;
             

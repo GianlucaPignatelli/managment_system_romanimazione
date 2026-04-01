@@ -32,9 +32,17 @@ public class PartyDAODemo implements PartyDAO {
         
         if (!party.getAssignmentStatuses().containsKey(animatorUsername)) {
             party.getAssignmentStatuses().put(animatorUsername, com.romanimazione.entity.AssignmentStatus.PENDING);
+            party.getAssignmentTimestamps().put(animatorUsername, java.time.LocalDateTime.now());
             System.out.println("Demo: Assigned " + animatorUsername + " to party " + partyId);
         } else {
-            throw new com.romanimazione.exception.DAOException("Animator already assigned");
+            com.romanimazione.entity.AssignmentStatus curr = party.getAssignmentStatuses().get(animatorUsername);
+            if (curr == com.romanimazione.entity.AssignmentStatus.TIMEOUT || curr == com.romanimazione.entity.AssignmentStatus.REJECTED) {
+                party.getAssignmentStatuses().put(animatorUsername, com.romanimazione.entity.AssignmentStatus.PENDING);
+                party.getAssignmentTimestamps().put(animatorUsername, java.time.LocalDateTime.now());
+                System.out.println("Demo: Re-assigned " + animatorUsername + " to party " + partyId);
+            } else {
+                throw new com.romanimazione.exception.DAOException("Animator already assigned");
+            }
         }
     }
 
@@ -120,5 +128,36 @@ public class PartyDAODemo implements PartyDAO {
                 .findFirst()
                 .orElseThrow(() -> new com.romanimazione.exception.DAOException(PARTY_NOT_FOUND_MSG));
         party.getAssignmentStatuses().remove(animatorUsername);
+    }
+
+    @Override
+    public java.time.LocalDateTime getAssignmentTimestamp(int partyId, String animatorUsername) throws com.romanimazione.exception.DAOException {
+        Party party = parties.stream()
+                .filter(p -> p.getId() == partyId)
+                .findFirst()
+                .orElse(null);
+        if (party != null) {
+            return party.getAssignmentTimestamps().get(animatorUsername);
+        }
+        return null;
+    }
+
+    @Override
+    public void checkTimeouts() throws com.romanimazione.exception.DAOException {
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        for (Party p : parties) {
+            java.util.Map<String, com.romanimazione.entity.AssignmentStatus> statuses = p.getAssignmentStatuses();
+            java.util.Map<String, java.time.LocalDateTime> timestamps = p.getAssignmentTimestamps();
+            
+            for (java.util.Map.Entry<String, com.romanimazione.entity.AssignmentStatus> entry : statuses.entrySet()) {
+                if (entry.getValue() == com.romanimazione.entity.AssignmentStatus.PENDING) {
+                    java.time.LocalDateTime assignedAt = timestamps.get(entry.getKey());
+                    if (assignedAt != null && assignedAt.plusHours(24).isBefore(now)) {
+                        statuses.put(entry.getKey(), com.romanimazione.entity.AssignmentStatus.TIMEOUT);
+                        System.out.println("Demo: Timeout triggered for user " + entry.getKey() + " on party " + p.getId());
+                    }
+                }
+            }
+        }
     }
 }

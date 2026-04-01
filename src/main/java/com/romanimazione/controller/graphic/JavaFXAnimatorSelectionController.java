@@ -83,9 +83,24 @@ public class JavaFXAnimatorSelectionController {
     private void loadCurrentAssignments() {
         try {
             Map<String, com.romanimazione.entity.AssignmentStatus> map = partyController.getAssignmentStatuses(currentParty.getId());
+            Map<String, java.time.LocalDateTime> timestamps = partyController.getAssignmentTimestamps(currentParty.getId());
             
             List<AssignmentWrapper> list = map.entrySet().stream()
-                .map(e -> new AssignmentWrapper(e.getKey(), e.getValue().toString()))
+                .map(e -> {
+                    String extra = "";
+                    if (e.getValue() == com.romanimazione.entity.AssignmentStatus.PENDING) {
+                        java.time.LocalDateTime assignedAt = timestamps.get(e.getKey());
+                        if (assignedAt != null) {
+                             java.time.Duration rem = java.time.Duration.between(java.time.LocalDateTime.now(), assignedAt.plusHours(24));
+                             if (!rem.isNegative()) {
+                                 extra = String.format(" (%dh %dm left)", rem.toHours(), rem.toMinutes() % 60);
+                             } else {
+                                 extra = " (Expired)";
+                             }
+                        }
+                    }
+                    return new AssignmentWrapper(e.getKey(), e.getValue().toString() + extra);
+                })
                 .toList();
 
             currentAssignmentsTable.setItems(FXCollections.observableArrayList(list));

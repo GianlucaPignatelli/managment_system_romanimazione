@@ -144,17 +144,27 @@ public class PartyCLIView {
         }
     }
 
-    public void showJobOffers(List<PartyBean> list) {
+    public void showJobOffers(List<PartyBean> list, String animatorUsername) {
         System.out.println("\n--- JOB OFFERS (PENDING) ---");
         if (list.isEmpty()) {
             System.out.println("No pending job offers.");
         } else {
-            System.out.printf("%-5s | %-12s | %-8s | %-20s%n", "ID", "Date", "Time", "Details");
-            System.out.println("-------------------------------------------------------");
+            System.out.printf("%-5s | %-12s | %-8s | %-20s | %-15s%n", "ID", "Date", "Time", "Details", "Expires In");
+            System.out.println("-------------------------------------------------------------------------");
             for (int i = 0; i < list.size(); i++) {
                 PartyBean p = list.get(i);
-                System.out.printf("%d. [ID:%d] | %s | %s | %s%n", 
-                    i+1, p.getId(), p.getDate(), p.getStartTime(), p.getName());
+                String extra = "";
+                java.time.LocalDateTime assignedAt = p.getAssignmentTimestamps().get(animatorUsername);
+                if (assignedAt != null) {
+                     java.time.Duration rem = java.time.Duration.between(java.time.LocalDateTime.now(), assignedAt.plusHours(24));
+                     if (!rem.isNegative()) {
+                         extra = String.format("%dh %dm", rem.toHours(), rem.toMinutes() % 60);
+                     } else {
+                         extra = "Expired";
+                     }
+                }
+                System.out.printf("%d. [ID:%d] | %s | %s | %-20s | %s%n", 
+                    i+1, p.getId(), p.getDate(), p.getStartTime(), p.getName(), extra);
             }
         }
     }
@@ -203,7 +213,19 @@ public class PartyCLIView {
         } else {
             System.out.println("Assigned Animators:");
             p.getAssignmentStatuses().forEach((user, status) -> {
-                System.out.println(" - " + user + " (Status: " + status + ")");
+                String extraInfo = "";
+                if (status == com.romanimazione.entity.AssignmentStatus.PENDING) {
+                    java.time.LocalDateTime assignedAt = p.getAssignmentTimestamps().get(user);
+                    if (assignedAt != null) {
+                        java.time.Duration rem = java.time.Duration.between(java.time.LocalDateTime.now(), assignedAt.plusHours(24));
+                        if (!rem.isNegative()) {
+                            extraInfo = String.format(" - Scade tra %dh %dm", rem.toHours(), rem.toMinutes() % 60);
+                        } else {
+                            extraInfo = " - Scaduto";
+                        }
+                    }
+                }
+                System.out.println(" - " + user + " (Status: " + status + extraInfo + ")");
             });
         }
         System.out.println("=====================\n");

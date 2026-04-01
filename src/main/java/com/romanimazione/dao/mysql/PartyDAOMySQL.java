@@ -62,7 +62,9 @@ public class PartyDAOMySQL implements PartyDAO {
 
     @Override
     public void assignAnimator(int partyId, String animatorUsername) throws DAOException {
-        String query = "INSERT INTO party_assignments (party_id, animator_username, status) VALUES (?, ?, 'PENDING')";
+        String query = "INSERT INTO party_assignments (party_id, animator_username, status, assigned_at) " +
+                       "VALUES (?, ?, 'PENDING', CURRENT_TIMESTAMP) " +
+                       "ON DUPLICATE KEY UPDATE status='PENDING', assigned_at=CURRENT_TIMESTAMP";
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             
@@ -70,8 +72,6 @@ public class PartyDAOMySQL implements PartyDAO {
             stmt.setString(2, animatorUsername);
             stmt.executeUpdate();
             
-        } catch (SQLIntegrityConstraintViolationException e) {
-            throw new DAOException("Animator already assigned to this party.", e);
         } catch (SQLException e) {
             throw new DAOException("Error assigning animator: " + e.getMessage(), e);
         }
@@ -214,6 +214,42 @@ public class PartyDAOMySQL implements PartyDAO {
     }
 
     // Extraction helper to reduce duplication
+    
+    @Override
+    public java.time.LocalDateTime getAssignmentTimestamp(int partyId, String animatorUsername) throws DAOException {
+        String query = "SELECT assigned_at FROM party_assignments WHERE party_id = ? AND animator_username = ?";
+        try (Connection conn = MySQLDAOFactory.createConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            stmt.setInt(1, partyId);
+            stmt.setString(2, animatorUsername);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Timestamp ts = rs.getTimestamp("assigned_at");
+                    if (ts != null) {
+                        return ts.toLocalDateTime();
+                    }
+                }
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new DAOException("Error getting assignment timestamp: " + e.getMessage(), e);
+        }
+    }
+    
+    @Override
+    public void checkTimeouts() throws DAOException {
+        // Automatically updates assignments that have been pending for > 24 hours
+        String query = "UPDATE party_assignments SET status = 'TIMEOUT' WHERE status = 'PENDING' AND assigned_at < (NOW() - INTERVAL 24 HOUR)";
+        try (Connection conn = MySQLDAOFactory.createConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Error checking timeouts: " + e.getMessage(), e);
+        }
+    }
+
     private Party mapRowToParty(ResultSet rs) throws SQLException {
         Party p = new Party();
         p.setId(rs.getInt("id"));

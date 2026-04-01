@@ -80,6 +80,8 @@ public class PartyController extends Subject {
 
     public List<PartyBean> getAllParties() throws DAOException {
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
+        dao.checkTimeouts(); // Trigger auto-validation for expired entries
+        
         List<Party> entities = dao.findAllParties();
         List<PartyBean> beans = new ArrayList<>();
         
@@ -91,6 +93,10 @@ public class PartyController extends Subject {
                 com.romanimazione.entity.AssignmentStatus status = dao.getAssignmentStatus(p.getId(), user);
                 if (status != null) {
                     pb.getAssignmentStatuses().put(user, status);
+                }
+                java.time.LocalDateTime assignedAt = dao.getAssignmentTimestamp(p.getId(), user);
+                if (assignedAt != null) {
+                    pb.getAssignmentTimestamps().put(user, assignedAt);
                 }
             }
             beans.add(pb);
@@ -264,6 +270,14 @@ public class PartyController extends Subject {
         List<PartyBean> all = getAllParties();
         for(PartyBean p : all) {
             if(p.getId() == partyId) return p.getAssignmentStatuses();
+        }
+        return new java.util.HashMap<>();
+    }
+
+    public java.util.Map<String, java.time.LocalDateTime> getAssignmentTimestamps(int partyId) throws DAOException {
+        List<PartyBean> all = getAllParties();
+        for(PartyBean p : all) {
+            if(p.getId() == partyId) return p.getAssignmentTimestamps();
         }
         return new java.util.HashMap<>();
     }
