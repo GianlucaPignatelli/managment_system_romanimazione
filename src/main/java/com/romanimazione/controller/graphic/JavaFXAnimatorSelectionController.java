@@ -99,6 +99,15 @@ public class JavaFXAnimatorSelectionController {
     private void loadAvailableAnimators() {
         try {
             List<UserBean> animators = partyController.findEligibleAnimators(currentParty);
+            if (animators.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Nessun Animatore Disponibile");
+                alert.setHeaderText("Nessun animatore disponibile per questa festa.");
+                alert.setContentText("Vuoi forzare l'assegnazione mostrando tutti gli animatori del sistema?");
+                if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                    animators = partyController.findAllAnimatorsForForce(currentParty);
+                }
+            }
             animatorTable.setItems(FXCollections.observableArrayList(animators));
         } catch (DAOException e) {
             showAlert(ERROR_TITLE, "Could not load availabilities: " + e.getMessage());

@@ -84,7 +84,16 @@ public class PartyController extends Subject {
         List<PartyBean> beans = new ArrayList<>();
         
         for (Party p : entities) {
-            beans.add(PartyBean.fromEntity(p));
+            PartyBean pb = PartyBean.fromEntity(p);
+            // Fetch assignments to populate the status map used by CLI and details
+            List<String> assignees = dao.getAssignedAnimators(p.getId());
+            for (String user : assignees) {
+                com.romanimazione.entity.AssignmentStatus status = dao.getAssignmentStatus(p.getId(), user);
+                if (status != null) {
+                    pb.getAssignmentStatuses().put(user, status);
+                }
+            }
+            beans.add(pb);
         }
         
         beans.sort(this::compareParties);
@@ -159,6 +168,31 @@ public class PartyController extends Subject {
                 }
                 
                 animatorBean.setTimeCompatible(isTimeCompatible);
+                result.add(animatorBean);
+            }
+        }
+        return result;
+    }
+
+    public List<UserBean> findAllAnimatorsForForce(PartyBean party) throws DAOException {
+        UserDAO userDAO = DAOFactory.getDAOFactory().getUserDAO();
+        PartyDAO partyDAO = DAOFactory.getDAOFactory().getPartyDAO();
+
+        List<User> allUsers = userDAO.findAllUsers();
+        List<String> assigned = partyDAO.getAssignedAnimators(party.getId());
+        List<UserBean> result = new ArrayList<>();
+
+        for (User user : allUsers) {
+            if ("ANIMATORE".equalsIgnoreCase(user.getRole()) && !assigned.contains(user.getUsername())) {
+                UserBean animatorBean = new UserBean();
+                animatorBean.setUsername(user.getUsername());
+                animatorBean.setNome(user.getNome());
+                animatorBean.setCognome(user.getCognome());
+                animatorBean.setEmail(user.getEmail());
+                animatorBean.setRole(user.getRole());
+                
+                // Force time compatible to false so it shows up formatted in the UI as a forced option
+                animatorBean.setTimeCompatible(false); 
                 result.add(animatorBean);
             }
         }

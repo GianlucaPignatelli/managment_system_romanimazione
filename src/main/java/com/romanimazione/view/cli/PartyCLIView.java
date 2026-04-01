@@ -101,8 +101,8 @@ public class PartyCLIView {
         }
     }
 
-    public int askAssignmentPartyId() throws IOException {
-        System.out.println("Do you want to assign an animator to a party? Enter Party ID (or 0 to skip): ");
+    public int askSelectPartyId() throws IOException {
+        System.out.print("Enter Party ID to view details (or 0 to skip/back): ");
         try {
             return Integer.parseInt(reader.readLine());
         } catch (NumberFormatException e) {
@@ -174,5 +174,51 @@ public class PartyCLIView {
     public String askAcceptOrReject() throws IOException {
         System.out.print("Do you want to (A)ccept or (R)eject? ");
         return reader.readLine().trim().toUpperCase();
+    }
+
+    public boolean askForceAssignment() throws IOException {
+        System.out.println("Nessun animatore disponibile. Vuoi forzare l'assegnazione mostrando tutti gli animatori del sistema? (Y/N): ");
+        String answer = reader.readLine();
+        return "Y".equalsIgnoreCase(answer != null ? answer.trim() : "");
+    }
+
+    public void showPartyDetails(PartyBean p) {
+        System.out.println("\n=== PARTY DETAILS ===");
+        System.out.println("ID: " + p.getId());
+        System.out.println("Name: " + p.getName());
+        System.out.println("Type: " + p.getType());
+        System.out.println("Date: " + p.getDate());
+        System.out.println("Time: " + p.getStartTime() + " to " + p.getEndTime());
+        System.out.println("Address: " + p.getAddress());
+        System.out.println("Client: " + p.getClientName() + " (" + p.getClientPhone() + ")");
+        System.out.println("Cost: €" + String.format("%.2f", p.getCost()));
+        System.out.println("Children Count: " + (p.getChildrenCount() != null ? p.getChildrenCount() : "Not specified"));
+        System.out.println("Description: " + (p.getDescription() != null ? p.getDescription() : "None"));
+        System.out.println("Status: " + p.getStatus());
+        
+        System.out.println("\n[STAFF]");
+        System.out.println("Animators Required: " + p.getAnimatorsRequired());
+        if (p.getAssignmentStatuses().isEmpty()) {
+            System.out.println("Assigned: None");
+        } else {
+            System.out.println("Assigned Animators:");
+            p.getAssignmentStatuses().forEach((user, status) -> {
+                System.out.println(" - " + user + " (Status: " + status + ")");
+            });
+        }
+        System.out.println("=====================\n");
+    }
+
+    public int askPartyAction() throws IOException {
+        System.out.println("Actions for this party:");
+        System.out.println("1. Assign Animator");
+        System.out.println("2. Cancel Party");
+        System.out.println("3. Back/Skip");
+        System.out.print("Choose action: ");
+        try {
+            return Integer.parseInt(reader.readLine());
+        } catch (NumberFormatException e) {
+            return 3;
+        }
     }
 }

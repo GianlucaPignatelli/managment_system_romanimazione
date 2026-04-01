@@ -260,7 +260,7 @@ public class CLIController {
         
         if (parties.isEmpty()) return;
 
-        int partyId = partyView.askAssignmentPartyId();
+        int partyId = partyView.askSelectPartyId();
         if (partyId > 0) {
             com.romanimazione.bean.PartyBean targetParty = parties.stream()
                     .filter(p -> p.getId() == partyId)
@@ -272,19 +272,45 @@ public class CLIController {
                 return;
             }
 
-            List<UserBean> eligible = controller.findEligibleAnimators(targetParty);
-            partyView.showEligibleAnimators(eligible);
-            
-            if (!eligible.isEmpty()) {
-                int choice = partyView.askAnimatorSelection(eligible.size());
-                if (choice > 0) {
-                    UserBean selected = eligible.get(choice - 1);
-                    controller.assignAnimator(targetParty, selected);
-                    mainView.showMessage("Animator assigned successfully!");
-                } else {
-                    mainView.showMessage("Assignment cancelled.");
+            // Show full details
+            partyView.showPartyDetails(targetParty);
+
+            // Block modified actions if terminal status
+            if (targetParty.getStatus() == com.romanimazione.entity.PartyStatus.CANCELLED ||
+                targetParty.getStatus() == com.romanimazione.entity.PartyStatus.COMPLETED) {
+                mainView.showMessage("Action blocked: Party is " + targetParty.getStatus() + ".");
+                return;
+            }
+
+            int action = partyView.askPartyAction();
+            if (action == 1) { // Assign
+                List<UserBean> eligible = controller.findEligibleAnimators(targetParty);
+                if (eligible.isEmpty()) {
+                    if (partyView.askForceAssignment()) {
+                        eligible = controller.findAllAnimatorsForForce(targetParty);
+                    }
+                }
+                partyView.showEligibleAnimators(eligible);
+                
+                if (!eligible.isEmpty()) {
+                    int choice = partyView.askAnimatorSelection(eligible.size());
+                    if (choice > 0) {
+                        UserBean selected = eligible.get(choice - 1);
+                        controller.assignAnimator(targetParty, selected);
+                        mainView.showMessage("Animator assigned successfully!");
+                    } else {
+                        mainView.showMessage("Assignment aborted.");
+                    }
+                }
+            } else if (action == 2) { // Cancel
+                try {
+                    controller.cancelParty(targetParty);
+                    mainView.showMessage("Party cancelled successfully.");
+                } catch (Exception e) {
+                    mainView.showError(e.getMessage());
                 }
             }
+            // else action = 3 -> Back
         }
     }
 
