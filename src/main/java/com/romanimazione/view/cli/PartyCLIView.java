@@ -212,23 +212,25 @@ public class PartyCLIView {
             System.out.println("Assigned: None");
         } else {
             System.out.println("Assigned Animators:");
-            p.getAssignmentStatuses().forEach((user, status) -> {
-                String extraInfo = "";
-                if (status == com.romanimazione.entity.AssignmentStatus.PENDING) {
-                    java.time.LocalDateTime assignedAt = p.getAssignmentTimestamps().get(user);
-                    if (assignedAt != null) {
-                        java.time.Duration rem = java.time.Duration.between(java.time.LocalDateTime.now(), assignedAt.plusHours(24));
-                        if (!rem.isNegative()) {
-                            extraInfo = String.format(" - Scade tra %dh %dm", rem.toHours(), rem.toMinutes() % 60);
-                        } else {
-                            extraInfo = " - Scaduto";
-                        }
-                    }
-                }
-                System.out.println(" - " + user + " (Status: " + status + extraInfo + ")");
-            });
+            p.getAssignmentStatuses().forEach((user, status) -> printAnimatorStatus(user, status, p));
         }
         System.out.println("=====================\n");
+    }
+
+    private void printAnimatorStatus(String user, com.romanimazione.entity.AssignmentStatus status, PartyBean p) {
+        String extraInfo = "";
+        if (status == com.romanimazione.entity.AssignmentStatus.PENDING) {
+            java.time.LocalDateTime assignedAt = p.getAssignmentTimestamps().get(user);
+            if (assignedAt != null) {
+                java.time.Duration rem = java.time.Duration.between(java.time.LocalDateTime.now(), assignedAt.plusHours(24));
+                if (!rem.isNegative()) {
+                    extraInfo = String.format(" - Scade tra %dh %dm", rem.toHours(), rem.toMinutes() % 60);
+                } else {
+                    extraInfo = " - Scaduto";
+                }
+            }
+        }
+        System.out.println(" - " + user + " (Status: " + status + extraInfo + ")");
     }
 
     public int askPartyAction() throws IOException {
