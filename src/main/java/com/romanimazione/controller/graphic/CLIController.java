@@ -274,43 +274,51 @@ public class CLIController {
 
             // Show full details
             partyView.showPartyDetails(targetParty);
+            handlePartyAction(controller, targetParty);
+        }
+    }
 
-            // Block modified actions if terminal status
-            if (targetParty.getStatus() == com.romanimazione.entity.PartyStatus.CANCELLED ||
-                targetParty.getStatus() == com.romanimazione.entity.PartyStatus.COMPLETED) {
-                mainView.showMessage("Action blocked: Party is " + targetParty.getStatus() + ".");
-                return;
-            }
+    private void handlePartyAction(PartyController controller, com.romanimazione.bean.PartyBean targetParty) throws IOException, com.romanimazione.exception.DAOException {
+        // Block modified actions if terminal status
+        if (targetParty.getStatus() == com.romanimazione.entity.PartyStatus.CANCELLED ||
+            targetParty.getStatus() == com.romanimazione.entity.PartyStatus.COMPLETED) {
+            mainView.showMessage("Action blocked: Party is " + targetParty.getStatus() + ".");
+            return;
+        }
 
-            int action = partyView.askPartyAction();
-            if (action == 1) { // Assign
-                List<UserBean> eligible = controller.findEligibleAnimators(targetParty);
-                if (eligible.isEmpty()) {
-                    if (partyView.askForceAssignment()) {
-                        eligible = controller.findAllAnimatorsForForce(targetParty);
-                    }
-                }
-                partyView.showEligibleAnimators(eligible);
-                
-                if (!eligible.isEmpty()) {
-                    int choice = partyView.askAnimatorSelection(eligible.size());
-                    if (choice > 0) {
-                        UserBean selected = eligible.get(choice - 1);
-                        controller.assignAnimator(targetParty, selected);
-                        mainView.showMessage("Animator assigned successfully!");
-                    } else {
-                        mainView.showMessage("Assignment aborted.");
-                    }
-                }
-            } else if (action == 2) { // Cancel
-                try {
-                    controller.cancelParty(targetParty);
-                    mainView.showMessage("Party cancelled successfully.");
-                } catch (Exception e) {
-                    mainView.showError(e.getMessage());
-                }
+        int action = partyView.askPartyAction();
+        if (action == 1) { // Assign
+            handleAssignAnimatorOperation(controller, targetParty);
+        } else if (action == 2) { // Cancel
+            handleCancelPartyOperation(controller, targetParty);
+        }
+    }
+
+    private void handleAssignAnimatorOperation(PartyController controller, com.romanimazione.bean.PartyBean targetParty) throws IOException, com.romanimazione.exception.DAOException {
+        List<UserBean> eligible = controller.findEligibleAnimators(targetParty);
+        if (eligible.isEmpty() && partyView.askForceAssignment()) {
+            eligible = controller.findAllAnimatorsForForce(targetParty);
+        }
+        partyView.showEligibleAnimators(eligible);
+        
+        if (!eligible.isEmpty()) {
+            int choice = partyView.askAnimatorSelection(eligible.size());
+            if (choice > 0) {
+                UserBean selected = eligible.get(choice - 1);
+                controller.assignAnimator(targetParty, selected);
+                mainView.showMessage("Animator assigned successfully!");
+            } else {
+                mainView.showMessage("Assignment aborted.");
             }
-            // else action = 3 -> Back
+        }
+    }
+
+    private void handleCancelPartyOperation(PartyController controller, com.romanimazione.bean.PartyBean targetParty) {
+        try {
+            controller.cancelParty(targetParty);
+            mainView.showMessage("Party cancelled successfully.");
+        } catch (Exception e) {
+            mainView.showError(e.getMessage());
         }
     }
 

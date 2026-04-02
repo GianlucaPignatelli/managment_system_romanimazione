@@ -60,29 +60,7 @@ public class JavaFXJobOfferController {
         
         statusColumn.setCellValueFactory(cell -> {
              UserBean currentUser = SessionBean.getInstance().getCurrentUser();
-             var statuses = cell.getValue().getAssignmentStatuses();
-             var timestamps = cell.getValue().getAssignmentTimestamps();
-             
-             if (statuses != null && statuses.containsKey(currentUser.getUsername())) {
-                 com.romanimazione.entity.AssignmentStatus status = statuses.get(currentUser.getUsername());
-                 String statusText = status.toString();
-                 
-                 if (status == com.romanimazione.entity.AssignmentStatus.PENDING) {
-                     java.time.LocalDateTime assignedAt = timestamps != null ? timestamps.get(currentUser.getUsername()) : null;
-                     if (assignedAt != null) {
-                         java.time.Duration rem = java.time.Duration.between(java.time.LocalDateTime.now(), assignedAt.plusHours(24));
-                         if (!rem.isNegative()) {
-                             long hours = rem.toHours();
-                             long minutes = rem.toMinutes() % 60;
-                             statusText += String.format(" (%dh %dm left)", hours, minutes);
-                         } else {
-                             statusText += " (Expired)";
-                         }
-                     }
-                 }
-                 return new SimpleStringProperty(statusText);
-             }
-             return new SimpleStringProperty("UNKNOWN");
+             return new SimpleStringProperty(formatStatusText(cell.getValue(), currentUser));
         });
 
         Callback<TableColumn<PartyBean, Void>, TableCell<PartyBean, Void>> cellFactory = new Callback<>() {
@@ -92,6 +70,32 @@ public class JavaFXJobOfferController {
             }
         };
         actionColumn.setCellFactory(cellFactory);
+    }
+    
+    private String formatStatusText(PartyBean party, UserBean currentUser) {
+        var statuses = party.getAssignmentStatuses();
+        var timestamps = party.getAssignmentTimestamps();
+        
+        if (statuses != null && statuses.containsKey(currentUser.getUsername())) {
+            com.romanimazione.entity.AssignmentStatus status = statuses.get(currentUser.getUsername());
+            String statusText = status.toString();
+            
+            if (status == com.romanimazione.entity.AssignmentStatus.PENDING) {
+                java.time.LocalDateTime assignedAt = timestamps != null ? timestamps.get(currentUser.getUsername()) : null;
+                if (assignedAt != null) {
+                    java.time.Duration rem = java.time.Duration.between(java.time.LocalDateTime.now(), assignedAt.plusHours(24));
+                    if (!rem.isNegative()) {
+                        long hours = rem.toHours();
+                        long minutes = rem.toMinutes() % 60;
+                        statusText += String.format(" (%dh %dm left)", hours, minutes);
+                    } else {
+                        statusText += " (Expired)";
+                    }
+                }
+            }
+            return statusText;
+        }
+        return "UNKNOWN";
     }
     
     private class ActionCell extends TableCell<PartyBean, Void> {
