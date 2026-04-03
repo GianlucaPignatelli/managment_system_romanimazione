@@ -96,7 +96,7 @@ public class JavaFXPartyListController {
                 openAssignmentDialog(data);
             });
             
-            btnCancel.setStyle("-fx-background-color: #ff6666; -fx-text-fill: white;");
+            btnCancel.getStyleClass().add("button-danger");
             btnCancel.setOnAction(event -> {
                 PartyBean data = getTableView().getItems().get(getIndex());
                 handleCancelParty(data);
@@ -116,7 +116,7 @@ public class JavaFXPartyListController {
                     btnAssign.setDisable(true);
                     btnCancel.setDisable(true);
                     btnCancel.setText("Cancelled");
-                    btnCancel.setStyle("-fx-background-color: #555; -fx-text-fill: white;"); // Greyed out
+                    btnCancel.getStyleClass().add("button-cancel"); // Greyed out
                 } else if (party.getStatus() == com.romanimazione.entity.PartyStatus.COMPLETED) {
                     btnAssign.setDisable(true);
                     btnCancel.setDisable(true);
@@ -124,7 +124,7 @@ public class JavaFXPartyListController {
                     btnAssign.setDisable(false);
                     btnCancel.setDisable(false);
                     btnCancel.setText("Cancel");
-                    btnCancel.setStyle("-fx-background-color: #ff6666; -fx-text-fill: white;");
+                    btnCancel.getStyleClass().add("button-danger");
                 }
                 
                 setGraphic(pane);

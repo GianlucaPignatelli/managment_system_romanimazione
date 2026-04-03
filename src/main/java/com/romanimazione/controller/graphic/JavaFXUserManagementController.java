@@ -55,7 +55,7 @@ public class JavaFXUserManagementController {
         private final Button deleteButton = new Button("Delete");
 
         public UserActionCell() {
-            deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
+            deleteButton.getStyleClass().add("button-danger");
             deleteButton.setOnAction((event) -> {
                 UserBean user = getTableView().getItems().get(getIndex());
                 handleDeleteUser(user);

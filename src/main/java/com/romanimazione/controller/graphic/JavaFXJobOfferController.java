@@ -105,19 +105,19 @@ public class JavaFXJobOfferController {
         private final Label lblAccepted = new Label("✅ Accepted");
 
         public ActionCell() {
-            btnAccept.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+            btnAccept.getStyleClass().add("button-success");
             btnAccept.setOnAction(event -> {
                 PartyBean party = getTableView().getItems().get(getIndex());
                 handleAccept(party);
             });
 
-            btnReject.setStyle("-fx-background-color: #F44336; -fx-text-fill: white;");
+            btnReject.getStyleClass().add("button-danger");
             btnReject.setOnAction(event -> {
                 PartyBean party = getTableView().getItems().get(getIndex());
                 handleReject(party);
             });
             
-            lblAccepted.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+            lblAccepted.getStyleClass().add("label-success");
         }
 
         @Override

@@ -66,16 +66,16 @@
                 <Label fx:id="errorLabel" textFill="RED" visible="false" wrapText="true"/>
 
                 <HBox spacing="20" alignment="CENTER">
-                    <Button text="Save Party" onAction="#handleSave" defaultButton="true" style="-fx-base: #4CAF50;"/>
+                    <Button text="Save Party" onAction="#handleSave" defaultButton="true" styleClass="button-success"/>
                 </HBox>
             </VBox>
         </ScrollPane>
     </center>
 
     <bottom>
-        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #f0f0f0;">
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header-panel">
              <padding><Insets top="10" right="20" bottom="10" left="20"/></padding>
-             <Button text="&lt; Back" onAction="#handleCancel"/>
+             <Button text="&lt; Back" onAction="#handleCancel" styleClass="button-cancel"/>
         </HBox>
     </bottom>
 

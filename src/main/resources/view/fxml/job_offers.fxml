@@ -7,9 +7,9 @@
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="com.romanimazione.controller.graphic.JavaFXJobOfferController"
-      spacing="20" alignment="TOP_CENTER" style="-fx-padding: 30; -fx-background-color: #f4f4f4;">
+      spacing="20" alignment="TOP_CENTER" style="-fx-padding: 30;">
 
-    <Text text="Job Offers" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-fill: #333;"/>
+    <Label text="Job Offers" styleClass="label-header"/>
 
     <TableView fx:id="offersTable" VBox.vgrow="ALWAYS">
         <columns>
@@ -26,6 +26,5 @@
         </columnResizePolicy>
     </TableView>
 
-    <Button text="Back to Dashboard" onAction="#handleBack" 
-            style="-fx-font-size: 14px; -fx-padding: 10 20;"/>
+    <Button text="Back to Dashboard" onAction="#handleBack" styleClass="button-cancel"/>
 </VBox>

@@ -44,6 +44,9 @@ public class PartyFXView {
         // Ideally, we'd pass the owner Stage, but let's assume standalone or we get primary stage helper.
         
         Scene scene = new Scene(page);
+        try {
+            scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
+        } catch(Exception ignored) {}
         dialogStage.setScene(scene);
 
         com.romanimazione.controller.graphic.JavaFXAnimatorSelectionController controller = loader.getController();
@@ -62,7 +65,11 @@ public class PartyFXView {
         
         Stage stage = new Stage();
         stage.setTitle("Party Details");
-        stage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        try {
+            scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
+        } catch(Exception ignored) {}
+        stage.setScene(scene);
         stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
         stage.showAndWait();
     }

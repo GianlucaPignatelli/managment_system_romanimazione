@@ -21,9 +21,9 @@
     </top>
 
     <bottom>
-        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #f0f0f0;">
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header-panel">
             <padding><Insets top="10" right="20" bottom="10" left="20"/></padding>
-            <Button text="&lt; Back to Dashboard" onAction="#handleBack"/>
+            <Button text="&lt; Back to Dashboard" onAction="#handleBack" styleClass="button-cancel"/>
         </HBox>
     </bottom>
 

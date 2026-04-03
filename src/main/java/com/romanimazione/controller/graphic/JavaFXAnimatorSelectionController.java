@@ -61,12 +61,12 @@ public class JavaFXAnimatorSelectionController {
             protected void updateItem(UserBean item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null || empty) {
-                    setStyle("");
+                    getStyleClass().removeAll("row-warning");
                 } else {
                     if (!item.isTimeCompatible()) {
-                        setStyle("-fx-background-color: #ffeba1;"); // Light Orange/Yellow for incompatible time
+                        if (!getStyleClass().contains("row-warning")) getStyleClass().add("row-warning");
                     } else {
-                        setStyle("");
+                        getStyleClass().removeAll("row-warning");
                     }
                 }
             }
@@ -186,7 +186,7 @@ public class JavaFXAnimatorSelectionController {
         private final Button btnRemove = new Button("Remove");
         
         public ActionCell() {
-            btnRemove.setStyle("-fx-background-color: #ff6666; -fx-text-fill: white;");
+            btnRemove.getStyleClass().add("button-danger");
             btnRemove.setOnAction(e -> {
                 handleRemoveAssignment(getTableView().getItems().get(getIndex()));
             });
