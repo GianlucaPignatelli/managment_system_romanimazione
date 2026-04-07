@@ -143,6 +143,48 @@ public class PartyDAOMySQL implements PartyDAO {
     }
 
     @Override
+    public List<Party> findAcceptedJobs(String animatorUsername, java.time.LocalDate startDate, java.time.LocalDate endDate) throws DAOException {
+        List<Party> list = new ArrayList<>();
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT p.*, pa.status as assign_status ");
+        queryBuilder.append("FROM party p ");
+        queryBuilder.append("JOIN party_assignments pa ON p.id = pa.party_id ");
+        queryBuilder.append("WHERE pa.animator_username = ? AND pa.status = 'ACCEPTED' ");
+        
+        if (startDate != null) {
+            queryBuilder.append("AND p.party_date >= ? ");
+        }
+        if (endDate != null) {
+            queryBuilder.append("AND p.party_date <= ? ");
+        }
+        queryBuilder.append("ORDER BY p.party_date ASC, p.start_time ASC");
+
+        try (Connection conn = MySQLDAOFactory.createConnection();
+             PreparedStatement stmt = conn.prepareStatement(queryBuilder.toString())) {
+            
+            int paramIndex = 1;
+            stmt.setString(paramIndex++, animatorUsername);
+            
+            if (startDate != null) {
+                stmt.setDate(paramIndex++, Date.valueOf(startDate));
+            }
+            if (endDate != null) {
+                stmt.setDate(paramIndex++, Date.valueOf(endDate));
+            }
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Party p = mapRowToParty(rs);
+                    list.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error finding accepted jobs: " + e.getMessage(), e);
+        }
+        return list;
+    }
+
+    @Override
     public void updateAssignmentStatus(int partyId, String animatorUsername, com.romanimazione.entity.AssignmentStatus status) throws DAOException {
         String query = "UPDATE party_assignments SET status = ? WHERE party_id = ? AND animator_username = ?";
         try (Connection conn = MySQLDAOFactory.createConnection();

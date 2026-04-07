@@ -16,6 +16,20 @@ public class PartyCLIView {
     public PartyCLIView() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
+    
+    public LocalDate promptForDate(String label) throws IOException {
+        System.out.print(label + " (YYYY-MM-DD or leave empty): ");
+        String input = reader.readLine();
+        if (input == null || input.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(input.trim());
+        } catch (Exception e) {
+            System.out.println("Invalid date format. Using None.");
+            return null;
+        }
+    }
 
     public PartyBean getPartyDetails(List<String> allowedTypes) throws IOException {
         System.out.println("\n--- CREATE NEW PARTY ---");

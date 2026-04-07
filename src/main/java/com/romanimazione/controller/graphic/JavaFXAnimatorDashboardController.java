@@ -28,6 +28,11 @@ public class JavaFXAnimatorDashboardController {
     }
 
     @FXML
+    private void goToAcceptedJobs() throws IOException {
+        new com.romanimazione.view.fx.MainFXView().showAcceptedJobs();
+    }
+
+    @FXML
     private void handleLogout() throws IOException {
         com.romanimazione.bean.SessionBean.getInstance().setCurrentUser(null);
         new com.romanimazione.view.fx.MainFXView().showHome();

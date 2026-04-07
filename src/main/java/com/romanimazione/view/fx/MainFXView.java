@@ -24,6 +24,10 @@ public class MainFXView {
         MainApp.setRoot("job_offers");
     }
 
+    public void showAcceptedJobs() throws IOException {
+        MainApp.setRoot("animator_accepted_jobs");
+    }
+
     public void showManageUsers() throws IOException {
         new UserManagementFXView().show();
     }

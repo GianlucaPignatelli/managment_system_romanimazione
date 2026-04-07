@@ -57,7 +57,8 @@ public class MainCLIView {
         System.out.println("\n[ANIMATORE DASHBOARD]");
         System.out.println("1. Manage Availability");
         System.out.println("2. View Job Offers");
-        System.out.println("3. Logout");
+        System.out.println("3. View Accepted Jobs");
+        System.out.println("4. Logout");
         System.out.print(P_CHOICE);
         return reader.readLine();
     }

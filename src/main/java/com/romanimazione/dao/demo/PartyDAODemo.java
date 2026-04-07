@@ -77,10 +77,24 @@ public class PartyDAODemo implements PartyDAO {
                 .filter(p -> p.getAssignmentStatuses().containsKey(animatorUsername))
                 .filter(p -> {
                     com.romanimazione.entity.AssignmentStatus status = p.getAssignmentStatuses().get(animatorUsername);
-                    return (status == com.romanimazione.entity.AssignmentStatus.PENDING || 
-                           status == com.romanimazione.entity.AssignmentStatus.ACCEPTED) &&
+                    return status == com.romanimazione.entity.AssignmentStatus.PENDING &&
                            p.getStatus() != com.romanimazione.entity.PartyStatus.CANCELLED;
                 })
+                .toList();
+    }
+
+    @Override
+    public List<Party> findAcceptedJobs(String animatorUsername, java.time.LocalDate startDate, java.time.LocalDate endDate) throws com.romanimazione.exception.DAOException {
+        return parties.stream()
+                .filter(p -> p.getAssignmentStatuses().containsKey(animatorUsername))
+                .filter(p -> {
+                    com.romanimazione.entity.AssignmentStatus status = p.getAssignmentStatuses().get(animatorUsername);
+                    boolean isAccepted = (status == com.romanimazione.entity.AssignmentStatus.ACCEPTED);
+                    boolean afterStart = (startDate == null) || !p.getDate().isBefore(startDate);
+                    boolean beforeEnd = (endDate == null) || !p.getDate().isAfter(endDate);
+                    return isAccepted && afterStart && beforeEnd;
+                })
+                .sorted(java.util.Comparator.comparing(Party::getDate).thenComparing(Party::getStartTime))
                 .toList();
     }
 

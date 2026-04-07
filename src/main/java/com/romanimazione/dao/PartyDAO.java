@@ -14,6 +14,7 @@ public interface PartyDAO {
     
     // Job Offers & Status Methods
     List<Party> findJobOffers(String animatorUsername) throws DAOException;
+    List<Party> findAcceptedJobs(String animatorUsername, java.time.LocalDate startDate, java.time.LocalDate endDate) throws DAOException;
     void updateAssignmentStatus(int partyId, String animatorUsername, com.romanimazione.entity.AssignmentStatus status) throws DAOException;
     com.romanimazione.entity.AssignmentStatus getAssignmentStatus(int partyId, String animatorUsername) throws DAOException;
     java.time.LocalDateTime getAssignmentTimestamp(int partyId, String animatorUsername) throws DAOException;

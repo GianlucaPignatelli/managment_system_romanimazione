@@ -27,6 +27,7 @@ public class CLIController {
     private final RegistrationController registerController;
     private final JobOfferController jobOfferController;
     private final AdminUserController adminUserController;
+    private final AcceptedJobsController acceptedJobsController;
 
     private static final String MSG_INVALID = "Invalid choice.";
     private static final String MSG_ERR_UNEXPECTED = "Unexpected error: ";
@@ -43,6 +44,7 @@ public class CLIController {
         this.registerController = new RegistrationController();
         this.jobOfferController = new JobOfferController();
         this.adminUserController = new AdminUserController();
+        this.acceptedJobsController = new AcceptedJobsController();
     }
 
     public void start() {
@@ -119,6 +121,8 @@ public class CLIController {
             } else if ("2".equals(subInput)) {
                 viewJobOffersCLI();
             } else if ("3".equals(subInput)) {
+                viewAcceptedJobsCLI();
+            } else if ("4".equals(subInput)) {
                 loggedIn = false;
                 SessionBean.getInstance().setCurrentUser(null);
                 mainView.showMessage(MSG_LOGGED_OUT);
@@ -152,6 +156,36 @@ public class CLIController {
             }
         } catch (Exception e) {
              mainView.showError(e.getMessage());
+        }
+    }
+
+    private void viewAcceptedJobsCLI() {
+        try {
+            UserBean current = SessionBean.getInstance().getCurrentUser();
+            
+            System.out.println("\n--- FILTER ACCEPTED JOBS ---");
+            java.time.LocalDate start = partyView.promptForDate("Start Date");
+            java.time.LocalDate end = partyView.promptForDate("End Date");
+            
+            if (start == null && end == null) {
+                start = java.time.LocalDate.now();
+                System.out.println("Defaulting to all future jobs from today onwards.");
+            }
+            
+            List<com.romanimazione.bean.PartyBean> accepted = acceptedJobsController.getAcceptedJobs(current, start, end);
+            
+            System.out.println("\n--- ACCEPTED JOBS ---");
+            if (accepted.isEmpty()) {
+                System.out.println("No accepted jobs found in the specified period.");
+            } else {
+                for (int i = 0; i < accepted.size(); i++) {
+                    com.romanimazione.bean.PartyBean pb = accepted.get(i);
+                    System.out.printf("%d. [%s] %s | %s - %s @ %s (Fee: %.2f)\n",
+                            i + 1, pb.getDate(), pb.getName(), pb.getStartTime(), pb.getEndTime(), pb.getAddress(), pb.getCost());
+                }
+            }
+        } catch (Exception e) {
+            mainView.showError(e.getMessage());
         }
     }
 

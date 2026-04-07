@@ -42,6 +42,13 @@
                         </ImageView>
                     </graphic>
                 </Button>
+                <Button text="Accepted Jobs" onAction="#goToAcceptedJobs" prefWidth="220" prefHeight="120" styleClass="button-primary" contentDisplay="TOP">
+                    <graphic>
+                        <ImageView fitHeight="48" fitWidth="48" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../../images/accepted_jobs_icon.png"/></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
             </HBox>
         </VBox>
     </center>
