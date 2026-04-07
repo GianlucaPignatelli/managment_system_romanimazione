@@ -1,3 +1,5 @@
+/* stylelint-disable selector-pseudo-class-no-unknown */
+
 /* Root Theme Colors */
 .root {
     -fx-base: #1e1e2e;

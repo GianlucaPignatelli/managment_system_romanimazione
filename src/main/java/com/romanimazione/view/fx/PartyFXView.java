@@ -46,7 +46,9 @@ public class PartyFXView {
         Scene scene = new Scene(page);
         try {
             scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
-        } catch(Exception ignored) {}
+        } catch(Exception ignored) {
+            // Ignored intentionally: if the stylesheet cannot be loaded, the app defaults to fallback styling.
+        }
         dialogStage.setScene(scene);
 
         com.romanimazione.controller.graphic.JavaFXAnimatorSelectionController controller = loader.getController();
@@ -68,7 +70,9 @@ public class PartyFXView {
         Scene scene = new Scene(root);
         try {
             scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
-        } catch(Exception ignored) {}
+        } catch(Exception ignored) {
+            // Ignored intentionally: if the stylesheet cannot be loaded, the app defaults to fallback styling.
+        }
         stage.setScene(scene);
         stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
         stage.showAndWait();

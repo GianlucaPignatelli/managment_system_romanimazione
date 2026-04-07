@@ -61,12 +61,12 @@ public class JavaFXAnimatorSelectionController {
             protected void updateItem(UserBean item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null || empty) {
-                    getStyleClass().removeAll("row-warning");
+                    getStyleClass().removeAll(ROW_WARNING_CLASS);
                 } else {
                     if (!item.isTimeCompatible()) {
-                        if (!getStyleClass().contains("row-warning")) getStyleClass().add("row-warning");
+                        if (!getStyleClass().contains(ROW_WARNING_CLASS)) getStyleClass().add(ROW_WARNING_CLASS);
                     } else {
-                        getStyleClass().removeAll("row-warning");
+                        getStyleClass().removeAll(ROW_WARNING_CLASS);
                     }
                 }
             }
@@ -74,6 +74,7 @@ public class JavaFXAnimatorSelectionController {
     }
 
     private static final String ERROR_TITLE = "Error";
+    private static final String ROW_WARNING_CLASS = "row-warning";
 
     private void refreshData() {
         loadCurrentAssignments();

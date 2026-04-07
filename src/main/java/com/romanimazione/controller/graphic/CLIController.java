@@ -180,7 +180,7 @@ public class CLIController {
             } else {
                 for (int i = 0; i < accepted.size(); i++) {
                     com.romanimazione.bean.PartyBean pb = accepted.get(i);
-                    System.out.printf("%d. [%s] %s | %s - %s @ %s (Fee: %.2f)\n",
+                    System.out.printf("%d. [%s] %s | %s - %s @ %s (Fee: %.2f)%n",
                             i + 1, pb.getDate(), pb.getName(), pb.getStartTime(), pb.getEndTime(), pb.getAddress(), pb.getCost());
                 }
             }
