@@ -20,7 +20,7 @@ public class JavaFXJobOfferController {
     @FXML private TableColumn<PartyBean, String> dateColumn;
     @FXML private TableColumn<PartyBean, String> timeColumn;
     @FXML private TableColumn<PartyBean, String> typeColumn;
-    @FXML private TableColumn<PartyBean, String> cityColumn; // Mapped to Address for now
+    @FXML private TableColumn<PartyBean, String> cityColumn;
     @FXML private TableColumn<PartyBean, String> feeColumn; 
     @FXML private TableColumn<PartyBean, String> statusColumn;
     @FXML private TableColumn<PartyBean, Void> actionColumn;

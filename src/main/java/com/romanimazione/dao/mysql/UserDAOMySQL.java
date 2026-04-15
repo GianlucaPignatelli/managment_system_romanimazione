@@ -6,8 +6,6 @@ import com.romanimazione.entity.User;
 import com.romanimazione.entity.Animatore;
 import com.romanimazione.entity.Amministratore;
 import com.romanimazione.exception.DAOException;
-
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

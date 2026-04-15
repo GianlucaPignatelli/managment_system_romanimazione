@@ -66,7 +66,6 @@ public class PartyController extends Subject {
             throw new InvalidPartyException("End Time must be after Start Time.");
         }
 
-        // Strict Rule: If date is today, start time must be in the future
         if (bean.getDate() != null && bean.getDate().isEqual(LocalDate.now()) && 
             bean.getStartTime().isBefore(java.time.LocalTime.now())) {
             throw new InvalidPartyException("Cannot schedule a party in the past on the current day.");
@@ -80,7 +79,7 @@ public class PartyController extends Subject {
 
     public List<PartyBean> getAllParties() throws DAOException {
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
-        dao.checkTimeouts(); // Trigger auto-validation for expired entries
+        dao.checkTimeouts();
         
         List<Party> entities = dao.findAllParties();
         List<PartyBean> beans = new ArrayList<>();

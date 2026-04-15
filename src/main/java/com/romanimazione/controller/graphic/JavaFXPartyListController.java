@@ -17,18 +17,20 @@ import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.List;
+import com.romanimazione.controller.application.Observer;
 
-public class JavaFXPartyListController {
+public class JavaFXPartyListController implements Observer {
 
     private static final String ERROR_TITLE = "Error";
     @FXML private TableView<PartyBean> partyTable;
-    @FXML private TableColumn<PartyBean, Void> assignColumn; // Void because button doesn't map to a field
-    @FXML private TableColumn<PartyBean, String> assignmentStatusColumn; // Added assignmentStatusColumn
+    @FXML private TableColumn<PartyBean, Void> assignColumn;
+    @FXML private TableColumn<PartyBean, String> assignmentStatusColumn;
     
     private final PartyController partyController;
 
     public JavaFXPartyListController() {
         this.partyController = new PartyController();
+        this.partyController.attach(this);
     }
 
     @FXML
@@ -177,5 +179,10 @@ public class JavaFXPartyListController {
         alert.setHeaderText(title);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @Override
+    public void update(String message) {
+        javafx.application.Platform.runLater(this::loadParties);
     }
 }
