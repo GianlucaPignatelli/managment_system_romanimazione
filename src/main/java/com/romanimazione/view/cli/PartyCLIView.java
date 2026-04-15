@@ -61,7 +61,7 @@ public class PartyCLIView {
 
         System.out.print("Children Count (Enter for none): ");
         String childrenInput = reader.readLine();
-        Integer children = (childrenInput.isEmpty()) ? null : Integer.parseInt(childrenInput);
+        Integer children = (childrenInput == null || childrenInput.trim().isEmpty()) ? null : Integer.parseInt(childrenInput.trim());
 
         System.out.print("Animators Required: ");
         int animators = Integer.parseInt(reader.readLine());
@@ -197,7 +197,8 @@ public class PartyCLIView {
     
     public String askAcceptOrReject() throws IOException {
         System.out.print("Do you want to (A)ccept or (R)eject? ");
-        return reader.readLine().trim().toUpperCase();
+        String input = reader.readLine();
+        return (input == null) ? "" : input.trim().toUpperCase();
     }
 
     public boolean askForceAssignment() throws IOException {
