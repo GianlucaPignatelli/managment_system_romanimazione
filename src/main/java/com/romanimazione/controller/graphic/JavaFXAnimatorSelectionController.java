@@ -63,7 +63,7 @@ public class JavaFXAnimatorSelectionController {
                 if (item == null || empty) {
                     getStyleClass().removeAll(ROW_WARNING_CLASS);
                 } else {
-                    if (!item.isTimeCompatible()) {
+                    if (!Boolean.parseBoolean(item.getIsTimeCompatible())) {
                         if (!getStyleClass().contains(ROW_WARNING_CLASS)) getStyleClass().add(ROW_WARNING_CLASS);
                     } else {
                         getStyleClass().removeAll(ROW_WARNING_CLASS);
@@ -83,8 +83,8 @@ public class JavaFXAnimatorSelectionController {
 
     private void loadCurrentAssignments() {
         try {
-            Map<String, com.romanimazione.entity.AssignmentStatus> map = partyController.getAssignmentStatuses(currentParty.getId());
-            Map<String, java.time.LocalDateTime> timestamps = partyController.getAssignmentTimestamps(currentParty.getId());
+            Map<String, com.romanimazione.entity.AssignmentStatus> map = partyController.getAssignmentStatuses(Integer.parseInt(currentParty.getId()));
+            Map<String, java.time.LocalDateTime> timestamps = partyController.getAssignmentTimestamps(Integer.parseInt(currentParty.getId()));
             
             List<AssignmentWrapper> list = map.entrySet().stream()
                 .map(e -> {

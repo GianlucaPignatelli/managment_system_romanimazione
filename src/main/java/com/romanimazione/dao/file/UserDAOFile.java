@@ -35,17 +35,6 @@ public class UserDAOFile extends GenericFileDAO<User> implements UserDAO {
     }
 
     @Override
-    public User findUserByIdentifier(String identifier) throws DAOException {
-        List<User> users = load(new TypeReference<List<User>>(){});
-        for (User u : users) {
-            if (u.getUsername().equals(identifier) || u.getEmail().equals(identifier)) {
-                return u;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public void saveUser(User user) throws DAOException {
         List<User> users = load(new TypeReference<List<User>>(){});
         for (User u : users) {
@@ -59,11 +48,19 @@ public class UserDAOFile extends GenericFileDAO<User> implements UserDAO {
     }
 
     @Override
-    public long countAdmins() throws DAOException {
+    public void updateUser(User user) throws DAOException {
         List<User> users = load(new TypeReference<List<User>>(){});
-        return users.stream()
-            .filter(u -> "AMMINISTRATORE".equalsIgnoreCase(u.getRole()))
-            .count();
+        boolean found = false;
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getUsername().equals(user.getUsername())) {
+                user.setId(users.get(i).getId());
+                users.set(i, user);
+                found = true;
+                break;
+            }
+        }
+        if (!found) throw new DAOException("User not found");
+        save(users);
     }
 
     @Override

@@ -52,7 +52,9 @@ public class PartyDAOMySQL implements PartyDAO {
              ResultSet rs = stmt.executeQuery()) {
             
             while (rs.next()) {
-                list.add(mapRowToParty(rs));
+                Party p = mapRowToParty(rs);
+                loadAssignments(p, conn);
+                list.add(p);
             }
         } catch (SQLException e) {
             throw new DAOException("Error finding parties: " + e.getMessage(), e);
@@ -61,234 +63,114 @@ public class PartyDAOMySQL implements PartyDAO {
     }
 
     @Override
-    public void assignAnimator(int partyId, String animatorUsername) throws DAOException {
-        String query = "INSERT INTO party_assignments (party_id, animator_username, status, assigned_at) " +
-                       "VALUES (?, ?, 'PENDING', CURRENT_TIMESTAMP) " +
-                       "ON DUPLICATE KEY UPDATE status='PENDING', assigned_at=CURRENT_TIMESTAMP";
+    public Party getPartyById(int id) throws DAOException {
+        String query = "SELECT * FROM party WHERE id = ?";
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            
-            stmt.setInt(1, partyId);
-            stmt.setString(2, animatorUsername);
-            stmt.executeUpdate();
-            
+             
+             stmt.setInt(1, id);
+             try (ResultSet rs = stmt.executeQuery()) {
+                 if (rs.next()) {
+                     Party p = mapRowToParty(rs);
+                     loadAssignments(p, conn);
+                     return p;
+                 }
+                 return null;
+             }
         } catch (SQLException e) {
-            throw new DAOException("Error assigning animator: " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public List<String> getAssignedAnimators(int partyId) throws DAOException {
-        List<String> list = new ArrayList<>();
-        String query = "SELECT animator_username FROM party_assignments WHERE party_id = ?";
-        
-        try (Connection conn = MySQLDAOFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            
-            stmt.setInt(1, partyId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    list.add(rs.getString("animator_username"));
-                }
-            }
-        } catch (SQLException e) {
-            throw new DAOException("Error retrieving assigned animators: " + e.getMessage(), e);
-        }
-        return list;
-    }
-
-    @Override
-    public void updateStatus(int partyId, com.romanimazione.entity.PartyStatus status) throws DAOException {
-        String query = "UPDATE party SET status = ? WHERE id = ?";
-        try (Connection conn = MySQLDAOFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            
-            stmt.setString(1, status.name());
-            stmt.setInt(2, partyId);
-            
-            int affected = stmt.executeUpdate();
-            if (affected == 0) {
-                 throw new DAOException("Party with ID " + partyId + " not found.");
-            }
-            
-        } catch (SQLException e) {
-            throw new DAOException("Error updating party status: " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public List<Party> findJobOffers(String animatorUsername) throws DAOException {
-        List<Party> list = new ArrayList<>();
-        // Join Party and PartyAssignments to get details of pending offers
-        String query = "SELECT p.*, pa.status as assign_status " +
-                       "FROM party p " +
-                       "JOIN party_assignments pa ON p.id = pa.party_id " +
-                       "WHERE pa.animator_username = ? AND pa.status = 'PENDING'";
-        
-        try (Connection conn = MySQLDAOFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            
-            stmt.setString(1, animatorUsername);
-            
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Party p = mapRowToParty(rs);
-                    list.add(p);
-                }
-            }
-        } catch (SQLException e) {
-            throw new DAOException("Error finding job offers: " + e.getMessage(), e);
-        }
-        return list;
-    }
-
-    @Override
-    public List<Party> findAcceptedJobs(String animatorUsername, java.time.LocalDate startDate, java.time.LocalDate endDate) throws DAOException {
-        List<Party> list = new ArrayList<>();
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("SELECT p.*, pa.status as assign_status ");
-        queryBuilder.append("FROM party p ");
-        queryBuilder.append("JOIN party_assignments pa ON p.id = pa.party_id ");
-        queryBuilder.append("WHERE pa.animator_username = ? AND pa.status = 'ACCEPTED' ");
-        
-        if (startDate != null) {
-            queryBuilder.append("AND p.party_date >= ? ");
-        }
-        if (endDate != null) {
-            queryBuilder.append("AND p.party_date <= ? ");
-        }
-        queryBuilder.append("ORDER BY p.party_date ASC, p.start_time ASC");
-
-        try (Connection conn = MySQLDAOFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(queryBuilder.toString())) {
-            
-            int paramIndex = 1;
-            stmt.setString(paramIndex++, animatorUsername);
-            
-            if (startDate != null) {
-                stmt.setDate(paramIndex++, Date.valueOf(startDate));
-            }
-            if (endDate != null) {
-                stmt.setDate(paramIndex++, Date.valueOf(endDate));
-            }
-            
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Party p = mapRowToParty(rs);
-                    list.add(p);
-                }
-            }
-        } catch (SQLException e) {
-            throw new DAOException("Error finding accepted jobs: " + e.getMessage(), e);
-        }
-        return list;
-    }
-
-    @Override
-    public void updateAssignmentStatus(int partyId, String animatorUsername, com.romanimazione.entity.AssignmentStatus status) throws DAOException {
-        String query = "UPDATE party_assignments SET status = ? WHERE party_id = ? AND animator_username = ?";
-        try (Connection conn = MySQLDAOFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            
-            stmt.setString(1, status.name());
-            stmt.setInt(2, partyId);
-            stmt.setString(3, animatorUsername);
-            
-            int affected = stmt.executeUpdate();
-            if (affected == 0) {
-                 throw new DAOException("Assignment not found for party " + partyId + " and user " + animatorUsername);
-            }
-            
-        } catch (SQLException e) {
-            throw new DAOException("Error updating assignment status: " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public com.romanimazione.entity.AssignmentStatus getAssignmentStatus(int partyId, String animatorUsername) throws DAOException {
-        String query = "SELECT status FROM party_assignments WHERE party_id = ? AND animator_username = ?";
-        try (Connection conn = MySQLDAOFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            
-            stmt.setInt(1, partyId);
-            stmt.setString(2, animatorUsername);
-            
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return com.romanimazione.entity.AssignmentStatus.valueOf(rs.getString("status"));
-                }
-            }
-            return null; // No assignment found
-        } catch (SQLException e) {
-            throw new DAOException("Error getting assignment status: " + e.getMessage(), e);
-        }
-    }  
-
-    @Override
-    public int getProposalCount(int partyId) throws DAOException {
-        String query = "SELECT COUNT(*) FROM party_assignments WHERE party_id = ?";
-        try (Connection conn = MySQLDAOFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            
-            stmt.setInt(1, partyId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-            }
-            return 0;
-        } catch (SQLException e) {
-            throw new DAOException("Error count proposals: " + e.getMessage(), e);
+            throw new DAOException("Error getting party: " + e.getMessage(), e);
         }
     }
     
     @Override
-    public void removeAssignment(int partyId, String animatorUsername) throws DAOException {
-        String sql = "DELETE FROM party_assignments WHERE party_id = ? AND animator_username = ?";
-        try (Connection conn = MySQLDAOFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, partyId);
-            stmt.setString(2, animatorUsername);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new DAOException("Error removing assignment", e);
-        }
-    }
-
-    // Extraction helper to reduce duplication
-    
-    @Override
-    public java.time.LocalDateTime getAssignmentTimestamp(int partyId, String animatorUsername) throws DAOException {
-        String query = "SELECT assigned_at FROM party_assignments WHERE party_id = ? AND animator_username = ?";
+    public void update(Party party) throws DAOException {
+        String query = "UPDATE party SET name=?, type=?, address=?, party_date=?, client_name=?, client_phone=?, start_time=?, end_time=?, children_count=?, animators_required=?, description=?, cost=?, status=? WHERE id=?";
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
+             
+            stmt.setString(1, party.getName());
+            stmt.setString(2, party.getType());
+            stmt.setString(3, party.getAddress());
+            stmt.setDate(4, Date.valueOf(party.getDate()));
+            stmt.setString(5, party.getClientName());
+            stmt.setString(6, party.getClientPhone());
+            stmt.setTime(7, Time.valueOf(party.getStartTime()));
+            stmt.setTime(8, Time.valueOf(party.getEndTime()));
             
-            stmt.setInt(1, partyId);
-            stmt.setString(2, animatorUsername);
+            if (party.getChildrenCount() != null) {
+                stmt.setInt(9, party.getChildrenCount());
+            } else {
+                stmt.setNull(9, Types.INTEGER);
+            }
             
+            stmt.setInt(10, party.getAnimatorsRequired());
+            stmt.setString(11, party.getDescription());
+            stmt.setDouble(12, party.getCost());
+            stmt.setString(13, party.getStatus().name());
+            stmt.setInt(14, party.getId());
+            
+            stmt.executeUpdate();
+            
+            // Mantiene il mapping dell'Application Controller!
+            syncAssignments(party, conn);
+            
+        } catch (SQLException e) {
+            throw new DAOException("Error updating party: " + e.getMessage(), e);
+        }
+    }
+    
+    @Override
+    public void deleteParty(int id) throws DAOException {
+       try (Connection conn = MySQLDAOFactory.createConnection();
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM party WHERE id=?")) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+       } catch (SQLException e) {
+            throw new DAOException("Error deleting party", e);
+       }
+    }
+    
+    private void loadAssignments(Party p, Connection conn) throws SQLException {
+        String query = "SELECT animator_username, status, assigned_at FROM party_assignments WHERE party_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, p.getId());
             try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
+                while (rs.next()) {
+                    String user = rs.getString("animator_username");
+                    com.romanimazione.entity.AssignmentStatus status = com.romanimazione.entity.AssignmentStatus.valueOf(rs.getString("status"));
                     Timestamp ts = rs.getTimestamp("assigned_at");
+                    
+                    p.getAssignmentStatuses().put(user, status);
                     if (ts != null) {
-                        return ts.toLocalDateTime();
+                        p.getAssignmentTimestamps().put(user, ts.toLocalDateTime());
                     }
                 }
             }
-            return null;
-        } catch (SQLException e) {
-            throw new DAOException("Error getting assignment timestamp: " + e.getMessage(), e);
         }
     }
     
-    @Override
-    public void checkTimeouts() throws DAOException {
-        // Automatically updates assignments that have been pending for > 24 hours
-        String query = "UPDATE party_assignments SET status = 'TIMEOUT' WHERE status = 'PENDING' AND assigned_at < (NOW() - INTERVAL 24 HOUR)";
-        try (Connection conn = MySQLDAOFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+    private void syncAssignments(Party p, Connection conn) throws SQLException {
+        // Distrugge le vecchie relazioni e ricrea quelle calcolate dal Controller (Mapping ORM Puro)
+        try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM party_assignments WHERE party_id = ?")) {
+            stmt.setInt(1, p.getId());
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new DAOException("Error checking timeouts: " + e.getMessage(), e);
+        }
+        
+        String insert = "INSERT INTO party_assignments (party_id, animator_username, status, assigned_at) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insert)) {
+            for (String user : p.getAssignmentStatuses().keySet()) {
+                stmt.setInt(1, p.getId());
+                stmt.setString(2, user);
+                stmt.setString(3, p.getAssignmentStatuses().get(user).name());
+                
+                java.time.LocalDateTime ldt = p.getAssignmentTimestamps().get(user);
+                if (ldt != null) {
+                    stmt.setTimestamp(4, Timestamp.valueOf(ldt));
+                } else {
+                    stmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+                }
+                stmt.executeUpdate();
+            }
         }
     }
 

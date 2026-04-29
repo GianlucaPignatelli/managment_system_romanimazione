@@ -19,13 +19,13 @@ public class AdminUserController extends Subject {
         List<UserBean> beans = new ArrayList<>();
         for (User u : entities) {
             UserBean b = new UserBean();
-            b.setId(u.getId());
+            b.setId(String.valueOf(u.getId()));
             b.setUsername(u.getUsername());
             b.setNome(u.getNome());
             b.setCognome(u.getCognome());
             b.setRole(u.getRole());
             b.setEmail(u.getEmail());
-            b.setSuperAdmin(u.isSuperAdmin());
+            b.setIsSuperAdmin(String.valueOf(u.isSuperAdmin()));
             beans.add(b);
         }
         return beans;
@@ -36,7 +36,7 @@ public class AdminUserController extends Subject {
             throw new IllegalArgumentException("Invalid user to delete");
         }
         
-        if (userToDelete.isSuperAdmin()) {
+        if (Boolean.parseBoolean(userToDelete.getIsSuperAdmin())) {
             throw new IllegalArgumentException("Cannot delete a Super Admin.");
         }
 
@@ -56,5 +56,23 @@ public class AdminUserController extends Subject {
         
         userDAO.deleteUser(userToDelete.getUsername());
         notifyObservers("User " + userToDelete.getUsername() + " deleted successfully.");
+    }
+
+    public void updateUserProfile(UserBean userBean) throws DAOException, IllegalArgumentException {
+        userBean.validateSyntax();
+        UserDAO userDAO = DAOFactory.getDAOFactory().getUserDAO();
+        
+        User existing = userDAO.findAllUsers().stream()
+                .filter(u -> u.getUsername().equals(userBean.getUsername()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("User not found for update"));
+                
+        existing.setNome(userBean.getNome());
+        existing.setCognome(userBean.getCognome());
+        existing.setEmail(userBean.getEmail());
+        existing.setPassword(userBean.getPassword());
+        
+        userDAO.updateUser(existing);
+        notifyObservers("User " + userBean.getUsername() + " updated successfully.");
     }
 }

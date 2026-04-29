@@ -41,14 +41,14 @@ public class AvailabilityCLIView {
         boolean isFull = "y".equalsIgnoreCase(reader.readLine());
         
         AvailabilityBean bean = new AvailabilityBean();
-        bean.setDate(date);
-        bean.setFullDay(isFull);
+        bean.setDate(date.toString());
+        bean.setIsFullDay(String.valueOf(isFull));
         
         if (!isFull) {
              System.out.print("Start Time (HH:mm): ");
-             bean.setStartTime(LocalTime.parse(reader.readLine()));
+             bean.setStartTime(reader.readLine());
              System.out.print("End Time (HH:mm): ");
-             bean.setEndTime(LocalTime.parse(reader.readLine()));
+             bean.setEndTime(reader.readLine());
         }
         return bean;
     }
@@ -60,8 +60,8 @@ public class AvailabilityCLIView {
             System.out.printf("%-5s | %-12s | %-20s%n", "ID", "Date", "Time");
             System.out.println("------------------------------------------");
             for (AvailabilityBean b : list) {
-                String timeInfo = b.isFullDay() ? "Full Day" : b.getStartTime() + " - " + b.getEndTime();
-                System.out.printf("%-5d | %s | %s%n", b.getId(), b.getDate(), timeInfo);
+                String timeInfo = Boolean.parseBoolean(b.getIsFullDay()) ? "Full Day" : b.getStartTime() + " - " + b.getEndTime();
+                System.out.printf("%-5s | %s | %s%n", b.getId(), b.getDate(), timeInfo);
             }
         }
     }

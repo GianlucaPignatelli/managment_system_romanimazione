@@ -18,25 +18,23 @@ public class JobOfferController extends Subject {
         }
         
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
-        dao.checkTimeouts(); // Auto-update any expired before showing
-        
-        List<Party> proposed = dao.findJobOffers(animator.getUsername());
+        List<Party> allParties = dao.findAllParties();
         List<PartyBean> beans = new ArrayList<>();
         
-        for (Party p : proposed) {
-            PartyBean pb = PartyBean.fromEntity(p);
-            
-            // Map statuses and timestamps dynamically for all DAOs (esp MySQL)
-            AssignmentStatus status = dao.getAssignmentStatus(p.getId(), animator.getUsername());
-            if (status != null) {
-                pb.getAssignmentStatuses().put(animator.getUsername(), status);
+        for (Party p : allParties) {
+            AssignmentStatus status = p.getAssignmentStatuses().get(animator.getUsername());
+            if (status == AssignmentStatus.PENDING) {
+                // Apply manual timeout check on the fly
+                java.time.LocalDateTime ts = p.getAssignmentTimestamps().get(animator.getUsername());
+                if (ts != null && ts.isBefore(java.time.LocalDateTime.now().minusHours(24))) {
+                    p.getAssignmentStatuses().put(animator.getUsername(), AssignmentStatus.TIMEOUT);
+                    dao.update(p);
+                    continue; // Skipped because it timed out
+                }
+                
+                PartyBean pb = PartyController.mapToBean(p);
+                beans.add(pb);
             }
-            java.time.LocalDateTime ts = dao.getAssignmentTimestamp(p.getId(), animator.getUsername());
-            if (ts != null) {
-                pb.getAssignmentTimestamps().put(animator.getUsername(), ts);
-            }
-            
-            beans.add(pb);
         }
         return beans;
     }
@@ -47,20 +45,20 @@ public class JobOfferController extends Subject {
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
         
         // 1. Accept the current offer
-        dao.updateAssignmentStatus(party.getId(), animator.getUsername(), AssignmentStatus.ACCEPTED);
+        Party targetParty = dao.getPartyById(Integer.parseInt(party.getId()));
+        targetParty.getAssignmentStatuses().put(animator.getUsername(), AssignmentStatus.ACCEPTED);
+        dao.update(targetParty);
         
-        // 2. Auto-reject other pending offers on the SAME DAY
-        List<Party> allOffers = dao.findJobOffers(animator.getUsername());
-        
+        // 2. Auto-reject other pending offers on the SAME DAY (Applicative Logic applied iteratively)
+        List<Party> allOffers = dao.findAllParties();
         for (Party other : allOffers) {
-            if (other.getId() == party.getId()) continue; // Skip current
+            if (String.valueOf(other.getId()).equals(party.getId())) continue;
             
-            // Check Date Conflict
-            if (other.getDate().equals(party.getDate())) {
+            if (other.getDate().toString().equals(party.getDate())) {
                 AssignmentStatus status = other.getAssignmentStatuses().get(animator.getUsername());
-                // Only reject if it is currently PENDING
                 if (status == AssignmentStatus.PENDING) {
-                    dao.updateAssignmentStatus(other.getId(), animator.getUsername(), AssignmentStatus.REJECTED);
+                    other.getAssignmentStatuses().put(animator.getUsername(), AssignmentStatus.REJECTED);
+                    dao.update(other);
                     System.out.println("System: Auto-rejected conflicting offer for party " + other.getId());
                 }
             }
@@ -72,8 +70,10 @@ public class JobOfferController extends Subject {
     public void rejectOffer(PartyBean party, UserBean animator) throws DAOException {
         if (party == null || animator == null) throw new IllegalArgumentException("Null arguments");
         
-        // Update Status
-        DAOFactory.getDAOFactory().getPartyDAO().updateAssignmentStatus(party.getId(), animator.getUsername(), AssignmentStatus.REJECTED);
+        PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
+        Party targetParty = dao.getPartyById(Integer.parseInt(party.getId()));
+        targetParty.getAssignmentStatuses().put(animator.getUsername(), AssignmentStatus.REJECTED);
+        dao.update(targetParty);
         
         notifyObservers("Offer rejected for party: " + party.getName());
     }

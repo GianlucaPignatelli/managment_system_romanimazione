@@ -1,6 +1,18 @@
 package com.romanimazione.entity;
 
-public class User {
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(
+  use = JsonTypeInfo.Id.NAME, 
+  include = JsonTypeInfo.As.PROPERTY, 
+  property = "role",
+  visible = true)
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = Animatore.class, name = "ANIMATORE"),
+  @JsonSubTypes.Type(value = Amministratore.class, name = "AMMINISTRATORE")
+})
+public abstract class User {
     private int id;
     private String username;
     private String password;

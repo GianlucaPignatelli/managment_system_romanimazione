@@ -21,11 +21,11 @@ public class JavaFXPartyDetailsController {
         if (party == null) return;
         nameLabel.setText(party.getName());
         typeLabel.setText(party.getType());
-        dateLabel.setText(party.getDate().toString());
-        timeLabel.setText(party.getStartTime().toString() + " - " + party.getEndTime().toString());
+        dateLabel.setText(party.getDate());
+        timeLabel.setText(party.getStartTime() + " - " + party.getEndTime());
         addressLabel.setText(party.getAddress());
         clientLabel.setText(party.getClientName() + " (" + party.getClientPhone() + ")");
-        costLabel.setText(String.format("€ %.2f", party.getCost()));
+        costLabel.setText("€ " + party.getCost());
         servicesLabel.setText(party.getDescription());
         notesLabel.setText("Status: " + party.getStatus()); // Using notes for status or description
     }

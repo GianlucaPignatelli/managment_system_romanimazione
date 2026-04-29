@@ -52,11 +52,11 @@ public class JavaFXJobOfferController {
     }
 
     private void setupColumns() {
-        dateColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDate().toString()));
+        dateColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDate() != null ? cell.getValue().getDate() : ""));
         timeColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getStartTime() + " - " + cell.getValue().getEndTime()));
         typeColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getType()));
         cityColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getAddress()));
-        feeColumn.setCellValueFactory(cell -> new SimpleStringProperty(String.format("%.2f", cell.getValue().getCost()))); 
+        feeColumn.setCellValueFactory(cell -> new SimpleStringProperty("€ " + cell.getValue().getCost())); 
         
         statusColumn.setCellValueFactory(cell -> {
              UserBean currentUser = SessionBean.getInstance().getCurrentUser();
@@ -77,11 +77,12 @@ public class JavaFXJobOfferController {
         var timestamps = party.getAssignmentTimestamps();
         
         if (statuses != null && statuses.containsKey(currentUser.getUsername())) {
-            com.romanimazione.entity.AssignmentStatus status = statuses.get(currentUser.getUsername());
-            String statusText = status.toString();
+            String status = statuses.get(currentUser.getUsername());
+            String statusText = status;
             
-            if (status == com.romanimazione.entity.AssignmentStatus.PENDING) {
-                java.time.LocalDateTime assignedAt = timestamps != null ? timestamps.get(currentUser.getUsername()) : null;
+            if (com.romanimazione.entity.AssignmentStatus.PENDING.name().equals(status)) {
+                String timestampStr = timestamps != null ? timestamps.get(currentUser.getUsername()) : null;
+                java.time.LocalDateTime assignedAt = timestampStr != null ? java.time.LocalDateTime.parse(timestampStr) : null;
                 if (assignedAt != null) {
                     java.time.Duration rem = java.time.Duration.between(java.time.LocalDateTime.now(), assignedAt.plusHours(24));
                     if (!rem.isNegative()) {
@@ -130,7 +131,7 @@ public class JavaFXJobOfferController {
                 UserBean currentUser = SessionBean.getInstance().getCurrentUser();
                 var status = party.getAssignmentStatuses().get(currentUser.getUsername());
                 
-                if (status == com.romanimazione.entity.AssignmentStatus.ACCEPTED) {
+                if (com.romanimazione.entity.AssignmentStatus.ACCEPTED.name().equals(status)) {
                     setGraphic(lblAccepted);
                 } else {
                     setGraphic(paneButtons);

@@ -14,19 +14,11 @@ public class UserDAODemo implements UserDAO {
     }
 
     @Override
-    public User findUserByIdentifier(String identifier) throws DAOException {
-        for (User u : MOCK_USERS) {
-            if (u.getUsername().equals(identifier) || (u.getEmail() != null && u.getEmail().equals(identifier))) {
-                return u;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public void saveUser(User user) throws DAOException {
         // Check duplicate
-        if (findUserByIdentifier(user.getUsername()) != null) {
+        boolean duplicate = MOCK_USERS.stream()
+                .anyMatch(u -> u.getUsername().equals(user.getUsername()));
+        if (duplicate) {
             throw new DAOException("User already exists in Demo DB");
         }
         MOCK_USERS.add(user);
@@ -34,10 +26,17 @@ public class UserDAODemo implements UserDAO {
     }
 
     @Override
-    public long countAdmins() {
-        return MOCK_USERS.stream()
-            .filter(u -> "AMMINISTRATORE".equalsIgnoreCase(u.getRole()))
-            .count();
+    public void updateUser(User user) throws DAOException {
+        boolean found = false;
+        for (int i = 0; i < MOCK_USERS.size(); i++) {
+            if (MOCK_USERS.get(i).getUsername().equals(user.getUsername())) {
+                user.setId(MOCK_USERS.get(i).getId());
+                MOCK_USERS.set(i, user);
+                found = true;
+                break;
+            }
+        }
+        if (!found) throw new DAOException("User not found");
     }
 
     @Override

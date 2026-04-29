@@ -12,7 +12,9 @@ import com.romanimazione.exception.DuplicateUserException;
 public class RegistrationController extends Subject {
 
     public long countAdmins() throws DAOException {
-        return DAOFactory.getDAOFactory().getUserDAO().countAdmins();
+        return DAOFactory.getDAOFactory().getUserDAO().findAllUsers().stream()
+                .filter(u -> "AMMINISTRATORE".equalsIgnoreCase(u.getRole()))
+                .count();
     }
 
     public void register(UserBean userBean) throws DAOException, DuplicateUserException, IllegalArgumentException {
@@ -20,7 +22,7 @@ public class RegistrationController extends Subject {
         UserDAO userDAO = daoFactory.getUserDAO();
 
         checkAvailability(userDAO, userBean);
-        validateEmail(userBean);
+        userBean.validateSyntax();
 
         User user;
         if ("AMMINISTRATORE".equalsIgnoreCase(userBean.getRole())) {
@@ -41,20 +43,19 @@ public class RegistrationController extends Subject {
     }
 
     private void checkAvailability(UserDAO userDAO, UserBean userBean) throws DAOException, DuplicateUserException {
-        if (userDAO.findUserByIdentifier(userBean.getUsername()) != null) {
+        boolean duplicate = userDAO.findAllUsers().stream()
+                .anyMatch(u -> u.getUsername().equals(userBean.getUsername()) || 
+                              (u.getEmail() != null && u.getEmail().equals(userBean.getUsername())));
+        if (duplicate) {
             throw new DuplicateUserException("Username already exists");
         }
     }
 
-    private void validateEmail(UserBean userBean) {
-        if (userBean.getEmail() == null || !userBean.getEmail().endsWith("@gmail.com")) {
-            throw new IllegalArgumentException("Email must be a valid @gmail.com address");
-        }
-    }
+
 
     private User createAdminUser(UserBean userBean, UserDAO userDAO) throws DAOException {
         User user = new Amministratore();
-        long adminCount = userDAO.countAdmins();
+        long adminCount = this.countAdmins();
         com.romanimazione.bean.SecurityManager secManager = com.romanimazione.bean.SecurityManager.getInstance();
 
         if (!secManager.isMasterCodeSet() || adminCount == 0) {

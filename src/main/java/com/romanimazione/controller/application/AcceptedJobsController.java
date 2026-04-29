@@ -18,24 +18,28 @@ public class AcceptedJobsController extends Subject {
         }
         
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
-        dao.checkTimeouts(); // Clean up states if necessary
-        
-        List<Party> accepted = dao.findAcceptedJobs(animator.getUsername(), startDate, endDate);
+        List<Party> allParties = dao.findAllParties();
         List<PartyBean> beans = new ArrayList<>();
         
-        for (Party p : accepted) {
-            PartyBean pb = PartyBean.fromEntity(p);
-            // Include status (which is definitely ACCEPTED)
-            pb.getAssignmentStatuses().put(animator.getUsername(), com.romanimazione.entity.AssignmentStatus.ACCEPTED);
-            
-            // Bring timestamps as well
-            java.time.LocalDateTime ts = dao.getAssignmentTimestamp(p.getId(), animator.getUsername());
-            if (ts != null) {
-                pb.getAssignmentTimestamps().put(animator.getUsername(), ts);
+        for (Party p : allParties) {
+            com.romanimazione.entity.AssignmentStatus status = p.getAssignmentStatuses().get(animator.getUsername());
+            if (status == com.romanimazione.entity.AssignmentStatus.ACCEPTED) {
+                // Apply Date Filters programmatically
+                if (startDate != null && p.getDate().isBefore(startDate)) continue;
+                if (endDate != null && p.getDate().isAfter(endDate)) continue;
+                
+                PartyBean pb = PartyController.mapToBean(p);
+                beans.add(pb);
             }
-            
-            beans.add(pb);
         }
+        
+        // Ensure chronological ordering since the DB is no longer doing the SORT BY!
+        beans.sort((b1, b2) -> {
+            int dateCmp = b1.getDate().compareTo(b2.getDate());
+            if (dateCmp != 0) return dateCmp;
+            return b1.getStartTime().compareTo(b2.getStartTime());
+        });
+        
         return beans;
     }
 }

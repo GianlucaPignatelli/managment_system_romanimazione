@@ -27,13 +27,13 @@ class PartyControllerTest {
         party.setName("Test Party");
         party.setType("Full Party");
         party.setAddress("Via Roma 1");
-        party.setDate(LocalDate.now().plusDays(10)); // Future date
-        party.setStartTime(LocalTime.of(15, 0));
-        party.setEndTime(LocalTime.of(18, 0));
+        party.setDate(LocalDate.now().plusDays(10).toString()); // Future date
+        party.setStartTime(LocalTime.of(15, 0).toString());
+        party.setEndTime(LocalTime.of(18, 0).toString());
         party.setClientName("Mario Rossi");
         party.setClientPhone("1234567890");
-        party.setCost(100.0);
-        party.setAnimatorsRequired(2);
+        party.setCost("100.0");
+        party.setAnimatorsRequired("2");
 
         assertDoesNotThrow(() -> partyController.createParty(party));
     }
@@ -45,7 +45,7 @@ class PartyControllerTest {
         PartyBean party = new PartyBean();
         party.setName("Past Party");
         party.setAddress("Via Roma 1");
-        party.setDate(LocalDate.now().minusDays(1)); // Past date
+        party.setDate(LocalDate.now().minusDays(1).toString()); // Past date
         
         assertThrows(InvalidPartyException.class, () -> {
             partyController.createParty(party);
@@ -55,9 +55,9 @@ class PartyControllerTest {
     @Test
     void testCreatePartyFailure_InvalidTime() {
         PartyBean party = new PartyBean();
-        party.setDate(LocalDate.now().plusDays(1));
-        party.setStartTime(LocalTime.of(18, 0));
-        party.setEndTime(LocalTime.of(17, 0)); // End before Start
+        party.setDate(LocalDate.now().plusDays(1).toString());
+        party.setStartTime(LocalTime.of(18, 0).toString());
+        party.setEndTime(LocalTime.of(17, 0).toString()); // End before Start
 
         assertThrows(InvalidPartyException.class, () -> {
             partyController.createParty(party);

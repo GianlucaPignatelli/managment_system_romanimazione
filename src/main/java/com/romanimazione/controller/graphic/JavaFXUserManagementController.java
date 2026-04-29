@@ -69,7 +69,7 @@ public class JavaFXUserManagementController {
                 setGraphic(null);
             } else {
                 UserBean currentUser = getTableView().getItems().get(getIndex());
-                if (currentUser.isSuperAdmin()) {
+                if (Boolean.parseBoolean(currentUser.getIsSuperAdmin())) {
                     deleteButton.setDisable(true);
                     deleteButton.setText("Super Admin");
                 } else {

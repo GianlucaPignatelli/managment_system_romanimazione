@@ -38,11 +38,11 @@ public class JavaFXAcceptedJobsController {
     }
     
     private void setupColumns() {
-        dateColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDate().toString()));
+        dateColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDate() != null ? cell.getValue().getDate() : ""));
         timeColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getStartTime() + " - " + cell.getValue().getEndTime()));
         typeColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getType()));
         cityColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getAddress()));
-        feeColumn.setCellValueFactory(cell -> new SimpleStringProperty(String.format("%.2f", cell.getValue().getCost()))); 
+        feeColumn.setCellValueFactory(cell -> new SimpleStringProperty("€ " + cell.getValue().getCost())); 
         
         jobsTable.setRowFactory(tv -> {
             TableRow<PartyBean> row = new TableRow<>();

@@ -4,6 +4,7 @@ import com.romanimazione.bean.AvailabilityBean;
 import com.romanimazione.controller.application.AvailabilityController;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -25,10 +26,10 @@ public class JavaFXAvailabilityController implements Initializable {
     @FXML private Label errorLabel;
 
     @FXML private TableView<AvailabilityBean> availabilityTable;
-    @FXML private TableColumn<AvailabilityBean, LocalDate> dateColumn;
-    @FXML private TableColumn<AvailabilityBean, LocalTime> startColumn;
-    @FXML private TableColumn<AvailabilityBean, LocalTime> endColumn;
-    @FXML private TableColumn<AvailabilityBean, Boolean> fullDayColumn;
+    @FXML private TableColumn<AvailabilityBean, String> dateColumn;
+    @FXML private TableColumn<AvailabilityBean, String> startColumn;
+    @FXML private TableColumn<AvailabilityBean, String> endColumn;
+    @FXML private TableColumn<AvailabilityBean, String> fullDayColumn;
 
     private final AvailabilityController appController;
 
@@ -50,20 +51,20 @@ public class JavaFXAvailabilityController implements Initializable {
             this.currentUsername = com.romanimazione.bean.SessionBean.getInstance().getCurrentUser().getUsername();
         }
 
-        dateColumn.setCellValueFactory(cell -> new SimpleObjectProperty<>(cell.getValue().getDate()));
-        startColumn.setCellValueFactory(cell -> new SimpleObjectProperty<>(cell.getValue().getStartTime()));
-        endColumn.setCellValueFactory(cell -> new SimpleObjectProperty<>(cell.getValue().getEndTime()));
-        fullDayColumn.setCellValueFactory(cell -> new SimpleBooleanProperty(cell.getValue().isFullDay()));
+        dateColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDate()));
+        startColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getStartTime()));
+        endColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getEndTime()));
+        fullDayColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getIsFullDay()));
         
         // Listener for selection to populate fields for update
         availabilityTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
-                datePicker.setValue(newSelection.getDate());
-                fullDayParams.setSelected(newSelection.isFullDay());
+                if (newSelection.getDate() != null) datePicker.setValue(LocalDate.parse(newSelection.getDate()));
+                fullDayParams.setSelected(Boolean.parseBoolean(newSelection.getIsFullDay()));
                 handleFullDayToggle(); // Refresh fields state
-                if (!newSelection.isFullDay()) {
-                    startTimeField.setText(newSelection.getStartTime().toString());
-                    endTimeField.setText(newSelection.getEndTime().toString());
+                if (!Boolean.parseBoolean(newSelection.getIsFullDay())) {
+                    startTimeField.setText(newSelection.getStartTime());
+                    endTimeField.setText(newSelection.getEndTime());
                 }
             }
         });
@@ -86,13 +87,13 @@ public class JavaFXAvailabilityController implements Initializable {
             AvailabilityBean bean = new AvailabilityBean();
             bean.setId(selected.getId());
             bean.setUsername(currentUsername);
-            bean.setDate(datePicker.getValue());
-            bean.setFullDay(fullDayParams.isSelected());
+            bean.setDate(datePicker.getValue().toString());
+            bean.setIsFullDay(String.valueOf(fullDayParams.isSelected()));
 
-            if (!bean.isFullDay()) {
+            if (!Boolean.parseBoolean(bean.getIsFullDay())) {
                 if (startTimeField.getText().isEmpty() || endTimeField.getText().isEmpty()) throw new IllegalArgumentException("Time fields empty");
-                bean.setStartTime(LocalTime.parse(startTimeField.getText()));
-                bean.setEndTime(LocalTime.parse(endTimeField.getText()));
+                bean.setStartTime(startTimeField.getText());
+                bean.setEndTime(endTimeField.getText());
             }
 
             appController.updateAvailability(bean);
@@ -152,10 +153,10 @@ public class JavaFXAvailabilityController implements Initializable {
         try {
             AvailabilityBean bean = new AvailabilityBean();
             bean.setUsername(currentUsername);
-            bean.setDate(datePicker.getValue());
-            bean.setFullDay(fullDayParams.isSelected());
+            bean.setDate(datePicker.getValue().toString());
+            bean.setIsFullDay(String.valueOf(fullDayParams.isSelected()));
 
-            if (!bean.isFullDay()) {
+            if (!Boolean.parseBoolean(bean.getIsFullDay())) {
                 parseTimeFields(bean);
             }
 
@@ -182,8 +183,10 @@ public class JavaFXAvailabilityController implements Initializable {
             throw new IllegalArgumentException("Time fields cannot be empty for partial day.");
         }
         try {
-            bean.setStartTime(LocalTime.parse(startTimeField.getText())); // expects HH:mm
-            bean.setEndTime(LocalTime.parse(endTimeField.getText()));
+            LocalTime.parse(startTimeField.getText()); // validation
+            LocalTime.parse(endTimeField.getText()); // validation
+            bean.setStartTime(startTimeField.getText());
+            bean.setEndTime(endTimeField.getText());
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid Time format. Use HH:mm (e.g. 14:30)");
         }

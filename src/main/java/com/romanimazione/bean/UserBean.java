@@ -1,7 +1,8 @@
 package com.romanimazione.bean;
 
 public class UserBean {
-    private int id;
+
+    private String id;
     private String username;
     private String role;
     private String nome;
@@ -9,6 +10,8 @@ public class UserBean {
     private String email;
     private String password;
     private String securityCode;
+    private String superAdmin;
+    private String timeCompatible = "true";
 
     public UserBean() {}
 
@@ -21,8 +24,8 @@ public class UserBean {
         this.email = email;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -45,11 +48,27 @@ public class UserBean {
     public String getSecurityCode() { return securityCode; }
     public void setSecurityCode(String securityCode) { this.securityCode = securityCode; }
 
-    private boolean superAdmin;
-    public boolean isSuperAdmin() { return superAdmin; }
-    public void setSuperAdmin(boolean superAdmin) { this.superAdmin = superAdmin; }
+    public String getIsSuperAdmin() { return superAdmin; }
+    public void setIsSuperAdmin(String superAdmin) { this.superAdmin = superAdmin; }
 
-    private boolean timeCompatible = true;
-    public boolean isTimeCompatible() { return timeCompatible; }
-    public void setTimeCompatible(boolean timeCompatible) { this.timeCompatible = timeCompatible; }
+    public String getIsTimeCompatible() { return timeCompatible; }
+    public void setIsTimeCompatible(String timeCompatible) { this.timeCompatible = timeCompatible; }
+
+    public void validateSyntax() throws IllegalArgumentException {
+        if (this.username == null || this.username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username is required.");
+        }
+        if (this.password == null || this.password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Password is required.");
+        }
+        if (this.email == null || !this.email.endsWith("@gmail.com")) {
+            throw new IllegalArgumentException("Email must be a valid @gmail.com address.");
+        }
+        if (this.nome == null || this.nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome is required.");
+        }
+        if (this.cognome == null || this.cognome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Cognome is required.");
+        }
+    }
 }

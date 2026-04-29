@@ -180,7 +180,7 @@ public class CLIController {
             } else {
                 for (int i = 0; i < accepted.size(); i++) {
                     com.romanimazione.bean.PartyBean pb = accepted.get(i);
-                    System.out.printf("%d. [%s] %s | %s - %s @ %s (Fee: %.2f)%n",
+                    System.out.printf("%d. [%s] %s | %s - %s @ %s (Fee: %s)%n",
                             i + 1, pb.getDate(), pb.getName(), pb.getStartTime(), pb.getEndTime(), pb.getAddress(), pb.getCost());
                 }
             }
@@ -192,7 +192,7 @@ public class CLIController {
     private void adminLoop() throws IOException {
         boolean loggedIn = true;
         PartyController partyController = new PartyController();
-        boolean isSuperAdmin = SessionBean.getInstance().getCurrentUser().isSuperAdmin();
+        boolean isSuperAdmin = Boolean.parseBoolean(SessionBean.getInstance().getCurrentUser().getIsSuperAdmin());
 
         while (loggedIn) {
             String input = mainView.showAdminMenuAndGetChoice(isSuperAdmin);
@@ -267,7 +267,7 @@ public class CLIController {
             if (idToDelete == 0) break;
             
             // Find target
-            UserBean target = beans.stream().filter(b -> b.getId() == idToDelete).findFirst().orElse(null);
+            UserBean target = beans.stream().filter(b -> Integer.parseInt(b.getId()) == idToDelete).findFirst().orElse(null);
             
             if (target == null) {
                 mainView.showError("User not found.");
@@ -297,7 +297,7 @@ public class CLIController {
         int partyId = partyView.askSelectPartyId();
         if (partyId > 0) {
             com.romanimazione.bean.PartyBean targetParty = parties.stream()
-                    .filter(p -> p.getId() == partyId)
+                    .filter(p -> Integer.parseInt(p.getId()) == partyId)
                     .findFirst()
                     .orElse(null);
             
@@ -314,8 +314,8 @@ public class CLIController {
 
     private void handlePartyAction(PartyController controller, com.romanimazione.bean.PartyBean targetParty) throws IOException, com.romanimazione.exception.DAOException {
         // Block modified actions if terminal status
-        if (targetParty.getStatus() == com.romanimazione.entity.PartyStatus.CANCELLED ||
-            targetParty.getStatus() == com.romanimazione.entity.PartyStatus.COMPLETED) {
+        if (com.romanimazione.entity.PartyStatus.CANCELLED.name().equals(targetParty.getStatus()) ||
+            com.romanimazione.entity.PartyStatus.COMPLETED.name().equals(targetParty.getStatus())) {
             mainView.showMessage("Action blocked: Party is " + targetParty.getStatus() + ".");
             return;
         }
@@ -388,7 +388,7 @@ public class CLIController {
     private void updateAvailabilityCLI() throws com.romanimazione.exception.DAOException, com.romanimazione.exception.InvalidAvailabilityException, IOException {
         int id = availabilityView.getIdInput("update");
         AvailabilityBean bean = availabilityView.getAvailabilityDetails();
-        bean.setId(id);
+        bean.setId(String.valueOf(id));
         bean.setUsername(SessionBean.getInstance().getCurrentUser().getUsername());
         
         availabilityController.updateAvailability(bean);
@@ -398,7 +398,7 @@ public class CLIController {
     private void deleteAvailabilityCLI() throws com.romanimazione.exception.DAOException, IOException {
          int id = availabilityView.getIdInput("delete");
          AvailabilityBean bean = new AvailabilityBean();
-         bean.setId(id);
+         bean.setId(String.valueOf(id));
          bean.setUsername(SessionBean.getInstance().getCurrentUser().getUsername());
          
          availabilityController.deleteAvailability(bean);

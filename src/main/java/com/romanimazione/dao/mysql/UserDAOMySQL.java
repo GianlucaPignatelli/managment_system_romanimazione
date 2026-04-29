@@ -14,18 +14,24 @@ import java.sql.SQLException;
 public class UserDAOMySQL implements UserDAO {
 
     @Override
-    public long countAdmins() throws DAOException {
-        // Count users with role 'AMMINISTRATORE'
-        String query = "SELECT COUNT(*) FROM users WHERE role = 'AMMINISTRATORE'";
+    public void updateUser(User user) throws DAOException {
+        String query = "UPDATE users SET password = ?, role = ?, nome = ?, cognome = ?, email = ?, is_super_admin = ? WHERE username = ?";
         try (Connection conn = MySQLDAOFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                return rs.getLong(1);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, user.getPassword());
+            stmt.setString(2, user.getRole());
+            stmt.setString(3, user.getNome());
+            stmt.setString(4, user.getCognome());
+            stmt.setString(5, user.getEmail());
+            stmt.setBoolean(6, user.isSuperAdmin());
+            stmt.setString(7, user.getUsername());
+            
+            int affected = stmt.executeUpdate();
+            if (affected == 0) {
+                throw new DAOException("User not found: " + user.getUsername());
             }
-            return 0;
         } catch (SQLException e) {
-            throw new DAOException("Error counting admins", e);
+             throw new DAOException("Error updating user", e);
         }
     }
     
@@ -60,19 +66,16 @@ public class UserDAOMySQL implements UserDAO {
     }
 
     private User mapRow(ResultSet rs) throws SQLException {
-        User user = new User();
         String roleStr = rs.getString("role");
-        com.romanimazione.entity.Role roleEnum = null;
-        try {
-            roleEnum = com.romanimazione.entity.Role.fromString(roleStr);
-        } catch (IllegalArgumentException e) {
-            // ignore or fallback
-        }
-
-        if (roleEnum == com.romanimazione.entity.Role.ANIMATORE) {
+        User user = null;
+        
+        if ("ANIMATORE".equalsIgnoreCase(roleStr)) {
             user = new Animatore();
-        } else if (roleEnum == com.romanimazione.entity.Role.AMMINISTRATORE) {
+        } else if ("AMMINISTRATORE".equalsIgnoreCase(roleStr)) {
             user = new Amministratore();
+        } else {
+            // Fallback anonimo in caso di dati db inconsistenti
+            user = new User() {}; 
         }
         
         user.setId(rs.getInt("id"));
@@ -92,24 +95,7 @@ public class UserDAOMySQL implements UserDAO {
         }
         return user;
     }
-    
-    @Override
-    public User findUserByIdentifier(String identifier) throws DAOException {
-        String query = "SELECT id, username, password, role, nome, cognome, email, is_super_admin FROM users WHERE username = ? OR email = ?";
-        try (Connection conn = MySQLDAOFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, identifier);
-            stmt.setString(2, identifier);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-            }
-        } catch (SQLException e) {
-             throw new DAOException("Error finding user", e);
-        }
-        return null;
-    }
+
 
     @Override
     public void saveUser(User user) throws DAOException {

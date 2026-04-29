@@ -45,7 +45,7 @@ public class PartyCLIView {
         String address = reader.readLine();
 
         System.out.print("Date (YYYY-MM-DD): ");
-        LocalDate date = LocalDate.parse(reader.readLine());
+        String date = reader.readLine();
 
         System.out.print("Client Name: ");
         String clientName = reader.readLine();
@@ -54,23 +54,23 @@ public class PartyCLIView {
         String clientPhone = reader.readLine();
 
         System.out.print("Start Time (HH:mm): ");
-        LocalTime startTime = LocalTime.parse(reader.readLine());
+        String startTime = reader.readLine();
 
         System.out.print("End Time (HH:mm): ");
-        LocalTime endTime = LocalTime.parse(reader.readLine());
+        String endTime = reader.readLine();
 
         System.out.print("Children Count (Enter for none): ");
         String childrenInput = reader.readLine();
-        Integer children = (childrenInput == null || childrenInput.trim().isEmpty()) ? null : Integer.parseInt(childrenInput.trim());
+        String children = (childrenInput == null || childrenInput.trim().isEmpty()) ? null : childrenInput.trim();
 
         System.out.print("Animators Required: ");
-        int animators = Integer.parseInt(reader.readLine());
+        String animators = reader.readLine();
 
         System.out.print("Description: ");
         String description = reader.readLine();
 
         System.out.print("Total Cost: ");
-        double cost = Double.parseDouble(reader.readLine());
+        String cost = reader.readLine();
 
         PartyBean bean = new PartyBean();
         bean.setName(name);
@@ -109,7 +109,7 @@ public class PartyCLIView {
                 String assignedInfo = sb.toString();
                 String staffInfo = p.getAnimatorsRequired() + " req";
                 
-                System.out.printf("%-5d | %-20s | %-12s | %-12s | %-15s | %s%n", 
+                System.out.printf("%-5s | %-20s | %-12s | %-12s | %-15s | %s%n", 
                     p.getId(), p.getName(), p.getDate(), p.getStatus(), staffInfo, assignedInfo);
             }
         }
@@ -132,14 +132,14 @@ public class PartyCLIView {
         }
         for (int i = 0; i < animators.size(); i++) {
              com.romanimazione.bean.UserBean u = animators.get(i);
-             String note = u.isTimeCompatible() ? "[MATCH]" : "* (TIME MISMATCH)";
+             String note = Boolean.parseBoolean(u.getIsTimeCompatible()) ? "[MATCH]" : "* (TIME MISMATCH)";
              
              String colorReset = "\u001B[0m";
              String colorRed = "\u001B[31m";
              String colorGreen = "\u001B[32m";
              
              // Simple color coding if terminal supports it (usually works in VSCode/IntelliJ)
-             if (!u.isTimeCompatible()) {
+             if (!Boolean.parseBoolean(u.getIsTimeCompatible())) {
                  System.out.printf("%d. %s (%s %s) %s%s%s%n", i+1, u.getUsername(), u.getNome(), u.getCognome(), colorRed, note, colorReset);
              } else {
                  System.out.printf("%d. %s (%s %s) %s%s%s%n", i+1, u.getUsername(), u.getNome(), u.getCognome(), colorGreen, note, colorReset);
@@ -168,7 +168,8 @@ public class PartyCLIView {
             for (int i = 0; i < list.size(); i++) {
                 PartyBean p = list.get(i);
                 String extra = "";
-                java.time.LocalDateTime assignedAt = p.getAssignmentTimestamps().get(animatorUsername);
+                String timestampStr = p.getAssignmentTimestamps().get(animatorUsername);
+                java.time.LocalDateTime assignedAt = timestampStr != null ? java.time.LocalDateTime.parse(timestampStr) : null;
                 if (assignedAt != null) {
                      java.time.Duration rem = java.time.Duration.between(java.time.LocalDateTime.now(), assignedAt.plusHours(24));
                      if (!rem.isNegative()) {
@@ -177,7 +178,7 @@ public class PartyCLIView {
                          extra = "Expired";
                      }
                 }
-                System.out.printf("%d. [ID:%d] | %s | %s | %-20s | %s%n", 
+                System.out.printf("%d. [ID:%s] | %s | %s | %-20s | %s%n", 
                     i+1, p.getId(), p.getDate(), p.getStartTime(), p.getName(), extra);
             }
         }
@@ -216,7 +217,7 @@ public class PartyCLIView {
         System.out.println("Time: " + p.getStartTime() + " to " + p.getEndTime());
         System.out.println("Address: " + p.getAddress());
         System.out.println("Client: " + p.getClientName() + " (" + p.getClientPhone() + ")");
-        System.out.println("Cost: €" + String.format("%.2f", p.getCost()));
+        System.out.println("Cost: €" + p.getCost());
         System.out.println("Children Count: " + (p.getChildrenCount() != null ? p.getChildrenCount() : "Not specified"));
         System.out.println("Description: " + (p.getDescription() != null ? p.getDescription() : "None"));
         System.out.println("Status: " + p.getStatus());
@@ -232,10 +233,11 @@ public class PartyCLIView {
         System.out.println("=====================\n");
     }
 
-    private void printAnimatorStatus(String user, com.romanimazione.entity.AssignmentStatus status, PartyBean p) {
+    private void printAnimatorStatus(String user, String status, PartyBean p) {
         String extraInfo = "";
-        if (status == com.romanimazione.entity.AssignmentStatus.PENDING) {
-            java.time.LocalDateTime assignedAt = p.getAssignmentTimestamps().get(user);
+        if (com.romanimazione.entity.AssignmentStatus.PENDING.name().equals(status)) {
+            String timestampStr = p.getAssignmentTimestamps().get(user);
+            java.time.LocalDateTime assignedAt = timestampStr != null ? java.time.LocalDateTime.parse(timestampStr) : null;
             if (assignedAt != null) {
                 java.time.Duration rem = java.time.Duration.between(java.time.LocalDateTime.now(), assignedAt.plusHours(24));
                 if (!rem.isNegative()) {

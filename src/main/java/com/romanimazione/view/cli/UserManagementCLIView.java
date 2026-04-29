@@ -24,8 +24,8 @@ public class UserManagementCLIView {
             System.out.println("---------------------------------------------------------");
             for (UserBean u : users) {
                 String role = u.getRole();
-                if (u.isSuperAdmin()) role += " (SUPER)";
-                System.out.printf("%-5d | %-12s | %-15s | %-10s%n", 
+                if (Boolean.parseBoolean(u.getIsSuperAdmin())) role += " (SUPER)";
+                System.out.printf("%-5s | %-12s | %-15s | %-10s%n", 
                     u.getId(), u.getUsername(), u.getNome() + " " + u.getCognome(), role);
             }
         }

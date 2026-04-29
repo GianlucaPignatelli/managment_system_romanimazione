@@ -57,8 +57,8 @@ public class JavaFXPartyListController implements Observer {
         assignmentStatusColumn.setCellValueFactory(cell -> {
             PartyBean p = cell.getValue();
             try {
-                int count = partyController.getProposalCount(p.getId());
-                int status = partyController.getAssignmentFeedback(p.getId());
+                int count = partyController.getProposalCount(Integer.parseInt(p.getId()));
+                int status = partyController.getAssignmentFeedback(Integer.parseInt(p.getId()));
                 
                 String icon = "";
                 switch(status) {
@@ -114,12 +114,12 @@ public class JavaFXPartyListController implements Observer {
                 PartyBean party = getTableView().getItems().get(getIndex());
                 
                 // Visual Logic
-                if (party.getStatus() == com.romanimazione.entity.PartyStatus.CANCELLED) {
+                if (com.romanimazione.entity.PartyStatus.CANCELLED.name().equals(party.getStatus())) {
                     btnAssign.setDisable(true);
                     btnCancel.setDisable(true);
                     btnCancel.setText("Cancelled");
                     btnCancel.getStyleClass().add("button-cancel"); // Greyed out
-                } else if (party.getStatus() == com.romanimazione.entity.PartyStatus.COMPLETED) {
+                } else if (com.romanimazione.entity.PartyStatus.COMPLETED.name().equals(party.getStatus())) {
                     btnAssign.setDisable(true);
                     btnCancel.setDisable(true);
                 } else {

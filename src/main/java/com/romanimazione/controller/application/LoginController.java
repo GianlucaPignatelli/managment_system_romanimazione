@@ -22,7 +22,11 @@ public class LoginController extends Subject {
 
     public UserBean login(CredentialsBean credentials) throws DAOException, UserNotFoundException {
         // use injected or default DAO
-        User user = this.userDAO.findUserByIdentifier(credentials.getUsername());
+        User user = this.userDAO.findAllUsers().stream()
+                .filter(u -> u.getUsername().equals(credentials.getUsername()) || 
+                            (u.getEmail() != null && u.getEmail().equals(credentials.getUsername())))
+                .findFirst()
+                .orElse(null);
 
         if (user == null || !user.getPassword().equals(credentials.getPassword())) {
             throw new UserNotFoundException("Invalid username/email or password");
@@ -38,13 +42,13 @@ public class LoginController extends Subject {
         }
 
         UserBean userBean = new UserBean();
-        userBean.setId(user.getId());
+        userBean.setId(String.valueOf(user.getId()));
         userBean.setUsername(user.getUsername());
         userBean.setRole(user.getRole());
         userBean.setNome(user.getNome());
         userBean.setCognome(user.getCognome());
         userBean.setEmail(user.getEmail());
-        userBean.setSuperAdmin(user.isSuperAdmin());
+        userBean.setIsSuperAdmin(String.valueOf(user.isSuperAdmin()));
 
         notifyObservers("Login Successful for " + user.getUsername());
         

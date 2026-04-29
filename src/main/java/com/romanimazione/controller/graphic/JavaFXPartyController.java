@@ -55,12 +55,12 @@ public class JavaFXPartyController implements Observer, Initializable {
             LocalDate date = datePicker.getValue();
             String clientName = clientNameField.getText();
             String clientPhone = clientPhoneField.getText();
-            LocalTime start = parseTime(startTimeField.getText(), "Start Time");
-            LocalTime end = parseTime(endTimeField.getText(), "End Time");
+            String start = startTimeField.getText();
+            String end = endTimeField.getText();
             
-            Integer children = parseInteger(childrenCountField.getText(), "Children count", false);
-            int animators = parseInteger(animatorsRequiredField.getText(), "Animators required", true);
-            double cost = parseDouble(costField.getText(), "Cost");
+            String children = childrenCountField.getText();
+            String animators = animatorsRequiredField.getText();
+            String cost = costField.getText();
             
             String desc = descriptionArea.getText();
 
@@ -68,7 +68,7 @@ public class JavaFXPartyController implements Observer, Initializable {
             bean.setName(name);
             bean.setType(type);
             bean.setAddress(address);
-            bean.setDate(date);
+            bean.setDate(date != null ? date.toString() : null);
             bean.setClientName(clientName);
             bean.setClientPhone(clientPhone);
             bean.setStartTime(start);
@@ -105,35 +105,7 @@ public class JavaFXPartyController implements Observer, Initializable {
         }
     }
     
-    private LocalTime parseTime(String text, String fieldName) throws InvalidPartyException {
-        if (text == null || text.trim().isEmpty()) return null;
-        try {
-            return LocalTime.parse(text);
-        } catch (DateTimeParseException e) {
-            throw new InvalidPartyException(fieldName + " Invalid. Use HH:mm format (e.g. 14:30).");
-        }
-    }
 
-    private Integer parseInteger(String text, String fieldName, boolean required) throws InvalidPartyException {
-        if (text == null || text.trim().isEmpty()) {
-            if (required) throw new InvalidPartyException(fieldName + " is required.");
-            return null;
-        }
-        try {
-            return Integer.parseInt(text.trim());
-        } catch (NumberFormatException e) {
-            throw new InvalidPartyException(fieldName + " must be a number.");
-        }
-    }
-
-    private double parseDouble(String text, String fieldName) throws InvalidPartyException {
-        if (text == null || text.trim().isEmpty()) return 0.0;
-        try {
-            return Double.parseDouble(text.trim());
-        } catch (NumberFormatException e) {
-            throw new InvalidPartyException(fieldName + " must be a valid number (e.g. 100.50).");
-        }
-    }
 
     @FXML
     private void handleCancel() throws IOException {

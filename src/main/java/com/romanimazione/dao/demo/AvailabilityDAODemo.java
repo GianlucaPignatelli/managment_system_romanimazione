@@ -22,10 +22,8 @@ public class AvailabilityDAODemo implements AvailabilityDAO {
     }
 
     @Override
-    public List<Availability> findByUsername(String username) throws DAOException {
-        return MOCK_DB.stream()
-                .filter(a -> a.getUsername().equals(username))
-                .toList();
+    public List<Availability> findAllAvailabilities() throws DAOException {
+        return new ArrayList<>(MOCK_DB);
     }
 
     @Override
@@ -45,33 +43,5 @@ public class AvailabilityDAODemo implements AvailabilityDAO {
     public void deleteAvailability(Availability availability) throws DAOException {
         MOCK_DB.removeIf(a -> a.getId() == availability.getId() ||
                 (a.getUsername().equals(availability.getUsername()) && a.getDate().equals(availability.getDate())));
-    }
-
-    @Override
-    public List<String> findAvailableAnimators(java.time.LocalDate date, java.time.LocalTime startTime, java.time.LocalTime endTime) throws DAOException {
-        return MOCK_DB.stream()
-                .filter(a -> a.getDate().equals(date))
-                .filter(a -> a.isFullDay() || (
-                        (a.getStartTime().isBefore(startTime) || a.getStartTime().equals(startTime)) &&
-                        (a.getEndTime().isAfter(endTime) || a.getEndTime().equals(endTime))
-                ))
-                .map(Availability::getUsername)
-                .distinct()
-                .filter(username -> {
-                    // Check if they have an ACCEPTED assignment on this date
-                    com.romanimazione.dao.demo.PartyDAODemo partyDao = new com.romanimazione.dao.demo.PartyDAODemo(); 
-                    return partyDao.findAllParties().stream()
-                        .noneMatch(p -> p.getDate().equals(date) && 
-                            p.getAssignmentStatuses().containsKey(username) && 
-                            p.getAssignmentStatuses().get(username) == com.romanimazione.entity.AssignmentStatus.ACCEPTED &&
-                            p.getStatus() != com.romanimazione.entity.PartyStatus.CANCELLED);
-                })
-                .toList();
-    }
-    @Override
-    public List<Availability> findByDate(java.time.LocalDate date) {
-        return MOCK_DB.stream()
-                .filter(a -> a.getDate().equals(date))
-                .toList();
     }
 }

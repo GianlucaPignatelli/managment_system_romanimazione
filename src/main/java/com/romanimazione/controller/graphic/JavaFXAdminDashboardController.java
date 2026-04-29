@@ -19,9 +19,9 @@ public class JavaFXAdminDashboardController {
             
             if (user != null) {
                 username = user.getUsername();
-                System.out.println("AdminDashboard: Current user: " + username + ", SuperAdmin: " + user.isSuperAdmin());
+                System.out.println("AdminDashboard: Current user: " + username + ", SuperAdmin: " + user.getIsSuperAdmin());
                 
-                if (user.isSuperAdmin() || "admin".equalsIgnoreCase(user.getUsername())) {
+                if (Boolean.parseBoolean(user.getIsSuperAdmin()) || "admin".equalsIgnoreCase(user.getUsername())) {
                     System.out.println("AdminDashboard: Enabling Manage Users button");
                     btnManageUsers.setVisible(true);
                     btnManageUsers.setManaged(true);
