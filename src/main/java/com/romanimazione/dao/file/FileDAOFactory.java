@@ -19,4 +19,9 @@ public class FileDAOFactory extends DAOFactory {
     public com.romanimazione.dao.PartyDAO getPartyDAO() {
         return new PartyDAOFile();
     }
+
+    @Override
+    public com.romanimazione.dao.EquipmentDAO getEquipmentDAO() {
+        return new EquipmentDAOFile();
+    }
 }

@@ -11,7 +11,7 @@ public class PartyDAOMySQL implements PartyDAO {
 
     @Override
     public void saveParty(Party party) throws DAOException {
-        String query = "INSERT INTO party (name, type, address, party_date, client_name, client_phone, start_time, end_time, children_count, animators_required, description, cost, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO party (name, type, address, party_date, client_name, client_phone, start_time, end_time, children_count, animators_required, description, cost, status, equipment_category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             
@@ -35,6 +35,7 @@ public class PartyDAOMySQL implements PartyDAO {
             stmt.setString(11, party.getDescription());
             stmt.setDouble(12, party.getCost());
             stmt.setString(13, party.getStatus().name());
+            stmt.setString(14, party.getEquipmentCategory());
             
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -45,7 +46,7 @@ public class PartyDAOMySQL implements PartyDAO {
     @Override
     public List<Party> findAllParties() throws DAOException {
         List<Party> list = new ArrayList<>();
-        String query = "SELECT id, name, type, address, party_date, client_name, client_phone, start_time, end_time, children_count, animators_required, description, cost, status FROM party";
+        String query = "SELECT id, name, type, address, party_date, client_name, client_phone, start_time, end_time, children_count, animators_required, description, cost, status, equipment_category FROM party";
         
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
@@ -84,7 +85,7 @@ public class PartyDAOMySQL implements PartyDAO {
     
     @Override
     public void update(Party party) throws DAOException {
-        String query = "UPDATE party SET name=?, type=?, address=?, party_date=?, client_name=?, client_phone=?, start_time=?, end_time=?, children_count=?, animators_required=?, description=?, cost=?, status=? WHERE id=?";
+        String query = "UPDATE party SET name=?, type=?, address=?, party_date=?, client_name=?, client_phone=?, start_time=?, end_time=?, children_count=?, animators_required=?, description=?, cost=?, status=?, equipment_category=? WHERE id=?";
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
              
@@ -107,7 +108,8 @@ public class PartyDAOMySQL implements PartyDAO {
             stmt.setString(11, party.getDescription());
             stmt.setDouble(12, party.getCost());
             stmt.setString(13, party.getStatus().name());
-            stmt.setInt(14, party.getId());
+            stmt.setString(14, party.getEquipmentCategory());
+            stmt.setInt(15, party.getId());
             
             stmt.executeUpdate();
             
@@ -196,6 +198,7 @@ public class PartyDAOMySQL implements PartyDAO {
         p.setDescription(rs.getString("description"));
         p.setCost(rs.getDouble("cost"));
         p.setStatus(com.romanimazione.entity.PartyStatus.valueOf(rs.getString("status")));
+        p.setEquipmentCategory(rs.getString("equipment_category"));
         return p;
     }
 }

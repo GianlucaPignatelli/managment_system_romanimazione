@@ -47,4 +47,9 @@ public class MySQLDAOFactory extends DAOFactory {
     public com.romanimazione.dao.PartyDAO getPartyDAO() {
         return new PartyDAOMySQL();
     }
+
+    @Override
+    public com.romanimazione.dao.EquipmentDAO getEquipmentDAO() {
+        return new EquipmentDAOMySQL();
+    }
 }

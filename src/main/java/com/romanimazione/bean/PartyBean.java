@@ -25,6 +25,7 @@ public class PartyBean {
     private String description;
     private String cost;
     private String status;
+    private String equipmentCategory;
     private Map<String, String> assignmentStatuses;
     private Map<String, String> assignmentTimestamps;
 
@@ -74,6 +75,9 @@ public class PartyBean {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getEquipmentCategory() { return equipmentCategory; }
+    public void setEquipmentCategory(String equipmentCategory) { this.equipmentCategory = equipmentCategory; }
 
     public Map<String, String> getAssignmentStatuses() { return assignmentStatuses; }
     public void setAssignmentStatuses(Map<String, String> assignmentStatuses) { this.assignmentStatuses = assignmentStatuses; }

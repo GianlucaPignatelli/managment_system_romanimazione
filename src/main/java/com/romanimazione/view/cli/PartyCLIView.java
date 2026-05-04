@@ -72,6 +72,25 @@ public class PartyCLIView {
         System.out.print("Total Cost: ");
         String cost = reader.readLine();
 
+        System.out.println("Equipment Category Req:");
+        System.out.println("1. borsone giochi");
+        System.out.println("2. carretto");
+        System.out.println("3. borsa magia");
+        System.out.println("4. cassa audio");
+        System.out.println("5. gonfiabile");
+        System.out.print("Select (1-5 or press Enter to skip): ");
+        String catChoice = reader.readLine();
+        String eqCat = "";
+        if (catChoice != null) {
+            switch (catChoice.trim()) {
+                case "1": eqCat = "borsone giochi"; break;
+                case "2": eqCat = "carretto"; break;
+                case "3": eqCat = "borsa magia"; break;
+                case "4": eqCat = "cassa audio"; break;
+                case "5": eqCat = "gonfiabile"; break;
+            }
+        }
+
         PartyBean bean = new PartyBean();
         bean.setName(name);
         bean.setType(type);
@@ -85,6 +104,7 @@ public class PartyCLIView {
         bean.setAnimatorsRequired(animators);
         bean.setDescription(description);
         bean.setCost(cost);
+        bean.setEquipmentCategory(eqCat);
         
         return bean;
     }

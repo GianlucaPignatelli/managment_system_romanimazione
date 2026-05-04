@@ -12,12 +12,24 @@ public class Animatore extends User {
     }
 
     private List<Availability> availabilities = new ArrayList<>();
+    private List<Party> acceptedJobs = new ArrayList<>(); // Lavori accettati dall'animatore
 
     public List<Availability> getAvailabilities() { return availabilities; }
     public void setAvailabilities(List<Availability> availabilities) { this.availabilities = availabilities; }
 
     public void addAvailability(Availability availability) {
-        this.availabilities.add(availability);
+        if (!this.availabilities.contains(availability)) {
+            this.availabilities.add(availability);
+        }
+    }
+
+    public List<Party> getAcceptedJobs() { return acceptedJobs; }
+    public void setAcceptedJobs(List<Party> acceptedJobs) { this.acceptedJobs = acceptedJobs; }
+
+    public void addAcceptedJob(Party party) {
+        if (!this.acceptedJobs.contains(party)) {
+            this.acceptedJobs.add(party);
+        }
     }
 
     /**

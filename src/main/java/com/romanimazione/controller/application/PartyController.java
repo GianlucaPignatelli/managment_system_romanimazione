@@ -100,6 +100,7 @@ public class PartyController extends Subject {
         entity.setDescription(bean.getDescription());
         if (bean.getCost() != null) entity.setCost(Double.parseDouble(bean.getCost()));
         if (bean.getStatus() != null) entity.setStatus(com.romanimazione.entity.PartyStatus.valueOf(bean.getStatus()));
+        entity.setEquipmentCategory(bean.getEquipmentCategory());
         
         java.util.Map<String, com.romanimazione.entity.AssignmentStatus> sMap = new java.util.HashMap<>();
         for (java.util.Map.Entry<String, String> entry : bean.getAssignmentStatuses().entrySet()) {
@@ -132,6 +133,7 @@ public class PartyController extends Subject {
         bean.setDescription(entity.getDescription());
         bean.setCost(String.valueOf(entity.getCost()));
         bean.setStatus(entity.getStatus() != null ? entity.getStatus().name() : null);
+        bean.setEquipmentCategory(entity.getEquipmentCategory());
         
         java.util.Map<String, String> sMap = new java.util.HashMap<>();
         for (java.util.Map.Entry<String, com.romanimazione.entity.AssignmentStatus> entry : entity.getAssignmentStatuses().entrySet()) {
@@ -232,15 +234,6 @@ public class PartyController extends Subject {
         dao.update(p);
         
         notifyObservers("Party " + party.getId() + " has been CANCELLED.");
-    }
-
-    public void hardDeleteParty(PartyBean party) throws DAOException {
-        if (party == null || party.getId() == null) throw new IllegalArgumentException("Party ID cannot be null");
-        
-        PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
-        dao.deleteParty(Integer.parseInt(party.getId()));
-        
-        notifyObservers("Party " + party.getId() + " has been DELETED permanently.");
     }
 
     public int getAssignmentFeedback(int partyId) throws DAOException {

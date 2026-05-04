@@ -17,7 +17,7 @@ public class PartyDAOFile extends GenericFileDAO<Party> implements PartyDAO {
     @Override
     public void saveParty(Party party) throws DAOException {
         List<Party> list = load(new TypeReference<List<Party>>(){});
-        // Generate ID
+
         int maxId = list.stream().mapToInt(Party::getId).max().orElse(0);
         party.setId(maxId + 1);
         list.add(party);

@@ -61,6 +61,9 @@
 
                     <Label text="Total Cost (€):" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
                     <TextField fx:id="costField" promptText="0.00" maxWidth="100" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+
+                    <Label text="Eq. Category:" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
+                    <ComboBox fx:id="equipmentCategoryBox" prefWidth="150.0" GridPane.rowIndex="12" GridPane.columnIndex="1"/>
                 </GridPane>
 
                 <Label fx:id="errorLabel" textFill="RED" visible="false" wrapText="true"/>

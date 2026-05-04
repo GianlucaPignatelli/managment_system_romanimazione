@@ -45,9 +45,11 @@ public class MainCLIView {
         if (isSuperAdmin) {
             System.out.println("3. Manage Users (Super Admin)");
             System.out.println("4. Change Master Code (Super Admin)");
-            System.out.println("5. Logout");
+            System.out.println("5. Manage Equipment (Magazzino)");
+            System.out.println("6. Logout");
         } else {
-            System.out.println("3. Logout");
+            System.out.println("3. Manage Equipment (Magazzino)");
+            System.out.println("4. Logout");
         }
         System.out.print(P_CHOICE);
         return reader.readLine();

@@ -19,6 +19,7 @@ public class JavaFXPartyController implements Observer, Initializable {
 
     @FXML private TextField nameField;
     @FXML private ComboBox<String> typeBox;
+    @FXML private ComboBox<String> equipmentCategoryBox;
     @FXML private TextField addressField;
     @FXML private DatePicker datePicker;
     @FXML private TextField clientNameField;
@@ -42,6 +43,11 @@ public class JavaFXPartyController implements Observer, Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         typeBox.getItems().addAll(partyController.getPartyTypes());
+        if (equipmentCategoryBox != null) {
+            equipmentCategoryBox.getItems().addAll(java.util.Arrays.asList(
+                "borsone giochi", "carretto", "borsa magia", "cassa audio", "gonfiabile"
+            ));
+        }
     }
 
     @FXML
@@ -77,6 +83,7 @@ public class JavaFXPartyController implements Observer, Initializable {
             bean.setAnimatorsRequired(animators);
             bean.setDescription(desc);
             bean.setCost(cost);
+            bean.setEquipmentCategory(equipmentCategoryBox.getValue() != null ? equipmentCategoryBox.getValue() : "");
             
             // Delegate Business Logic to Application Controller
             partyController.createParty(bean);

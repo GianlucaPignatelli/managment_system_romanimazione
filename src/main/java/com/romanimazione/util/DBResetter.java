@@ -21,6 +21,7 @@ public class DBResetter {
             stmt.executeUpdate("SET FOREIGN_KEY_CHECKS = 0"); // Disable checks to be safe
             stmt.executeUpdate("DROP TABLE IF EXISTS party_assignments");
             stmt.executeUpdate("DROP TABLE IF EXISTS availability"); // Note: availability vs availabilities. DAO uses 'availability'
+            stmt.executeUpdate("DROP TABLE IF EXISTS equipment");
             stmt.executeUpdate("DROP TABLE IF EXISTS party");
             stmt.executeUpdate("DROP TABLE IF EXISTS users");
             stmt.executeUpdate("SET FOREIGN_KEY_CHECKS = 1");
@@ -55,7 +56,8 @@ public class DBResetter {
                     "animators_required INT NOT NULL, " +
                     "description TEXT, " +
                     "cost DECIMAL(10,2) NOT NULL, " +
-                    "status VARCHAR(20) DEFAULT 'SCHEDULED'" +
+                    "status VARCHAR(20) DEFAULT 'SCHEDULED', " +
+                    "equipment_category VARCHAR(255)" +
                     ")";
             stmt.executeUpdate(createParty);
 
@@ -85,6 +87,19 @@ public class DBResetter {
                     "UNIQUE(party_id, animator_username)" +
                     ")";
             stmt.executeUpdate(createAssign);
+
+            // 6. CREATE 'equipment'
+            System.out.println("Creating table 'equipment'...");
+            String createEquipment = "CREATE TABLE equipment (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                    "name VARCHAR(255) NOT NULL, " +
+                    "category VARCHAR(255) NOT NULL, " +
+                    "quantity INT NOT NULL, " +
+                    "condition_status VARCHAR(255) NOT NULL, " +
+                    "admin_username VARCHAR(50) NOT NULL, " +
+                    "FOREIGN KEY (admin_username) REFERENCES users(username) ON DELETE CASCADE" +
+                    ")";
+            stmt.executeUpdate(createEquipment);
 
             System.out.println("Database Reset Completed Successfully!");
 

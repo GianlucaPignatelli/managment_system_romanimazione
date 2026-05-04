@@ -63,6 +63,11 @@ public class JavaFXAdminDashboardController {
     }
 
     @FXML
+    private void handleManageEquipment() throws IOException {
+        com.romanimazione.view.MainApp.setRoot("equipment_view");
+    }
+
+    @FXML
     private void handleChangeMasterCode() {
         javafx.scene.control.TextInputDialog dialog = new javafx.scene.control.TextInputDialog();
         dialog.setTitle("Change Master Code");

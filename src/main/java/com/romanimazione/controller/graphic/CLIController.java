@@ -20,6 +20,7 @@ public class CLIController {
     private final LoginCLIView loginView;
     private final AvailabilityCLIView availabilityView;
     private final PartyCLIView partyView;
+    private final com.romanimazione.view.cli.EquipmentCLIView equipmentView;
 
     // Controllers
     private final LoginController loginController;
@@ -28,6 +29,7 @@ public class CLIController {
     private final JobOfferController jobOfferController;
     private final AdminUserController adminUserController;
     private final AcceptedJobsController acceptedJobsController;
+    private final EquipmentController equipmentController;
 
     private static final String MSG_INVALID = "Invalid choice.";
     private static final String MSG_ERR_UNEXPECTED = "Unexpected error: ";
@@ -38,6 +40,7 @@ public class CLIController {
         this.loginView = new LoginCLIView();
         this.availabilityView = new AvailabilityCLIView();
         this.partyView = new PartyCLIView();
+        this.equipmentView = new com.romanimazione.view.cli.EquipmentCLIView();
         
         this.loginController = new LoginController();
         this.availabilityController = new AvailabilityController();
@@ -45,6 +48,7 @@ public class CLIController {
         this.jobOfferController = new JobOfferController();
         this.adminUserController = new AdminUserController();
         this.acceptedJobsController = new AcceptedJobsController();
+        this.equipmentController = new EquipmentController();
     }
 
     public void start() {
@@ -227,6 +231,9 @@ public class CLIController {
              changeMasterCodeCLI();
              return true;
          } else if ("5".equals(input)) {
+             manageEquipmentCLI();
+             return true;
+         } else if ("6".equals(input)) {
              SessionBean.getInstance().setCurrentUser(null);
              mainView.showMessage(MSG_LOGGED_OUT);
              return false;
@@ -235,8 +242,11 @@ public class CLIController {
          return true;
     }
     
-    private boolean handleRegularAdminChoice(String input) {
+    private boolean handleRegularAdminChoice(String input) throws IOException {
         if ("3".equals(input)) {
+            manageEquipmentCLI();
+            return true;
+        } else if ("4".equals(input)) {
             SessionBean.getInstance().setCurrentUser(null);
             mainView.showMessage(MSG_LOGGED_OUT);
             return false;
@@ -409,5 +419,48 @@ public class CLIController {
         String user = SessionBean.getInstance().getCurrentUser().getUsername();
         List<AvailabilityBean> list = availabilityController.getAvailabilities(user);
         availabilityView.showAvailabilityList(list);
+    }
+
+    private void manageEquipmentCLI() throws IOException {
+        boolean back = false;
+        while (!back) {
+            String input = equipmentView.showEquipmentMenuAndGetChoice();
+            try {
+                switch (input) {
+                    case "1":
+                        List<com.romanimazione.bean.EquipmentBean> list = equipmentController.getAllEquipment();
+                        equipmentView.showEquipmentList(list);
+                        break;
+                    case "2":
+                        com.romanimazione.bean.EquipmentBean newBean = equipmentView.getEquipmentDetails();
+                        newBean.setAdminUsername(SessionBean.getInstance().getCurrentUser().getUsername());
+                        equipmentController.addEquipment(newBean);
+                        mainView.showMessage("Equipment added.");
+                        break;
+                    case "3":
+                        String updateId = equipmentView.getIdInput("update");
+                        com.romanimazione.bean.EquipmentBean updateBean = equipmentView.getEquipmentDetails();
+                        updateBean.setId(updateId);
+                        updateBean.setAdminUsername(SessionBean.getInstance().getCurrentUser().getUsername());
+                        equipmentController.updateEquipment(updateBean);
+                        mainView.showMessage("Equipment updated.");
+                        break;
+                    case "4":
+                        String deleteId = equipmentView.getIdInput("delete");
+                        com.romanimazione.bean.EquipmentBean deleteBean = new com.romanimazione.bean.EquipmentBean();
+                        deleteBean.setId(deleteId);
+                        equipmentController.deleteEquipment(deleteBean);
+                        mainView.showMessage("Equipment deleted.");
+                        break;
+                    case "5":
+                        back = true;
+                        break;
+                    default:
+                        mainView.showMessage(MSG_INVALID);
+                }
+            } catch (com.romanimazione.exception.DAOException | IllegalArgumentException e) {
+                mainView.showError(e.getMessage());
+            }
+        }
     }
 }

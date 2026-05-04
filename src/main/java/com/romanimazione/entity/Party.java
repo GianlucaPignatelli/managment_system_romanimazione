@@ -17,6 +17,7 @@ public class Party {
     private int animatorsRequired;
     private String description;
     private double cost;
+    private String equipmentCategory;
 
     public Party() {
         // Default constructor required for framework serialization/deserialization
@@ -63,6 +64,9 @@ public class Party {
 
     public double getCost() { return cost; }
     public void setCost(double cost) { this.cost = cost; }
+
+    public String getEquipmentCategory() { return equipmentCategory; }
+    public void setEquipmentCategory(String equipmentCategory) { this.equipmentCategory = equipmentCategory; }
     
     // Backward compatibility: Returns all animators involved (Pending/Accepted/Rejected)
     @com.fasterxml.jackson.annotation.JsonIgnore
