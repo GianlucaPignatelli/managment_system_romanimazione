@@ -19,10 +19,14 @@ public class EquipmentDAODemo implements EquipmentDAO {
         inventory.add(new Equipment(idCounter++, "Macchina Zucchero Filato", "Macchinari", 1, "Nuovo", ADMIN_USER));
     }
 
-    @Override
-    public void saveEquipment(Equipment equipment) throws DAOException {
+    private static synchronized void appendToInventory(Equipment equipment) {
         equipment.setId(idCounter++);
         inventory.add(equipment);
+    }
+
+    @Override
+    public void saveEquipment(Equipment equipment) throws DAOException {
+        appendToInventory(equipment);
     }
 
     @Override

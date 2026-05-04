@@ -72,7 +72,7 @@ public class EquipmentDAOMySQL implements EquipmentDAO {
     @Override
     public List<Equipment> findAllEquipment() throws DAOException {
         List<Equipment> list = new ArrayList<>();
-        String sql = "SELECT * FROM equipment";
+        String sql = "SELECT id, name, category, quantity, condition_status, admin_username FROM equipment";
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {

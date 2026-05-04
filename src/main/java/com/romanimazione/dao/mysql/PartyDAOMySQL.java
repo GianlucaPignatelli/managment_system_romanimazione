@@ -65,7 +65,7 @@ public class PartyDAOMySQL implements PartyDAO {
 
     @Override
     public Party getPartyById(int id) throws DAOException {
-        String query = "SELECT * FROM party WHERE id = ?";
+        String query = "SELECT id, name, type, address, party_date, client_name, client_phone, start_time, end_time, children_count, animators_required, description, cost, status, equipment_category FROM party WHERE id = ?";
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
              
@@ -171,8 +171,9 @@ public class PartyDAOMySQL implements PartyDAO {
                 } else {
                     stmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
                 }
-                stmt.executeUpdate();
+                stmt.addBatch();
             }
+            stmt.executeBatch();
         }
     }
 
