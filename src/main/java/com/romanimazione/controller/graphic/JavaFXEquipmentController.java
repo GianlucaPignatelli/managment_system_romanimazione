@@ -156,7 +156,7 @@ public class JavaFXEquipmentController {
         try {
             com.romanimazione.view.MainApp.setRoot("admin_dashboard");
         } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Could not go back: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, ERROR_TITLE, "Could not go back: " + e.getMessage());
         }
     }
 }
