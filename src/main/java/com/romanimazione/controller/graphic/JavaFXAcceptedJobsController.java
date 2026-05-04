@@ -79,11 +79,12 @@ public class JavaFXAcceptedJobsController {
         }
     }
 
-    private void showPartyDetails(PartyBean party) {
+    private void showPartyDetails(PartyBean partyBean) {
         try {
-            new com.romanimazione.view.fx.PartyFXView().openDetailsDialog(party);
-        } catch (IOException e) {
-            showAlert("Error", "Could not show details: " + e.getMessage());
+            com.romanimazione.view.fx.PartyFXView dialogView = new com.romanimazione.view.fx.PartyFXView();
+            dialogView.openDetailsDialog(partyBean);
+        } catch (IOException ex) {
+            showAlert("Error", "Could not show details: " + ex.getMessage());
         }
     }
 
