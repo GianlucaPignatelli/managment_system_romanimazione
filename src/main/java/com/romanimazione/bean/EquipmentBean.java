@@ -8,7 +8,9 @@ public class EquipmentBean {
     private String condition;
     private String adminUsername;
 
-    public EquipmentBean() {}
+    public EquipmentBean() {
+        // Default constructor required for framework serialization
+    }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

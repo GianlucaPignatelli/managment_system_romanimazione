@@ -14,7 +14,9 @@ public class AvailabilityBean {
     private String endTime;
     private String isFullDay;
 
-    public AvailabilityBean() {}
+    public AvailabilityBean() {
+        // Default constructor required for framework serialization
+    }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

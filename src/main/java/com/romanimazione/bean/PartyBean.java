@@ -91,17 +91,23 @@ public class PartyBean {
     );
 
     public void validateSyntax() throws InvalidPartyException {
-        // Mandatory Strings
+        validateStrings();
+        validateNumbers();
+        validateType();
+        validateDateTime();
+    }
+
+    private void validateStrings() throws InvalidPartyException {
         if (this.name == null || this.name.trim().isEmpty()) throw new InvalidPartyException("Party name is required.");
         if (this.address == null || this.address.trim().isEmpty()) throw new InvalidPartyException("Address is required.");
         if (this.clientName == null || this.clientName.trim().isEmpty()) throw new InvalidPartyException("Client Name is required.");
         
-        // Regex format
         if (this.clientPhone == null || !this.clientPhone.matches("^\\d{10}$")) {
             throw new InvalidPartyException("Client Phone must be exactly 10 digits.");
         }
+    }
 
-        // Parse and validate logic boundaries
+    private void validateNumbers() throws InvalidPartyException {
         try {
             int animators = Integer.parseInt(this.animatorsRequired);
             if (animators < 1) throw new InvalidPartyException("At least 1 animator is required.");
@@ -123,12 +129,16 @@ public class PartyBean {
         } catch (NumberFormatException | NullPointerException e) {
             throw new InvalidPartyException("Cost must be a valid number.");
         }
+    }
 
+    private void validateType() throws InvalidPartyException {
         if (this.type == null || !ALLOWED_TYPES.contains(this.type)) {
             throw new InvalidPartyException("Invalid Party Type. Allowed: " + ALLOWED_TYPES);
         }
+    }
 
-        LocalDate parsedDate = null;
+    private void validateDateTime() throws InvalidPartyException {
+        LocalDate parsedDate;
         try {
             parsedDate = LocalDate.parse(this.date);
             if (parsedDate.isBefore(LocalDate.now())) {
@@ -138,8 +148,8 @@ public class PartyBean {
             throw new InvalidPartyException("Date is missing or invalid.");
         }
 
-        LocalTime startT = null;
-        LocalTime endT = null;
+        LocalTime startT;
+        LocalTime endT;
         try {
             startT = LocalTime.parse(this.startTime);
             endT = LocalTime.parse(this.endTime);
