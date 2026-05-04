@@ -159,8 +159,7 @@ public class PartyController extends Subject {
         
         // Applicative logic: Loop users, filter Animators, use Domain Logic to check availability
         for (User u : allUsers) {
-            if (u instanceof com.romanimazione.entity.Animatore) {
-                com.romanimazione.entity.Animatore animatore = (com.romanimazione.entity.Animatore) u;
+            if (u instanceof com.romanimazione.entity.Animatore animatore) {
                 
                 // Skip if already assigned or proposed
                 if (party.getAssignmentStatuses().containsKey(animatore.getUsername())) {
@@ -188,17 +187,15 @@ public class PartyController extends Subject {
         List<UserBean> result = new ArrayList<>();
 
         for (User u : allUsers) {
-            if (u instanceof com.romanimazione.entity.Animatore) {
-                if (!party.getAssignmentStatuses().containsKey(u.getUsername())) {
-                    UserBean animatorBean = new UserBean();
-                    animatorBean.setUsername(u.getUsername());
-                    animatorBean.setNome(u.getNome());
-                    animatorBean.setCognome(u.getCognome());
-                    animatorBean.setEmail(u.getEmail());
-                    animatorBean.setRole(u.getRole());
-                    animatorBean.setIsTimeCompatible("false"); 
-                    result.add(animatorBean);
-                }
+            if (u instanceof com.romanimazione.entity.Animatore && !party.getAssignmentStatuses().containsKey(u.getUsername())) {
+                UserBean animatorBean = new UserBean();
+                animatorBean.setUsername(u.getUsername());
+                animatorBean.setNome(u.getNome());
+                animatorBean.setCognome(u.getCognome());
+                animatorBean.setEmail(u.getEmail());
+                animatorBean.setRole(u.getRole());
+                animatorBean.setIsTimeCompatible("false"); 
+                result.add(animatorBean);
             }
         }
         return result;

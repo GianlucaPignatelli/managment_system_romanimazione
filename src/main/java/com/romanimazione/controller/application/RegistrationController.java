@@ -26,7 +26,7 @@ public class RegistrationController extends Subject {
 
         User user;
         if ("AMMINISTRATORE".equalsIgnoreCase(userBean.getRole())) {
-            user = createAdminUser(userBean, userDAO);
+            user = createAdminUser(userBean);
         } else {
             user = new Animatore();
         }
@@ -51,7 +51,7 @@ public class RegistrationController extends Subject {
         }
     }
 
-    private User createAdminUser(UserBean userBean, UserDAO userDAO) throws DAOException {
+    private User createAdminUser(UserBean userBean) throws DAOException {
         User user = new Amministratore();
         long adminCount = this.countAdmins();
         com.romanimazione.bean.SecurityManager secManager = com.romanimazione.bean.SecurityManager.getInstance();

@@ -24,12 +24,13 @@ public class AcceptedJobsController extends Subject {
         for (Party p : allParties) {
             com.romanimazione.entity.AssignmentStatus status = p.getAssignmentStatuses().get(animator.getUsername());
             if (status == com.romanimazione.entity.AssignmentStatus.ACCEPTED) {
-                // Apply Date Filters programmatically
-                if (startDate != null && p.getDate().isBefore(startDate)) continue;
-                if (endDate != null && p.getDate().isAfter(endDate)) continue;
+                boolean isBeforeStart = startDate != null && p.getDate().isBefore(startDate);
+                boolean isAfterEnd = endDate != null && p.getDate().isAfter(endDate);
                 
-                PartyBean pb = PartyController.mapToBean(p);
-                beans.add(pb);
+                if (!isBeforeStart && !isAfterEnd) {
+                    PartyBean pb = PartyController.mapToBean(p);
+                    beans.add(pb);
+                }
             }
         }
         
