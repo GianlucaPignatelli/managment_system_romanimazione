@@ -2,7 +2,6 @@ package com.romanimazione.controller.application;
 
 import com.romanimazione.bean.PartyBean;
 import com.romanimazione.bean.UserBean;
-import com.romanimazione.dao.AvailabilityDAO;
 import com.romanimazione.dao.DAOFactory;
 import com.romanimazione.dao.PartyDAO;
 import com.romanimazione.dao.UserDAO;
@@ -10,7 +9,6 @@ import com.romanimazione.entity.Party;
 import com.romanimazione.entity.User;
 import com.romanimazione.exception.DAOException;
 import com.romanimazione.exception.InvalidPartyException;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
