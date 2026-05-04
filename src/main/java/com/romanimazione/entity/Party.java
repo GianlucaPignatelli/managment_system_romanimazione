@@ -26,23 +26,23 @@ public class Party {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() { return this.name; }
+    public void setName(String valName) { this.name = valName; }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public String getType() { return this.type; }
+    public void setType(String valType) { this.type = valType; }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public String getAddress() { return this.address; }
+    public void setAddress(String valAddress) { this.address = valAddress; }
 
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { this.date = date; }
 
-    public String getClientName() { return clientName; }
-    public void setClientName(String clientName) { this.clientName = clientName; }
+    public String getClientName() { return this.clientName; }
+    public void setClientName(String valClientName) { this.clientName = valClientName; }
 
-    public String getClientPhone() { return clientPhone; }
-    public void setClientPhone(String clientPhone) { this.clientPhone = clientPhone; }
+    public String getClientPhone() { return this.clientPhone; }
+    public void setClientPhone(String valClientPhone) { this.clientPhone = valClientPhone; }
 
     public LocalTime getStartTime() { return startTime; }
     public void setStartTime(LocalTime startTime) { this.startTime = startTime; }
@@ -56,8 +56,8 @@ public class Party {
     public int getAnimatorsRequired() { return animatorsRequired; }
     public void setAnimatorsRequired(int animatorsRequired) { this.animatorsRequired = animatorsRequired; }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getDescription() { return this.description; }
+    public void setDescription(String valDesc) { this.description = valDesc; }
 
     private java.util.Map<String, AssignmentStatus> assignmentStatuses = new java.util.HashMap<>();
     private java.util.Map<String, java.time.LocalDateTime> assignmentTimestamps = new java.util.HashMap<>();

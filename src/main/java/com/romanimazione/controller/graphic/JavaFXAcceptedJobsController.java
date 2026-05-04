@@ -92,11 +92,12 @@ public class JavaFXAcceptedJobsController {
         new com.romanimazione.view.fx.MainFXView().showAnimatorDashboard();
     }
 
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(title.equals("Success") ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+    private void showAlert(String headerTitle, String bodyMsg) {
+        Alert.AlertType t = headerTitle.equals("Success") ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR;
+        Alert popup = new Alert(t);
+        popup.setTitle(headerTitle);
+        popup.setContentText(bodyMsg);
+        popup.setHeaderText(null);
+        popup.showAndWait();
     }
 }

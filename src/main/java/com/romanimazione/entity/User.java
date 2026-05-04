@@ -32,14 +32,14 @@ public abstract class User {
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public String getNome() { return this.nome; }
+    public void setNome(String valNome) { this.nome = valNome; }
 
-    public String getCognome() { return cognome; }
-    public void setCognome(String cognome) { this.cognome = cognome; }
+    public String getCognome() { return this.cognome; }
+    public void setCognome(String valCognome) { this.cognome = valCognome; }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getEmail() { return this.email; }
+    public void setEmail(String valEmail) { this.email = valEmail; }
     
     // Security
     private boolean superAdmin;
