@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.romanimazione.controller.graphic.JavaFXEquipmentController"
+            prefHeight="480.0" prefWidth="640.0" style="-fx-background-color: #1E1E2F;">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #2D2D42; -fx-padding: 10;">
+            <Button text="Back to Dashboard" onAction="#handleBack" styleClass="button-cancel"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Equipment Management" textFill="WHITE">
+                <font>
+                    <Font name="System Bold" size="20.0" />
+                </font>
+            </Label>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="10" style="-fx-padding: 20;">
+            <TableView fx:id="equipmentTable" VBox.vgrow="ALWAYS" style="-fx-background-color: #2D2D42;">
+                <columns>
+                    <TableColumn fx:id="idCol" text="ID" prefWidth="50" />
+                    <TableColumn fx:id="nameCol" text="Name" prefWidth="150" />
+                    <TableColumn fx:id="categoryCol" text="Category" prefWidth="120" />
+                    <TableColumn fx:id="quantityCol" text="Quantity" prefWidth="80" />
+                    <TableColumn fx:id="conditionCol" text="Condition" prefWidth="100" />
+                    <TableColumn fx:id="adminCol" text="Admin" prefWidth="100" />
+                </columns>
+            </TableView>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="nameField" promptText="Equipment Name" prefWidth="120" styleClass="text-field"/>
+                <ComboBox fx:id="categoryBox" promptText="Category" prefWidth="120" />
+                <TextField fx:id="quantityField" promptText="Qty" prefWidth="60" styleClass="text-field"/>
+                <ComboBox fx:id="conditionBox" promptText="Condition" prefWidth="100" />
+                <Button text="Add Equipment" onAction="#handleAddEquipment" styleClass="button-primary"/>
+                <Button text="Update Selected" onAction="#handleUpdateEquipment" styleClass="button-primary"/>
+                <Button text="Delete Selected" onAction="#handleDeleteEquipment" styleClass="button-cancel"/>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>
