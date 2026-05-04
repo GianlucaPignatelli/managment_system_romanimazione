@@ -51,8 +51,6 @@ public class RegistrationController extends Subject {
         }
     }
 
-
-
     private User createAdminUser(UserBean userBean, UserDAO userDAO) throws DAOException {
         User user = new Amministratore();
         long adminCount = this.countAdmins();
