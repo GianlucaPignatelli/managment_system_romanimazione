@@ -11,10 +11,12 @@ public class EquipmentDAODemo implements EquipmentDAO {
     private static List<Equipment> inventory = new ArrayList<>();
     private static int idCounter = 1;
 
+    private static final String ADMIN_USER = "admin";
+
     static {
-        inventory.add(new Equipment(idCounter++, "Cassa Audio Sony", "Elettronica", 2, "Nuovo", "admin"));
-        inventory.add(new Equipment(idCounter++, "Costume Topolino", "Costumi", 1, "Usato", "admin"));
-        inventory.add(new Equipment(idCounter++, "Macchina Zucchero Filato", "Macchinari", 1, "Nuovo", "admin"));
+        inventory.add(new Equipment(idCounter++, "Cassa Audio Sony", "Elettronica", 2, "Nuovo", ADMIN_USER));
+        inventory.add(new Equipment(idCounter++, "Costume Topolino", "Costumi", 1, "Usato", ADMIN_USER));
+        inventory.add(new Equipment(idCounter++, "Macchina Zucchero Filato", "Macchinari", 1, "Nuovo", ADMIN_USER));
     }
 
     @Override

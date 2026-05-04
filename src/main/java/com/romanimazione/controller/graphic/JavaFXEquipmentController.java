@@ -35,6 +35,9 @@ public class JavaFXEquipmentController {
         "ottimo", "buono", "discreto", "rotto"
     );
 
+    private static final String SUCCESS_TITLE = "Success";
+    private static final String ERROR_TITLE = "Error";
+
     private EquipmentController appController;
     private ObservableList<EquipmentBean> eqList = FXCollections.observableArrayList();
 
@@ -79,11 +82,11 @@ public class JavaFXEquipmentController {
             bean.setAdminUsername(SessionBean.getInstance().getCurrentUser().getUsername());
             
             appController.addEquipment(bean);
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Equipment added successfully.");
+            showAlert(Alert.AlertType.INFORMATION, SUCCESS_TITLE, "Equipment added successfully.");
             loadEquipment();
             clearFields();
         } catch (IllegalArgumentException | DAOException e) {
-            showAlert(Alert.AlertType.ERROR, "Error", e.getMessage());
+            showAlert(Alert.AlertType.ERROR, ERROR_TITLE, e.getMessage());
         }
     }
 
@@ -107,11 +110,11 @@ public class JavaFXEquipmentController {
             bean.setAdminUsername(SessionBean.getInstance().getCurrentUser().getUsername());
             
             appController.updateEquipment(bean);
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Equipment updated successfully.");
+            showAlert(Alert.AlertType.INFORMATION, SUCCESS_TITLE, "Equipment updated successfully.");
             loadEquipment();
             clearFields();
         } catch (IllegalArgumentException | DAOException e) {
-            showAlert(Alert.AlertType.ERROR, "Error", e.getMessage());
+            showAlert(Alert.AlertType.ERROR, ERROR_TITLE, e.getMessage());
         }
     }
 
@@ -126,10 +129,10 @@ public class JavaFXEquipmentController {
         
         try {
             appController.deleteEquipment(selected);
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Equipment deleted successfully.");
+            showAlert(Alert.AlertType.INFORMATION, SUCCESS_TITLE, "Equipment deleted successfully.");
             loadEquipment();
         } catch (IllegalArgumentException | DAOException e) {
-            showAlert(Alert.AlertType.ERROR, "Error", e.getMessage());
+            showAlert(Alert.AlertType.ERROR, ERROR_TITLE, e.getMessage());
         }
     }
 

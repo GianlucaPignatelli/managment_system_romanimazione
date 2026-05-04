@@ -74,29 +74,34 @@ public class JavaFXJobOfferController {
     
     private String formatStatusText(PartyBean party, UserBean currentUser) {
         var statuses = party.getAssignmentStatuses();
-        var timestamps = party.getAssignmentTimestamps();
         
-        if (statuses != null && statuses.containsKey(currentUser.getUsername())) {
-            String status = statuses.get(currentUser.getUsername());
-            String statusText = status;
-            
-            if (com.romanimazione.entity.AssignmentStatus.PENDING.name().equals(status)) {
-                String timestampStr = timestamps != null ? timestamps.get(currentUser.getUsername()) : null;
-                java.time.LocalDateTime assignedAt = timestampStr != null ? java.time.LocalDateTime.parse(timestampStr) : null;
-                if (assignedAt != null) {
-                    java.time.Duration rem = java.time.Duration.between(java.time.LocalDateTime.now(), assignedAt.plusHours(24));
-                    if (!rem.isNegative()) {
-                        long hours = rem.toHours();
-                        long minutes = rem.toMinutes() % 60;
-                        statusText += String.format(" (%dh %dm left)", hours, minutes);
-                    } else {
-                        statusText += " (Expired)";
-                    }
-                }
-            }
-            return statusText;
+        if (statuses == null || !statuses.containsKey(currentUser.getUsername())) {
+            return "UNKNOWN";
         }
-        return "UNKNOWN";
+
+        String status = statuses.get(currentUser.getUsername());
+        if (com.romanimazione.entity.AssignmentStatus.PENDING.name().equals(status)) {
+            var timestamps = party.getAssignmentTimestamps();
+            String timestampStr = timestamps != null ? timestamps.get(currentUser.getUsername()) : null;
+            return status + calculateRemainingTimeStr(timestampStr);
+        }
+        
+        return status;
+    }
+    
+    private String calculateRemainingTimeStr(String timestampStr) {
+        if (timestampStr == null) return "";
+        
+        java.time.LocalDateTime assignedAt = java.time.LocalDateTime.parse(timestampStr);
+        java.time.Duration rem = java.time.Duration.between(java.time.LocalDateTime.now(), assignedAt.plusHours(24));
+        
+        if (rem.isNegative()) {
+            return " (Expired)";
+        }
+        
+        long hours = rem.toHours();
+        long minutes = rem.toMinutes() % 60;
+        return String.format(" (%dh %dm left)", hours, minutes);
     }
     
     private class ActionCell extends TableCell<PartyBean, Void> {
