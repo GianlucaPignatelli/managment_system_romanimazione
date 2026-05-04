@@ -11,12 +11,12 @@ public class CredentialsBean {
         this.password = password;
     }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public String getUsername() { return this.username; }
+    public void setUsername(String vUsername) { this.username = vUsername; }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getPassword() { return this.password; }
+    public void setPassword(String vPassword) { this.password = vPassword; }
     
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public String getRole() { return this.role; }
+    public void setRole(String vRole) { this.role = vRole; }
 }

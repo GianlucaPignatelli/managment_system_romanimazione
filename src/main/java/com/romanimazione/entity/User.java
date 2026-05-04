@@ -23,14 +23,14 @@ public abstract class User {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public String getUsername() { return this.username; }
+    public void setUsername(String inputUsername) { this.username = inputUsername; }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getPassword() { return this.password; }
+    public void setPassword(String inputPassword) { this.password = inputPassword; }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public String getRole() { return this.role; }
+    public void setRole(String inputRole) { this.role = inputRole; }
 
     public String getNome() { return this.nome; }
     public void setNome(String valNome) { this.nome = valNome; }

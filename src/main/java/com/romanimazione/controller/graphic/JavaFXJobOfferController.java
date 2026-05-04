@@ -191,11 +191,12 @@ public class JavaFXJobOfferController {
         new com.romanimazione.view.fx.MainFXView().showAnimatorDashboard();
     }
 
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(title.equals("Success") ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+    private void showAlert(String msgTitle, String msgBody) {
+        Alert.AlertType alertType = msgTitle.equals("Success") ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR;
+        Alert a = new Alert(alertType);
+        a.setTitle(msgTitle);
+        a.setContentText(msgBody);
+        a.setHeaderText(null);
+        a.showAndWait();
     }
 }
