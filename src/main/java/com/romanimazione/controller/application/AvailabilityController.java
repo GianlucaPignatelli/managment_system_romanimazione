@@ -62,6 +62,8 @@ public class AvailabilityController {
     }
     
     private void validate(AvailabilityBean bean) throws InvalidAvailabilityException {
+        bean.validateSyntax();
+        
         if (bean.getDate() == null) throw new InvalidAvailabilityException("Date is required.");
         if (java.time.LocalDate.parse(bean.getDate()).isBefore(java.time.LocalDate.now())) throw new InvalidAvailabilityException("Cannot set availability for a past date.");
 
