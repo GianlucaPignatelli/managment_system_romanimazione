@@ -15,27 +15,7 @@ public class PartyDAOMySQL implements PartyDAO {
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             
-            stmt.setString(1, party.getName());
-            stmt.setString(2, party.getType());
-            stmt.setString(3, party.getAddress());
-            stmt.setDate(4, Date.valueOf(party.getDate()));
-            
-            stmt.setString(5, party.getClientName());
-            stmt.setString(6, party.getClientPhone());
-            stmt.setTime(7, Time.valueOf(party.getStartTime()));
-            stmt.setTime(8, Time.valueOf(party.getEndTime()));
-            
-            if (party.getChildrenCount() != null) {
-                stmt.setInt(9, party.getChildrenCount());
-            } else {
-                stmt.setNull(9, Types.INTEGER);
-            }
-            
-            stmt.setInt(10, party.getAnimatorsRequired());
-            stmt.setString(11, party.getDescription());
-            stmt.setDouble(12, party.getCost());
-            stmt.setString(13, party.getStatus().name());
-            stmt.setString(14, party.getEquipmentCategory());
+            setPartyStatementParameters(stmt, party);
             
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -89,26 +69,7 @@ public class PartyDAOMySQL implements PartyDAO {
         try (Connection conn = MySQLDAOFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
              
-            stmt.setString(1, party.getName());
-            stmt.setString(2, party.getType());
-            stmt.setString(3, party.getAddress());
-            stmt.setDate(4, Date.valueOf(party.getDate()));
-            stmt.setString(5, party.getClientName());
-            stmt.setString(6, party.getClientPhone());
-            stmt.setTime(7, Time.valueOf(party.getStartTime()));
-            stmt.setTime(8, Time.valueOf(party.getEndTime()));
-            
-            if (party.getChildrenCount() != null) {
-                stmt.setInt(9, party.getChildrenCount());
-            } else {
-                stmt.setNull(9, Types.INTEGER);
-            }
-            
-            stmt.setInt(10, party.getAnimatorsRequired());
-            stmt.setString(11, party.getDescription());
-            stmt.setDouble(12, party.getCost());
-            stmt.setString(13, party.getStatus().name());
-            stmt.setString(14, party.getEquipmentCategory());
+            setPartyStatementParameters(stmt, party);
             stmt.setInt(15, party.getId());
             
             stmt.executeUpdate();
@@ -201,5 +162,28 @@ public class PartyDAOMySQL implements PartyDAO {
         p.setStatus(com.romanimazione.entity.PartyStatus.valueOf(rs.getString("status")));
         p.setEquipmentCategory(rs.getString("equipment_category"));
         return p;
+    }
+
+    private void setPartyStatementParameters(PreparedStatement stmt, Party party) throws SQLException {
+        stmt.setString(1, party.getName());
+        stmt.setString(2, party.getType());
+        stmt.setString(3, party.getAddress());
+        stmt.setDate(4, Date.valueOf(party.getDate()));
+        stmt.setString(5, party.getClientName());
+        stmt.setString(6, party.getClientPhone());
+        stmt.setTime(7, Time.valueOf(party.getStartTime()));
+        stmt.setTime(8, Time.valueOf(party.getEndTime()));
+        
+        if (party.getChildrenCount() != null) {
+            stmt.setInt(9, party.getChildrenCount());
+        } else {
+            stmt.setNull(9, Types.INTEGER);
+        }
+        
+        stmt.setInt(10, party.getAnimatorsRequired());
+        stmt.setString(11, party.getDescription());
+        stmt.setDouble(12, party.getCost());
+        stmt.setString(13, party.getStatus().name());
+        stmt.setString(14, party.getEquipmentCategory());
     }
 }
