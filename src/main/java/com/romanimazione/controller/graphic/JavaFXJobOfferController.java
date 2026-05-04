@@ -39,24 +39,31 @@ public class JavaFXJobOfferController {
     }
     
     private void setupInteraction() {
-        offersTable.setRowFactory(tv -> {
-            TableRow<PartyBean> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-                    PartyBean rowData = row.getItem();
-                    showPartyDetails(rowData);
+        offersTable.setRowFactory(tableViewer -> {
+            TableRow<PartyBean> r = new TableRow<>();
+            r.setOnMouseClicked(mouseEvent -> {
+                if (mouseEvent.getClickCount() == 2 && !r.isEmpty()) {
+                    PartyBean data = r.getItem();
+                    showPartyDetails(data);
                 }
             });
-            return row ;
+            return r;
         });
     }
 
     private void setupColumns() {
-        dateColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDate() != null ? cell.getValue().getDate() : ""));
-        timeColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getStartTime() + " - " + cell.getValue().getEndTime()));
-        typeColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getType()));
-        cityColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getAddress()));
-        feeColumn.setCellValueFactory(cell -> new SimpleStringProperty("€ " + cell.getValue().getCost())); 
+        dateColumn.setCellValueFactory(c -> {
+            String val = c.getValue().getDate();
+            return new SimpleStringProperty(val != null ? val : "");
+        });
+        timeColumn.setCellValueFactory(c -> {
+            String start = c.getValue().getStartTime();
+            String end = c.getValue().getEndTime();
+            return new SimpleStringProperty(start + " - " + end);
+        });
+        typeColumn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getType()));
+        cityColumn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getAddress()));
+        feeColumn.setCellValueFactory(c -> new SimpleStringProperty("€ " + c.getValue().getCost())); 
         
         statusColumn.setCellValueFactory(cell -> {
              UserBean currentUser = SessionBean.getInstance().getCurrentUser();
