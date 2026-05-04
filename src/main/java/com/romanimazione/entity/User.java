@@ -9,7 +9,7 @@ public abstract class User {
     private String cognome;
     private String email;
 
-    public User(String username, String password, String role, String nome, String cognome, String email) {
+    protected User(String username, String password, String role, String nome, String cognome, String email) {
         this.username = username;
         this.password = password;
         this.role = role;
@@ -18,7 +18,7 @@ public abstract class User {
         this.email = email;
     }
 
-    public User() {}
+    protected User() {}
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

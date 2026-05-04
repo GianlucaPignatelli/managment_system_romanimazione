@@ -87,6 +87,7 @@ public class PartyCLIView {
                 case "3": eqCat = "borsa magia"; break;
                 case "4": eqCat = "cassa audio"; break;
                 case "5": eqCat = "gonfiabile"; break;
+                default: break;
             }
         }
 

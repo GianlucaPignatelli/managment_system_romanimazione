@@ -53,6 +53,7 @@ public class EquipmentCLIView {
         System.out.println("5. gonfiabile");
         System.out.print("Select (1-5): ");
         String catChoice = reader.readLine();
+        if (catChoice == null) catChoice = "";
         switch (catChoice) {
             case "1": bean.setCategory("borsone giochi"); break;
             case "2": bean.setCategory("carretto"); break;
@@ -72,6 +73,7 @@ public class EquipmentCLIView {
         System.out.println("4. rotto");
         System.out.print("Select (1-4): ");
         String condChoice = reader.readLine();
+        if (condChoice == null) condChoice = "";
         switch (condChoice) {
             case "1": bean.setCondition("ottimo"); break;
             case "2": bean.setCondition("buono"); break;
