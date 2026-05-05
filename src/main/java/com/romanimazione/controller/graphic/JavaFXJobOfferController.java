@@ -17,17 +17,7 @@ import java.util.List;
 public class JavaFXJobOfferController {
 
     @FXML private TableView<PartyBean> offersTable;
-    @FXML 
-    private TableColumn<PartyBean, String> dateColumn;
-    @FXML 
-    private TableColumn<PartyBean, String> timeColumn;
-    @FXML 
-    private TableColumn<PartyBean, String> typeColumn;
-    @FXML 
-    private TableColumn<PartyBean, String> cityColumn;
-    @FXML 
-    private TableColumn<PartyBean, String> feeColumn; 
-    @FXML private TableColumn<PartyBean, String> statusColumn;
+    @FXML private TableColumn<PartyBean, String> dateColumn, timeColumn, typeColumn, cityColumn, feeColumn, statusColumn;
     @FXML private TableColumn<PartyBean, Void> actionColumn;
 
     private final JobOfferController appController;
@@ -200,7 +190,8 @@ public class JavaFXJobOfferController {
 
     @FXML
     private void handleBack() throws IOException {
-        new com.romanimazione.view.fx.MainFXView().showAnimatorDashboard();
+        com.romanimazione.view.fx.MainFXView viewDashboard = new com.romanimazione.view.fx.MainFXView();
+        viewDashboard.showAnimatorDashboard();
     }
 
     private void showAlert(String msgTitle, String msgBody) {
