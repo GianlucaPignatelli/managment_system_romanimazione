@@ -9,7 +9,7 @@ public class SecurityManager {
     private static final String KEY_MASTER_CODE = "admin.master.code";
 
     private static SecurityManager instance;
-    private Properties properties;
+    private final Properties properties;
 
     private SecurityManager() {
         properties = new Properties();
