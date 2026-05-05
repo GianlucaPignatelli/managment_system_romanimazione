@@ -225,6 +225,14 @@ public class PartyController extends Subject {
         
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
         Party p = dao.getPartyById(Integer.parseInt(party.getId()));
+        
+        // Logica applicativa: se la festa è già stata annullata in precedenza, l'ulteriore annullamento la elimina definitivamente (Hard Delete)
+        if (p.getStatus() == com.romanimazione.entity.PartyStatus.CANCELLED) {
+            dao.deleteParty(p.getId());
+            notifyObservers("Party " + party.getId() + " has been permanently DELETED from the system.");
+            return;
+        }
+        
         p.setStatus(com.romanimazione.entity.PartyStatus.CANCELLED);
         dao.update(p);
         
