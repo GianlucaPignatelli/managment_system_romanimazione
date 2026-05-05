@@ -18,7 +18,11 @@ public class JavaFXAcceptedJobsController {
     @FXML private DatePicker endDatePicker;
     
     @FXML private TableView<PartyBean> jobsTable;
-    @FXML private TableColumn<PartyBean, String> dateColumn, timeColumn, typeColumn, cityColumn, feeColumn; 
+    @FXML private TableColumn<PartyBean, String> cityColumn;
+    @FXML private TableColumn<PartyBean, String> dateColumn;
+    @FXML private TableColumn<PartyBean, String> feeColumn;
+    @FXML private TableColumn<PartyBean, String> timeColumn;
+    @FXML private TableColumn<PartyBean, String> typeColumn;
     
     private final AcceptedJobsController appController;
 
