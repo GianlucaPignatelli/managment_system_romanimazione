@@ -7,25 +7,29 @@ import java.util.List;
 public class Amministratore extends User {
     
     // Collegamento all'inventario gestito dall'amministratore
-    private List<Equipment> managedEquipment = new ArrayList<>();
+    private List<Equipment> managedEquipment;
     
     // Collegamento alle feste create da questo amministratore
-    private List<Party> createdParties = new ArrayList<>();
+    private List<Party> createdParties;
 
     public Amministratore(String username, String password, String nome, String cognome, String email) {
         super(username, password, "AMMINISTRATORE", nome, cognome, email);
+        setManagedEquipment(new ArrayList<>());
+        setCreatedParties(new ArrayList<>());
     }
 
     public Amministratore() {
          setRole("AMMINISTRATORE");
+         setManagedEquipment(new ArrayList<>());
+         setCreatedParties(new ArrayList<>());
     }
 
     public List<Equipment> getManagedEquipment() { return managedEquipment; }
     public void setManagedEquipment(List<Equipment> managedEquipment) { this.managedEquipment = managedEquipment; }
 
     public void addEquipment(Equipment eq) {
-        if (!this.managedEquipment.contains(eq)) {
-            this.managedEquipment.add(eq);
+        if (!getManagedEquipment().contains(eq)) {
+            getManagedEquipment().add(eq);
             eq.setAdminUsername(this.getUsername()); // Sincronizza l'oggetto dipendente
         }
     }
@@ -34,8 +38,8 @@ public class Amministratore extends User {
     public void setCreatedParties(List<Party> createdParties) { this.createdParties = createdParties; }
 
     public void addCreatedParty(Party party) {
-        if (!this.createdParties.contains(party)) {
-            this.createdParties.add(party);
+        if (!getCreatedParties().contains(party)) {
+            getCreatedParties().add(party);
         }
     }
 }

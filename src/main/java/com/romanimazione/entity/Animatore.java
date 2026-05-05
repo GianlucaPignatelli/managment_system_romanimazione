@@ -9,17 +9,19 @@ public class Animatore extends User {
     
     public Animatore() {
         setRole("ANIMATORE");
+        setAvailabilities(new ArrayList<>());
+        setAcceptedJobs(new ArrayList<>());
     }
 
-    private List<Availability> availabilities = new ArrayList<>();
-    private List<Party> acceptedJobs = new ArrayList<>(); // Lavori accettati dall'animatore
+    private List<Availability> availabilities;
+    private List<Party> acceptedJobs; // Lavori accettati dall'animatore
 
     public List<Availability> getAvailabilities() { return availabilities; }
     public void setAvailabilities(List<Availability> availabilities) { this.availabilities = availabilities; }
 
     public void addAvailability(Availability availability) {
-        if (!this.availabilities.contains(availability)) {
-            this.availabilities.add(availability);
+        if (!getAvailabilities().contains(availability)) {
+            getAvailabilities().add(availability);
         }
     }
 
@@ -27,16 +29,17 @@ public class Animatore extends User {
     public void setAcceptedJobs(List<Party> acceptedJobs) { this.acceptedJobs = acceptedJobs; }
 
     public void addAcceptedJob(Party party) {
-        if (!this.acceptedJobs.contains(party)) {
-            this.acceptedJobs.add(party);
+        if (!getAcceptedJobs().contains(party)) {
+            getAcceptedJobs().add(party);
         }
     }
 
     /**
      * Domain Logic: Verifica se l'animatore ha dichiarato disponibilità per un dato blocco temporale.
      */
+
     public boolean isAvailableFor(LocalDate targetDate, LocalTime pStart, LocalTime pEnd) {
-        for (Availability av : availabilities) {
+        for (Availability av : getAvailabilities()) {
             if (av.getDate().equals(targetDate)) {
                 if (av.isFullDay()) return true;
                 
