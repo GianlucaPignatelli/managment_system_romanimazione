@@ -17,11 +17,16 @@ import java.util.List;
 public class JavaFXJobOfferController {
 
     @FXML private TableView<PartyBean> offersTable;
-    @FXML private TableColumn<PartyBean, String> dateColumn;
-    @FXML private TableColumn<PartyBean, String> timeColumn;
-    @FXML private TableColumn<PartyBean, String> typeColumn;
-    @FXML private TableColumn<PartyBean, String> cityColumn;
-    @FXML private TableColumn<PartyBean, String> feeColumn; 
+    @FXML 
+    private TableColumn<PartyBean, String> dateColumn;
+    @FXML 
+    private TableColumn<PartyBean, String> timeColumn;
+    @FXML 
+    private TableColumn<PartyBean, String> typeColumn;
+    @FXML 
+    private TableColumn<PartyBean, String> cityColumn;
+    @FXML 
+    private TableColumn<PartyBean, String> feeColumn; 
     @FXML private TableColumn<PartyBean, String> statusColumn;
     @FXML private TableColumn<PartyBean, Void> actionColumn;
 
@@ -199,11 +204,15 @@ public class JavaFXJobOfferController {
     }
 
     private void showAlert(String msgTitle, String msgBody) {
-        Alert.AlertType alertType = msgTitle.equals("Success") ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR;
-        Alert a = new Alert(alertType);
-        a.setTitle(msgTitle);
-        a.setContentText(msgBody);
-        a.setHeaderText(null);
-        a.showAndWait();
+        Alert alertBox = new Alert(Alert.AlertType.NONE);
+        if ("Success".equals(msgTitle)) {
+             alertBox.setAlertType(Alert.AlertType.INFORMATION);
+        } else {
+             alertBox.setAlertType(Alert.AlertType.ERROR);
+        }
+        alertBox.setTitle(msgTitle);
+        alertBox.setHeaderText(null);
+        alertBox.setContentText(msgBody);
+        alertBox.showAndWait();
     }
 }
