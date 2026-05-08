@@ -15,6 +15,11 @@ public class EquipmentController extends Subject {
         bean.validateSyntax();
         EquipmentDAO dao = DAOFactory.getDAOFactory().getEquipmentDAO();
         Equipment eq = mapToEntity(bean);
+        
+        com.romanimazione.entity.Amministratore adminEntity = new com.romanimazione.entity.Amministratore();
+        adminEntity.setUsername(bean.getAdminUsername());
+        adminEntity.addEquipment(eq);
+        
         dao.saveEquipment(eq);
         bean.setId(String.valueOf(eq.getId()));
         notifyObservers("Equipment " + bean.getName() + " added successfully.");

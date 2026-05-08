@@ -43,10 +43,12 @@ public class AvailabilityController {
         validate(bean);
         checkOverlaps(bean);
 
-        // Conversion Bean -> Entity
         Availability availability = mapToEntity(bean);
+        
+        com.romanimazione.entity.Animatore animatoreEntity = new com.romanimazione.entity.Animatore();
+        animatoreEntity.setUsername(bean.getUsername());
+        animatoreEntity.addAvailability(availability);
 
-        // Persistence
         AvailabilityDAO dao = DAOFactory.getDAOFactory().getAvailabilityDAO();
         dao.saveAvailability(availability);
     }

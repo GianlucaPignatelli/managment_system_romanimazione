@@ -44,8 +44,12 @@ public class JobOfferController extends Subject {
         
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
         
-        // 1. Accept the current offer
         Party targetParty = dao.getPartyById(Integer.parseInt(party.getId()));
+        
+        com.romanimazione.entity.Animatore animatoreEntity = new com.romanimazione.entity.Animatore();
+        animatoreEntity.setUsername(animator.getUsername());
+        animatoreEntity.addAcceptedJob(targetParty);
+        
         targetParty.getAssignmentStatuses().put(animator.getUsername(), AssignmentStatus.ACCEPTED);
         dao.update(targetParty);
         

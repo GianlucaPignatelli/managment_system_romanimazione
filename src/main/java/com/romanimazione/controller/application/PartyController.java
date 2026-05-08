@@ -24,12 +24,15 @@ public class PartyController extends Subject {
     public void createParty(PartyBean bean) throws InvalidPartyException, DAOException {
         bean.validateSyntax();
 
-        // Persistence
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
         Party entity = mapToEntity(bean);
+        
+        com.romanimazione.entity.Amministratore adminEntity = new com.romanimazione.entity.Amministratore();
+        adminEntity.setUsername(com.romanimazione.bean.SessionBean.getInstance().getCurrentUser().getUsername());
+        adminEntity.addCreatedParty(entity);
+        
         dao.saveParty(entity);
         
-        // Notify View
         notifyObservers("Party Created Successfully");
     }
 
