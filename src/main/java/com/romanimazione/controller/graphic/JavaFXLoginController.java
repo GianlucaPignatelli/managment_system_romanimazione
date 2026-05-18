@@ -42,10 +42,10 @@ public class JavaFXLoginController implements Observer {
             
             // Navigate based on role
             com.romanimazione.view.fx.MainFXView mainFXView = new com.romanimazione.view.fx.MainFXView();
-            String role = user.getRole(); // Assuming "ANIMATORE" or "AMMINISTRATORE"
-            if ("ANIMATORE".equalsIgnoreCase(role)) {
+            String role = user.getRole(); // Assuming "ANIMATOR" or "ADMIN"
+            if ("ANIMATOR".equalsIgnoreCase(role)) {
                 mainFXView.showAnimatorDashboard();
-            } else if ("AMMINISTRATORE".equalsIgnoreCase(role)) {
+            } else if ("ADMIN".equalsIgnoreCase(role)) {
                 mainFXView.showAdminDashboard();
             } else {
                 errorLabel.setText("Unknown Role: " + role);

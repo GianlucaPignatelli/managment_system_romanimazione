@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EntityTest {
 
     @Test
-    public void testAmministratoreMethods() {
-        Amministratore admin = new Amministratore("admin", "pass", "Mario", "Rossi", "mario@gmail.com");
+    public void testAdminMethods() {
+        Admin admin = new Admin("admin", "pass", "Mario", "Rossi", "mario@gmail.com");
         
         Equipment eq = new Equipment();
         eq.setName("Test Eq");
@@ -33,8 +33,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testAnimatoreMethods() {
-        Animatore anim = new Animatore();
+    public void testAnimatorMethods() {
+        Animator anim = new Animator();
         anim.setUsername("anim");
         
         Availability av = new Availability("anim", LocalDate.now(), LocalTime.of(10, 0), LocalTime.of(14, 0), false);

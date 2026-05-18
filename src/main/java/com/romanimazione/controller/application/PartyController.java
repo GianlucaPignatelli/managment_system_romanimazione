@@ -27,7 +27,7 @@ public class PartyController extends Subject {
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
         Party entity = mapToEntity(bean);
         
-        com.romanimazione.entity.Amministratore adminEntity = new com.romanimazione.entity.Amministratore();
+        com.romanimazione.entity.Admin adminEntity = new com.romanimazione.entity.Admin();
         adminEntity.setUsername(com.romanimazione.bean.SessionBean.getInstance().getCurrentUser().getUsername());
         adminEntity.addCreatedParty(entity);
         
@@ -162,20 +162,20 @@ public class PartyController extends Subject {
         
         // Applicative logic: Loop users, filter Animators, use Domain Logic to check availability
         for (User u : allUsers) {
-            if (u instanceof com.romanimazione.entity.Animatore animatore) {
+            if (u instanceof com.romanimazione.entity.Animator animator) {
                 
                 // Skip if already assigned or proposed
-                if (party.getAssignmentStatuses().containsKey(animatore.getUsername())) {
+                if (party.getAssignmentStatuses().containsKey(animator.getUsername())) {
                     continue;
                 }
                 
-                if (animatore.isAvailableFor(LocalDate.parse(party.getDate()), LocalTime.parse(party.getStartTime()), LocalTime.parse(party.getEndTime()))) {
+                if (animator.isAvailableFor(LocalDate.parse(party.getDate()), LocalTime.parse(party.getStartTime()), LocalTime.parse(party.getEndTime()))) {
                     UserBean animatorBean = new UserBean();
-                    animatorBean.setUsername(animatore.getUsername());
-                    animatorBean.setNome(animatore.getNome());
-                    animatorBean.setCognome(animatore.getCognome());
-                    animatorBean.setEmail(animatore.getEmail());
-                    animatorBean.setRole(animatore.getRole());
+                    animatorBean.setUsername(animator.getUsername());
+                    animatorBean.setNome(animator.getNome());
+                    animatorBean.setCognome(animator.getCognome());
+                    animatorBean.setEmail(animator.getEmail());
+                    animatorBean.setRole(animator.getRole());
                     animatorBean.setIsTimeCompatible("true");
                     result.add(animatorBean);
                 }
@@ -190,7 +190,7 @@ public class PartyController extends Subject {
         List<UserBean> result = new ArrayList<>();
 
         for (User u : allUsers) {
-            if (u instanceof com.romanimazione.entity.Animatore && !party.getAssignmentStatuses().containsKey(u.getUsername())) {
+            if (u instanceof com.romanimazione.entity.Animator && !party.getAssignmentStatuses().containsKey(u.getUsername())) {
                 UserBean animatorBean = new UserBean();
                 animatorBean.setUsername(u.getUsername());
                 animatorBean.setNome(u.getNome());

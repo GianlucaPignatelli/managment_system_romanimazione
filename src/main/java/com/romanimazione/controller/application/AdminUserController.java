@@ -44,7 +44,7 @@ public class AdminUserController extends Subject {
         PartyDAO partyDAO = DAOFactory.getDAOFactory().getPartyDAO();
 
         // Check if Animator and has assignments
-        if ("ANIMATORE".equalsIgnoreCase(userToDelete.getRole())) {
+        if ("ANIMATOR".equalsIgnoreCase(userToDelete.getRole())) {
             List<Party> allParties = partyDAO.findAllParties();
             for (Party p : allParties) {
                 if (p.getAssignmentStatuses().containsKey(userToDelete.getUsername())) {

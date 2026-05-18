@@ -1,8 +1,8 @@
 package com.romanimazione.entity;
 
 public enum Role {
-    ANIMATORE,
-    AMMINISTRATORE;
+    ANIMATOR,
+    ADMIN;
 
     public static Role fromString(String role) {
         if (role == null) return null;
