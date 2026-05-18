@@ -28,7 +28,7 @@ class RegistrationControllerTest {
         newUser.setUsername("newuser");
         newUser.setPassword("password123");
         newUser.setEmail("test@gmail.com");
-        newUser.setRole("ANIMATORE");
+        newUser.setRole("ANIMATOR");
         newUser.setNome("Test");
         newUser.setCognome("User");
 
@@ -54,7 +54,7 @@ class RegistrationControllerTest {
         invalidEmailUser.setUsername("bademail");
         invalidEmailUser.setPassword("pass");
         invalidEmailUser.setEmail("test@yahoo.com"); // Only gmail allowed
-        invalidEmailUser.setRole("ANIMATORE");
+        invalidEmailUser.setRole("ANIMATOR");
 
         assertThrows(IllegalArgumentException.class, () -> {
             registrationController.register(invalidEmailUser);

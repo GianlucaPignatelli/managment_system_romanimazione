@@ -35,7 +35,7 @@ public class JavaFXRegistrationController implements Observer {
     @FXML
     public void initialize() {
         roleBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if ("AMMINISTRATORE".equals(newVal)) {
+            if ("ADMIN".equals(newVal)) {
                 adminCodeBox.setVisible(true);
                 adminCodeBox.setManaged(true);
                 checkFirstAdminStatus();
@@ -74,7 +74,7 @@ public class JavaFXRegistrationController implements Observer {
         user.setEmail(emailField.getText());
         user.setRole(roleBox.getValue());
         
-        if ("AMMINISTRATORE".equals(user.getRole())) {
+        if ("ADMIN".equals(user.getRole())) {
             user.setSecurityCode(adminCodeField.getText());
         }
 

@@ -38,19 +38,19 @@ public class LoginCLIView {
         
         String role = null;
         while (role == null) {
-            System.out.println("Role (1. ANIMATORE, 2. ADMIN): ");
+            System.out.println("Role (1. ANIMATOR, 2. ADMIN): ");
             String input = reader.readLine();
             if ("1".equals(input)) {
-                role = "ANIMATORE";
+                role = "ANIMATOR";
             } else if ("2".equals(input)) {
-                role = "AMMINISTRATORE";
+                role = "ADMIN";
             } else {
                 System.out.println("Invalid choice. Please enter 1 or 2.");
             }
         }
         
         String securityCode = null;
-        if ("AMMINISTRATORE".equals(role)) {
+        if ("ADMIN".equals(role)) {
             String prompt = isFirstAdmin ? "Create NEW Master Code (min 64 chars): " : "Enter Master Code: ";
             System.out.print(prompt);
             securityCode = reader.readLine();
