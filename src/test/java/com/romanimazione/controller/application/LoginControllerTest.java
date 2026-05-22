@@ -20,10 +20,10 @@ class LoginControllerTest {
         loginController = new LoginController();
         
         // Seed the "admin" user for logic tests
-        com.romanimazione.entity.User admin = new com.romanimazione.entity.Amministratore();
+        com.romanimazione.entity.User admin = new com.romanimazione.entity.Admin();
         admin.setUsername("admin");
         admin.setPassword("admin");
-        admin.setRole("AMMINISTRATORE");
+        admin.setRole("ADMIN");
         // Ensure it doesn't exist (if static persists)
         DAOFactory.getDAOFactory().getUserDAO().deleteUser("admin"); 
         DAOFactory.getDAOFactory().getUserDAO().saveUser(admin);
@@ -41,7 +41,7 @@ class LoginControllerTest {
 
         assertNotNull(user);
         assertEquals("admin", user.getUsername());
-        assertEquals("AMMINISTRATORE", user.getRole());
+        assertEquals("ADMIN", user.getRole());
     }
 
     @Test

@@ -56,7 +56,7 @@ public class MainCLIView {
     }
 
     public String showAnimatorMenuAndGetChoice() throws IOException {
-        System.out.println("\n[ANIMATORE DASHBOARD]");
+        System.out.println("\n[ANIMATOR DASHBOARD]");
         System.out.println("1. Manage Availability");
         System.out.println("2. View Job Offers");
         System.out.println("3. View Accepted Jobs");

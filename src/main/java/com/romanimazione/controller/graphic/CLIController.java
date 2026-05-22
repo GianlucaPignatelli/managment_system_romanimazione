@@ -82,9 +82,9 @@ public class CLIController {
             
             mainView.showMessage("Login successful. Role: " + user.getRole());
             
-            if ("ANIMATORE".equalsIgnoreCase(user.getRole())) {
+            if ("ANIMATOR".equalsIgnoreCase(user.getRole())) {
                 animatorLoop();
-            } else if ("AMMINISTRATORE".equalsIgnoreCase(user.getRole())) {
+            } else if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                  adminLoop();
             } else {
                  mainView.showMessage("Unknown role menu.");

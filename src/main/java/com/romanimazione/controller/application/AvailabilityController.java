@@ -45,9 +45,9 @@ public class AvailabilityController {
 
         Availability availability = mapToEntity(bean);
         
-        com.romanimazione.entity.Animatore animatoreEntity = new com.romanimazione.entity.Animatore();
-        animatoreEntity.setUsername(bean.getUsername());
-        animatoreEntity.addAvailability(availability);
+        com.romanimazione.entity.Animator animatorEntity = new com.romanimazione.entity.Animator();
+        animatorEntity.setUsername(bean.getUsername());
+        animatorEntity.addAvailability(availability);
 
         AvailabilityDAO dao = DAOFactory.getDAOFactory().getAvailabilityDAO();
         dao.saveAvailability(availability);

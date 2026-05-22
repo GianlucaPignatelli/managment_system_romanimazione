@@ -3,8 +3,8 @@ package com.romanimazione.controller.application;
 import com.romanimazione.bean.UserBean;
 import com.romanimazione.dao.DAOFactory;
 import com.romanimazione.dao.UserDAO;
-import com.romanimazione.entity.Amministratore;
-import com.romanimazione.entity.Animatore;
+import com.romanimazione.entity.Admin;
+import com.romanimazione.entity.Animator;
 import com.romanimazione.entity.User;
 import com.romanimazione.exception.DAOException;
 import com.romanimazione.exception.DuplicateUserException;
@@ -13,7 +13,7 @@ public class RegistrationController extends Subject {
 
     public long countAdmins() throws DAOException {
         return DAOFactory.getDAOFactory().getUserDAO().findAllUsers().stream()
-                .filter(u -> "AMMINISTRATORE".equalsIgnoreCase(u.getRole()))
+                .filter(u -> "ADMIN".equalsIgnoreCase(u.getRole()))
                 .count();
     }
 
@@ -25,10 +25,10 @@ public class RegistrationController extends Subject {
         userBean.validateSyntax();
 
         User user;
-        if ("AMMINISTRATORE".equalsIgnoreCase(userBean.getRole())) {
+        if ("ADMIN".equalsIgnoreCase(userBean.getRole())) {
             user = createAdminUser(userBean);
         } else {
-            user = new Animatore();
+            user = new Animator();
         }
 
         user.setUsername(userBean.getUsername());
@@ -52,7 +52,7 @@ public class RegistrationController extends Subject {
     }
 
     private User createAdminUser(UserBean userBean) throws DAOException {
-        User user = new Amministratore();
+        User user = new Admin();
         long adminCount = this.countAdmins();
         com.romanimazione.bean.SecurityManager secManager = com.romanimazione.bean.SecurityManager.getInstance();
 

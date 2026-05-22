@@ -223,7 +223,7 @@ public class PartyCLIView {
     }
 
     public boolean askForceAssignment() throws IOException {
-        System.out.println("Nessun animatore disponibile. Vuoi forzare l'assegnazione mostrando tutti gli animatori del sistema? (Y/N): ");
+        System.out.println("Nessun animator disponibile. Vuoi forzare l'assegnazione mostrando tutti gli animatori del sistema? (Y/N): ");
         String answer = reader.readLine();
         return "Y".equalsIgnoreCase(answer != null ? answer.trim() : "");
     }
