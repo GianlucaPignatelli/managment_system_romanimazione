@@ -24,12 +24,11 @@ public class JobOfferController extends Subject {
         for (Party p : allParties) {
             AssignmentStatus status = p.getAssignmentStatuses().get(animator.getUsername());
             if (status == AssignmentStatus.PENDING) {
-                // Apply manual timeout check on the fly
                 java.time.LocalDateTime ts = p.getAssignmentTimestamps().get(animator.getUsername());
                 if (ts != null && ts.isBefore(java.time.LocalDateTime.now().minusHours(24))) {
                     p.getAssignmentStatuses().put(animator.getUsername(), AssignmentStatus.TIMEOUT);
                     dao.update(p);
-                    continue; // Skipped because it timed out
+                    continue;
                 }
                 
                 PartyBean pb = PartyController.mapToBean(p);
