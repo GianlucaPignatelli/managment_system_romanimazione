@@ -1,0 +1,1 @@
+["java.util.ArrayList",[["com.romanimazione.entity.Amministratore",{"id":1,"username":"aaaa","password":"aaaa","role":"ADMIN","nome":"aaaa","cognome":"aaaa","email":"aaaa@gmail.com","superAdmin":true,"managedEquipment":["java.util.ArrayList",[]],"createdParties":["java.util.ArrayList",[]]}]]]
