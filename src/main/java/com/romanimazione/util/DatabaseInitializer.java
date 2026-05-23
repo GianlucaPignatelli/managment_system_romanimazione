@@ -12,6 +12,7 @@ public class DatabaseInitializer {
             initializeUsersTable(); // Reset Users First
             initializePartyTable();
             initializeAssignmentsTable();
+            initializeAvailabilityTable();
             initializeEquipmentTable();
             System.out.println("Database initialization completed successfully.");
         } catch (java.sql.SQLException e) {
@@ -96,6 +97,7 @@ public class DatabaseInitializer {
                      "    party_id INT NOT NULL," +
                      "    animator_username VARCHAR(50) NOT NULL," +
                      "    status VARCHAR(20) DEFAULT 'PENDING'," +
+                     "    assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
                      "    FOREIGN KEY (party_id) REFERENCES party(id) ON DELETE CASCADE," +
                      "    FOREIGN KEY (animator_username) REFERENCES users(username) ON DELETE CASCADE," +
                      "    UNIQUE(party_id, animator_username)" +
@@ -106,6 +108,27 @@ public class DatabaseInitializer {
 
             stmt.executeUpdate(sql);
             System.out.println("Table 'party_assignments' check/create completed.");
+        }
+    }
+
+    private static void initializeAvailabilityTable() throws java.sql.SQLException {
+        System.out.println("Creating 'availability' table...");
+        
+        String sql = "CREATE TABLE IF NOT EXISTS availability (" +
+                     "    id INT AUTO_INCREMENT PRIMARY KEY," +
+                     "    username VARCHAR(50) NOT NULL," +
+                     "    availability_date DATE NOT NULL," +
+                     "    start_time TIME NOT NULL," +
+                     "    end_time TIME NOT NULL," +
+                     "    is_full_day BOOLEAN NOT NULL," +
+                     "    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE" +
+                     ");";
+        
+        try (Connection conn = MySQLDAOFactory.createConnection();
+             Statement stmt = conn.createStatement()) {
+
+            stmt.executeUpdate(sql);
+            System.out.println("Table 'availability' check/create completed.");
         }
     }
 

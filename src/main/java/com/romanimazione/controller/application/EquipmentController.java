@@ -16,7 +16,7 @@ public class EquipmentController extends Subject {
         EquipmentDAO dao = DAOFactory.getDAOFactory().getEquipmentDAO();
         Equipment eq = mapToEntity(bean);
         
-        com.romanimazione.entity.Admin adminEntity = new com.romanimazione.entity.Admin();
+        com.romanimazione.entity.Amministratore adminEntity = new com.romanimazione.entity.Amministratore();
         adminEntity.setUsername(bean.getAdminUsername());
         adminEntity.addEquipment(eq);
         

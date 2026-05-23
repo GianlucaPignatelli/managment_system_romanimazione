@@ -27,7 +27,7 @@ public class PartyController extends Subject {
         PartyDAO dao = DAOFactory.getDAOFactory().getPartyDAO();
         Party entity = mapToEntity(bean);
         
-        com.romanimazione.entity.Admin adminEntity = new com.romanimazione.entity.Admin();
+        com.romanimazione.entity.Amministratore adminEntity = new com.romanimazione.entity.Amministratore();
         adminEntity.setUsername(com.romanimazione.bean.SessionBean.getInstance().getCurrentUser().getUsername());
         adminEntity.addCreatedParty(entity);
         
@@ -162,7 +162,7 @@ public class PartyController extends Subject {
         
         // Applicative logic: Loop users, filter Animators, use Domain Logic to check availability
         for (User u : allUsers) {
-            if (u instanceof com.romanimazione.entity.Animator animator) {
+            if (u instanceof com.romanimazione.entity.Animatore animator) {
                 
                 // Skip if already assigned or proposed
                 if (party.getAssignmentStatuses().containsKey(animator.getUsername())) {
@@ -190,7 +190,7 @@ public class PartyController extends Subject {
         List<UserBean> result = new ArrayList<>();
 
         for (User u : allUsers) {
-            if (u instanceof com.romanimazione.entity.Animator && !party.getAssignmentStatuses().containsKey(u.getUsername())) {
+            if (u instanceof com.romanimazione.entity.Animatore && !party.getAssignmentStatuses().containsKey(u.getUsername())) {
                 UserBean animatorBean = new UserBean();
                 animatorBean.setUsername(u.getUsername());
                 animatorBean.setNome(u.getNome());

@@ -11,7 +11,7 @@ public class EntityTest {
 
     @Test
     public void testAdminMethods() {
-        Admin admin = new Admin("admin", "pass", "Mario", "Rossi", "mario@gmail.com");
+        Amministratore admin = new Amministratore("admin", "pass", "Mario", "Rossi", "mario@gmail.com");
         
         Equipment eq = new Equipment();
         eq.setName("Test Eq");
@@ -34,7 +34,7 @@ public class EntityTest {
 
     @Test
     public void testAnimatorMethods() {
-        Animator anim = new Animator();
+        Animatore anim = new Animatore();
         anim.setUsername("anim");
         
         Availability av = new Availability("anim", LocalDate.now(), LocalTime.of(10, 0), LocalTime.of(14, 0), false);

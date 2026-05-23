@@ -3,8 +3,8 @@ package com.romanimazione.controller.application;
 import com.romanimazione.bean.UserBean;
 import com.romanimazione.dao.DAOFactory;
 import com.romanimazione.dao.UserDAO;
-import com.romanimazione.entity.Admin;
-import com.romanimazione.entity.Animator;
+import com.romanimazione.entity.Amministratore;
+import com.romanimazione.entity.Animatore;
 import com.romanimazione.entity.User;
 import com.romanimazione.exception.DAOException;
 import com.romanimazione.exception.DuplicateUserException;
@@ -28,7 +28,7 @@ public class RegistrationController extends Subject {
         if ("ADMIN".equalsIgnoreCase(userBean.getRole())) {
             user = createAdminUser(userBean);
         } else {
-            user = new Animator();
+            user = new Animatore();
         }
 
         user.setUsername(userBean.getUsername());
@@ -52,7 +52,7 @@ public class RegistrationController extends Subject {
     }
 
     private User createAdminUser(UserBean userBean) throws DAOException {
-        User user = new Admin();
+        User user = new Amministratore();
         long adminCount = this.countAdmins();
         com.romanimazione.bean.SecurityManager secManager = com.romanimazione.bean.SecurityManager.getInstance();
 

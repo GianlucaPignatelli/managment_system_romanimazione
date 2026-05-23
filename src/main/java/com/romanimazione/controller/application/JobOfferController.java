@@ -45,7 +45,7 @@ public class JobOfferController extends Subject {
         
         Party targetParty = dao.getPartyById(Integer.parseInt(party.getId()));
         
-        com.romanimazione.entity.Animator animatorEntity = new com.romanimazione.entity.Animator();
+        com.romanimazione.entity.Animatore animatorEntity = new com.romanimazione.entity.Animatore();
         animatorEntity.setUsername(animator.getUsername());
         animatorEntity.addAcceptedJob(targetParty);
         

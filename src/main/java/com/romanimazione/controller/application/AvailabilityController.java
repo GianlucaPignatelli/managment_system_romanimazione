@@ -45,7 +45,7 @@ public class AvailabilityController {
 
         Availability availability = mapToEntity(bean);
         
-        com.romanimazione.entity.Animator animatorEntity = new com.romanimazione.entity.Animator();
+        com.romanimazione.entity.Animatore animatorEntity = new com.romanimazione.entity.Animatore();
         animatorEntity.setUsername(bean.getUsername());
         animatorEntity.addAvailability(availability);
 

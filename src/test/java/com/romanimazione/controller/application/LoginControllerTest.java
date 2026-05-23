@@ -20,7 +20,7 @@ class LoginControllerTest {
         loginController = new LoginController();
         
         // Seed the "admin" user for logic tests
-        com.romanimazione.entity.User admin = new com.romanimazione.entity.Admin();
+        com.romanimazione.entity.User admin = new com.romanimazione.entity.Amministratore();
         admin.setUsername("admin");
         admin.setPassword("admin");
         admin.setRole("ADMIN");

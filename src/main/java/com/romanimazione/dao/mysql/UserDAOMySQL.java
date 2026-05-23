@@ -3,8 +3,8 @@ package com.romanimazione.dao.mysql;
 import com.romanimazione.dao.UserDAO;
 
 import com.romanimazione.entity.User;
-import com.romanimazione.entity.Animator;
-import com.romanimazione.entity.Admin;
+import com.romanimazione.entity.Animatore;
+import com.romanimazione.entity.Amministratore;
 import com.romanimazione.exception.DAOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -69,10 +69,12 @@ public class UserDAOMySQL implements UserDAO {
         String roleStr = rs.getString("role");
         User user = null;
         
-        if ("ANIMATOR".equalsIgnoreCase(roleStr)) {
-            user = new Animator();
-        } else if ("ADMIN".equalsIgnoreCase(roleStr)) {
-            user = new Admin();
+        if ("ANIMATOR".equalsIgnoreCase(roleStr) || "ANIMATORE".equalsIgnoreCase(roleStr)) {
+            user = new Animatore();
+            roleStr = "ANIMATOR";
+        } else if ("ADMIN".equalsIgnoreCase(roleStr) || "AMMINISTRATORE".equalsIgnoreCase(roleStr)) {
+            user = new Amministratore();
+            roleStr = "ADMIN";
         } else {
             // Fallback anonimo in caso di dati db inconsistenti
             user = new User() {}; 
