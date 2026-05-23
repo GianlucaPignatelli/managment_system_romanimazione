@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EntityTest {
+class EntityTest {
 
     @Test
-    public void testAdminMethods() {
+    void testAdminMethods() {
         Amministratore admin = new Amministratore("admin", "pass", "Mario", "Rossi", "mario@gmail.com");
         
         Equipment eq = new Equipment();
@@ -33,7 +33,7 @@ public class EntityTest {
     }
 
     @Test
-    public void testAnimatorMethods() {
+    void testAnimatorMethods() {
         Animatore anim = new Animatore();
         anim.setUsername("anim");
         
