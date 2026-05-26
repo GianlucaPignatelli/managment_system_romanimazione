@@ -159,9 +159,29 @@ public class PartyController extends Subject {
         UserDAO userDAO = DAOFactory.getDAOFactory().getUserDAO();
         List<User> allUsers = userDAO.findAllUsers();
         
+        hydrateAnimatorsAvailabilities(allUsers);
+        
+        List<UserBean> result = new ArrayList<>();
+        
+        for (User u : allUsers) {
+            if (u instanceof com.romanimazione.entity.Animatore animator && isAnimatorEligibleForParty(animator, party)) {
+                UserBean animatorBean = new UserBean();
+                animatorBean.setUsername(animator.getUsername());
+                animatorBean.setNome(animator.getNome());
+                animatorBean.setCognome(animator.getCognome());
+                animatorBean.setEmail(animator.getEmail());
+                animatorBean.setRole(animator.getRole());
+                animatorBean.setIsTimeCompatible("true");
+                result.add(animatorBean);
+            }
+        }
+        return result;
+    }
+
+    private void hydrateAnimatorsAvailabilities(List<User> users) throws DAOException {
         com.romanimazione.dao.AvailabilityDAO availabilityDAO = DAOFactory.getDAOFactory().getAvailabilityDAO();
         List<com.romanimazione.entity.Availability> allAvails = availabilityDAO.findAllAvailabilities();
-        for (User u : allUsers) {
+        for (User u : users) {
             if (u instanceof com.romanimazione.entity.Animatore animator) {
                 for (com.romanimazione.entity.Availability av : allAvails) {
                     if (av.getUsername().equals(animator.getUsername())) {
@@ -170,31 +190,17 @@ public class PartyController extends Subject {
                 }
             }
         }
-        
-        List<UserBean> result = new ArrayList<>();
-        
-        // Applicative logic: Loop users, filter Animators, use Domain Logic to check availability
-        for (User u : allUsers) {
-            if (u instanceof com.romanimazione.entity.Animatore animator) {
-                
-                // Skip if already assigned or proposed
-                if (party.getAssignmentStatuses().containsKey(animator.getUsername())) {
-                    continue;
-                }
-                
-                if (animator.isAvailableFor(LocalDate.parse(party.getDate()), LocalTime.parse(party.getStartTime()), LocalTime.parse(party.getEndTime()))) {
-                    UserBean animatorBean = new UserBean();
-                    animatorBean.setUsername(animator.getUsername());
-                    animatorBean.setNome(animator.getNome());
-                    animatorBean.setCognome(animator.getCognome());
-                    animatorBean.setEmail(animator.getEmail());
-                    animatorBean.setRole(animator.getRole());
-                    animatorBean.setIsTimeCompatible("true");
-                    result.add(animatorBean);
-                }
-            }
+    }
+
+    private boolean isAnimatorEligibleForParty(com.romanimazione.entity.Animatore animator, PartyBean party) {
+        if (party.getAssignmentStatuses().containsKey(animator.getUsername())) {
+            return false;
         }
-        return result;
+        return animator.isAvailableFor(
+                LocalDate.parse(party.getDate()), 
+                LocalTime.parse(party.getStartTime()), 
+                LocalTime.parse(party.getEndTime())
+        );
     }
 
     public List<UserBean> findAllAnimatorsForForce(PartyBean party) throws DAOException {
