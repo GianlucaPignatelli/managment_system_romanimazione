@@ -158,6 +158,19 @@ public class PartyController extends Subject {
     public List<UserBean> findEligibleAnimators(PartyBean party) throws DAOException {
         UserDAO userDAO = DAOFactory.getDAOFactory().getUserDAO();
         List<User> allUsers = userDAO.findAllUsers();
+        
+        com.romanimazione.dao.AvailabilityDAO availabilityDAO = DAOFactory.getDAOFactory().getAvailabilityDAO();
+        List<com.romanimazione.entity.Availability> allAvails = availabilityDAO.findAllAvailabilities();
+        for (User u : allUsers) {
+            if (u instanceof com.romanimazione.entity.Animatore animator) {
+                for (com.romanimazione.entity.Availability av : allAvails) {
+                    if (av.getUsername().equals(animator.getUsername())) {
+                        animator.addAvailability(av);
+                    }
+                }
+            }
+        }
+        
         List<UserBean> result = new ArrayList<>();
         
         // Applicative logic: Loop users, filter Animators, use Domain Logic to check availability
